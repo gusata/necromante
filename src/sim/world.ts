@@ -428,11 +428,11 @@ export class World {
       if (this.screamT <= 0) {
         const living = this.units.filter((u) => u.alive && u.faction === 'living');
         if (living.length) {
-          this.screamT = 10;
+          this.screamT = 7;
           this.events.push({ type: 'scream' });
           for (const u of living) {
             if (!UNIT_DEFS[u.kind].boss) u.stunT = Math.max(u.stunT, 1.5);
-            this.damage(u, 1, 'magic');
+            this.damage(u, 2, 'magic');
           }
         }
       }
@@ -581,7 +581,13 @@ export class World {
 
   private deadAI(u: Unit, dt: number) {
     const def = UNIT_DEFS[u.kind];
-    let t: Unit | undefined;
+    // defender o altar vem primeiro
+    let t: Unit | undefined = this.nearest(this.necro, 'living', 34);
+    if (t && dist2(u.x, u.y, t.x, t.y) > 90 * 90) t = undefined;
+    if (t) {
+      this.engage(u, t, dt);
+      return;
+    }
     if (u.kind === 'ghost') {
       t = this.mods.spiritMastery ? this.backline() : this.nearest(u, 'living', AGGRO_DEAD * 1.6);
     } else {
@@ -873,8 +879,16 @@ export class World {
       }
     }
     if (u.faction === 'living' && dist2(u.x, u.y, this.necro.x, this.necro.y) <= (u.radius + this.necro.radius + 4) ** 2) {
-      this.hurtNecro(4, u.x, u.y);
+      this.hurtNecro(3, u.x, u.y);
+      // o altar repele: o chefe é arremessado de volta e fica tonto
+      const dx = u.x - this.necro.x;
+      const dy = u.y - this.necro.y;
+      const len = Math.hypot(dx, dy) || 1;
+      u.x = this.necro.x + (dx / len) * 40;
+      u.y = this.necro.y + (dy / len) * 40;
+      u.stunT = 1.2;
       u.chargeT = 0;
+      this.events.push({ type: 'holyBurst', x: this.necro.x, y: this.necro.y - 6, r: 30 });
     }
     if (u.chargeT <= 0) {
       u.chargeT = 0;
@@ -919,7 +933,7 @@ export class World {
 
   private addCloud(x: number, y: number) {
     const t = CLOUD_TIME * this.mods.poisonDurMul;
-    this.clouds.push({ id: this.nextId++, x, y, r: CLOUD_R, dps: POISON_DPS * 2 * this.mods.poisonDmgMul, t, max: t });
+    this.clouds.push({ id: this.nextId++, x, y, r: CLOUD_R, dps: POISON_DPS * 1.5 * this.mods.poisonDmgMul, t, max: t });
     this.events.push({ type: 'cloud', x, y, r: CLOUD_R });
   }
 
@@ -1031,7 +1045,7 @@ export class World {
       if (type === 'holy' && src && has(src, 'holyWeapon')) dmg *= 2;
       dmg *= 1 - this.mods.deadArmor;
     } else {
-      if (type === 'magic' && has(t, 'shieldBlock')) dmg *= 0.5;
+      if (type === 'magic' && has(t, 'shieldBlock') && !this.mods.spiritMastery) dmg *= 0.5;
       if (this.bishops.some((b) => b !== t && dist2(b.x, b.y, t.x, t.y) < 32 * 32)) dmg *= 0.7;
     }
     t.hp -= dmg;
@@ -1041,7 +1055,7 @@ export class World {
 
     if (src && src.faction === 'dead' && t.faction === 'living') {
       if (this.mods.lifesteal > 0 && src.hp < src.maxHp && this.rng.next() < this.mods.lifesteal) src.hp = Math.min(src.maxHp, src.hp + 1);
-      if (src.kind === 'thrall') src.hp = Math.min(src.maxHp, src.hp + 0.5);
+      if (src.kind === 'thrall') src.hp = Math.min(src.maxHp, src.hp + 1);
       if (this.mods.poisonOnHit || src.kind === 'rat') this.poison(t);
       if (this.mods.fleshDominion && schoolOf(src.kind) === 'flesh' && t.hp <= 3 && !UNIT_DEFS[t.kind].boss) t.hp = 0;
     }
@@ -1056,7 +1070,7 @@ export class World {
       this.kills++;
       this.killsByKind[t.kind] = (this.killsByKind[t.kind] ?? 0) + 1;
       this.souls += def.threat * 0.15 * this.mods.soulMul;
-      if (this.mods.bloodMastery && ++this.bloodKills % 8 === 0) this.healNecro(1);
+      if (this.mods.bloodMastery && ++this.bloodKills % 5 === 0) this.healNecro(1);
       if (has(t, 'holyBurst')) {
         this.events.push({ type: 'holyBurst', x: t.x, y: t.y - 4, r: 18 });
         this.aoe(t.x, t.y, 18, 'dead', 3, 'holy');

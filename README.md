@@ -18,6 +18,7 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 | `npm run dev` | servidor de desenvolvimento com recarga automática |
 | `npm test` | testes da simulação (Vitest) |
 | `npm run sim -- 40 2` | simulador de balanceamento: 40 runs automáticas com meta-progressão nível 2 |
+| `npm run sim -- 16 2 builds` | taxa de vitória por escola (cada run força uma escola) |
 | `npm run lint` / `npm run format` | Biome |
 | `npm run build` | checa tipos e gera `dist/` |
 | `npm run android` | build + sync + abre o Android Studio (precisa do Android Studio/JDK instalados) |
@@ -73,5 +74,9 @@ scripts/        simulador de balanceamento
 tests/          testes da simulação
 android/        projeto nativo gerado pelo Capacitor
 ```
+
+## Arte do Aseprite
+
+Exporte do Aseprite (File > Export Sprite Sheet, JSON com Tags) para `public/assets/sprites/` e registre no `manifest.json`. A arte exportada substitui a gerada, com as mesmas chaves (`peasant0`, `peasant1`...). Unidades usam as tags `walk` (2 quadros) e `attack` (1 quadro). Veja `src/art/aseprite.ts` e o exemplo em `docs/exemplo-aseprite/`.
 
 Para ajustar a dificuldade, mexa em `src/sim/defs.ts` e `src/sim/regions.ts`, depois rode `npm run sim`. Para criar um inimigo, adicione o tipo em `types.ts`, os números em `defs.ts`, a aparência em `art/humanoid.ts` (`HUMANOIDS`) e o lugar dele em `regions.ts`.

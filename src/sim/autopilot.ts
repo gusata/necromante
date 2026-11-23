@@ -1,14 +1,15 @@
 import { CARD_BY_ID } from './cards';
 import { NECRO } from './defs';
+import type { School } from './types';
 import type { World } from './world';
 
 /**
  * Jogador automático: usado no modo debug (?auto) e no simulador de balanceamento.
  * Não é ótimo de propósito: aproxima um jogador mediano.
  */
-export function autopilot(w: World, skill = 1): void {
+export function autopilot(w: World, skill = 1, focus?: School): void {
   if (w.phase === 'choosing') {
-    pickCard(w);
+    pickCard(w, focus);
     return;
   }
   // persegue o vivo mais perto do necromante
@@ -29,14 +30,14 @@ export function autopilot(w: World, skill = 1): void {
   if (bestD < 40 && w.deadInCircle().length >= 2 && w.canExplode()) w.explode();
 }
 
-/** Prefere a escola em que já investiu (persegue sinergias). */
-export function pickCard(w: World): void {
+/** Prefere a escola em que já investiu (persegue sinergias), ou a escola `focus` se houver. */
+export function pickCard(w: World, focus?: School): void {
   const counts = w.schoolCounts();
   let best = w.offer[0];
   let bestScore = -Infinity;
   for (const id of w.offer) {
     const c = CARD_BY_ID[id];
-    const score = (c.school ? counts[c.school] * 2 : 1) + (c.rarity === 'rare' ? 1.5 : c.rarity === 'legendary' ? 3 : 0) + w.rng.next();
+    const score = (focus && c.school === focus ? 100 : 0) + (c.school ? counts[c.school] * 2 : 1) + (c.rarity === 'rare' ? 1.5 : c.rarity === 'legendary' ? 3 : 0) + w.rng.next();
     if (score > bestScore) {
       bestScore = score;
       best = id;

@@ -36,23 +36,23 @@ export const SCHOOLS: Record<School, SchoolInfo> = {
     color: '#8fbf3a',
     mastery: 'Todo morto que cai solta uma nuvem de veneno.',
     dominionName: 'Pestilência',
-    dominion: 'Veneno em dobro. Vivos envenenados espalham a praga ao morrer.',
+    dominion: 'Veneno +60%. Vivos envenenados espalham a praga ao morrer.',
   },
   spirit: {
     id: 'spirit',
     name: 'Espírito',
     color: '#8fd3ff',
-    mastery: 'Raios do necromante saltam para mais um alvo. Fantasmas caçam a retaguarda.',
+    mastery: 'Raios saltam para mais um alvo e atravessam escudos. Fantasmas caçam a retaguarda.',
     dominionName: 'Banshee',
-    dominion: 'A cada 10s um grito atordoa todos os vivos.',
+    dominion: 'A cada 7s um grito atordoa todos os vivos.',
   },
   blood: {
     id: 'blood',
     name: 'Sangue',
     color: '#e0304a',
-    mastery: 'Mortos roubam vida. O necromante cura 1 a cada 8 abates.',
+    mastery: 'Mortos +30% vida e roubam vida. O necromante cura 1 a cada 5 abates.',
     dominionName: 'Lorde Vampiro',
-    dominion: 'Todo sacrifício dá frenesi: +60% dano e velocidade por 6s.',
+    dominion: 'Mortos +25% dano. Todo sacrifício dá frenesi: +60% dano e velocidade por 6s.',
   },
 };
 
@@ -108,7 +108,7 @@ export const CARDS: Card[] = [
     add(m.kindDmgAdd, 'zombie', 1);
     add(m.kindDmgAdd, 'ghoul', 1);
   }, ['flesh_pact', 'flesh_hunger']),
-  c('flesh_hide', 'flesh', 'rare', 2, 'Couro Curtido', 'Mortos ignoram 15% do dano.', (m) => (m.deadArmor = 1 - (1 - m.deadArmor) * 0.85)),
+  c('flesh_hide', 'flesh', 'rare', 2, 'Couro Curtido', 'Mortos ignoram 20% do dano.', (m) => (m.deadArmor = 1 - (1 - m.deadArmor) * 0.8)),
   c('flesh_feast', 'flesh', 'common', 2, 'Banquete', 'Consumir cura +50%.', (m) => (m.consumeHealMul *= 1.5)),
   c('flesh_quick', 'flesh', 'common', 2, 'Levantar Ligeiro', 'Levantar 35% mais rápido.', (m) => (m.raiseTimeMul *= 0.65)),
   c('flesh_fresh', 'flesh', 'common', 2, 'Cadáveres Frescos', 'Cadáveres duram +5s.', (m) => (m.corpseLife += 5)),
@@ -117,7 +117,7 @@ export const CARDS: Card[] = [
   c('plague_bile', 'plague', 'common', 1, 'Bile Tóxica', 'Explosões deixam uma nuvem de veneno.', (m) => (m.explodePoison = true)),
   c('plague_spores', 'plague', 'rare', 1, 'Esporos', 'Ataques dos mortos envenenam.', (m) => (m.poisonOnHit = true)),
   c('plague_ratbomb', 'plague', 'common', 1, 'Ratos Explosivos', 'Ratos explodem ao morrer.', (m) => (m.ratExplode = true), ['plague_nest']),
-  c('plague_miasma', 'plague', 'rare', 2, 'Miasma', 'O círculo envenena quem está dentro.', (m) => (m.circleMiasma += 0.6)),
+  c('plague_miasma', 'plague', 'rare', 2, 'Miasma', 'O círculo envenena quem está dentro.', (m) => (m.circleMiasma += 0.4)),
   c('plague_black', 'plague', 'common', 3, 'Peste Negra', 'Veneno +40% dano e duração.', (m) => {
     m.poisonDmgMul *= 1.4;
     m.poisonDurMul *= 1.4;
@@ -125,21 +125,30 @@ export const CARDS: Card[] = [
   c('plague_fever', 'plague', 'common', 1, 'Febre', 'Vivos envenenados andam 35% mais devagar.', (m) => (m.poisonSlow = true)),
   c('plague_contagion', 'plague', 'rare', 1, 'Contágio', 'Quem morre envenenado sempre pode levantar.', (m) => (m.poisonedRaisable = true)),
   // ------------------------------------------------ Espírito
-  c('spirit_veil', 'spirit', 'common', 1, 'Véu', 'Cadáveres podem levantar como fantasmas.', (m) => add(m.raisePool, 'ghost', 2)),
+  c('spirit_veil', 'spirit', 'common', 1, 'Véu', 'Cadáveres podem levantar como fantasmas.', (m) => add(m.raisePool, 'ghost', 3)),
   c('spirit_wail', 'spirit', 'common', 3, 'Lamento', 'Fantasmas +2 dano.', (m) => add(m.kindDmgAdd, 'ghost', 2), ['spirit_veil']),
   c('spirit_echo', 'spirit', 'rare', 2, 'Eco', 'Raios do necromante saltam para +1 alvo.', (m) => (m.boltChain += 1)),
-  c('spirit_gaze', 'spirit', 'common', 3, 'Olhar Vazio', 'Raios 20% mais rápidos.', (m) => (m.castCdMul *= 0.8)),
+  c('spirit_gaze', 'spirit', 'common', 3, 'Olhar Vazio', 'Raios 25% mais rápidos.', (m) => (m.castCdMul *= 0.75)),
   c('spirit_wide', 'spirit', 'common', 3, 'Círculo Ampliado', 'Círculo +4 de raio.', (m) => (m.circleR += 4)),
-  c('spirit_haunt', 'spirit', 'rare', 2, 'Assombração', 'Mortos que caem têm 30% de chance de virar fantasma.', (m) => (m.ghostOnDeath += 0.3)),
+  c('spirit_haunt', 'spirit', 'rare', 2, 'Assombração', 'Mortos que caem têm 45% de chance de virar fantasma.', (m) => (m.ghostOnDeath += 0.45)),
   c('spirit_chains', 'spirit', 'common', 2, 'Grilhões Etéreos', 'Vivos no círculo andam 30% mais devagar.', (m) => (m.circleSlow = 1 - (1 - m.circleSlow) * 0.7)),
-  c('spirit_bound', 'spirit', 'common', 3, 'Alma Vinculada', '+25% almas.', (m) => (m.soulMul += 0.25)),
+  c('spirit_bound', 'spirit', 'common', 3, 'Alma Vinculada', '+25% almas e +1 no limite do exército.', (m) => {
+    m.soulMul += 0.25;
+    m.armyCap += 1;
+  }),
   // ------------------------------------------------ Sangue
-  c('blood_servants', 'blood', 'common', 1, 'Servos de Sangue', 'Cadáveres podem levantar como servos.', (m) => add(m.raisePool, 'thrall', 2)),
-  c('blood_thirst', 'blood', 'common', 3, 'Sede', 'Mortos: 25% de chance de curar 1 ao acertar.', (m) => (m.lifesteal += 0.25)),
-  c('blood_pact', 'blood', 'common', 3, 'Pacto Rubro', 'Necromante +6 vida máxima.', (m) => (m.necroMaxHp += 6)),
+  c('blood_servants', 'blood', 'common', 1, 'Servos de Sangue', 'Cadáveres podem levantar como servos.', (m) => add(m.raisePool, 'thrall', 4)),
+  c('blood_thirst', 'blood', 'common', 3, 'Sede', 'Mortos +15% dano e 25% de chance de curar 1 ao acertar.', (m) => {
+    m.lifesteal += 0.25;
+    m.deadDmgMul *= 1.15;
+  }),
+  c('blood_pact', 'blood', 'common', 3, 'Pacto Rubro', 'Necromante +8 vida máxima.', (m) => (m.necroMaxHp += 8)),
   c('blood_ritual', 'blood', 'common', 3, 'Sacrifício Ritual', 'Explosões +50% dano.', (m) => (m.explodeDmgMul *= 1.5)),
-  c('blood_heart', 'blood', 'rare', 2, 'Coração Negro', 'Necromante regenera 1 vida a cada 6s.', (m) => (m.necroRegen += 1 / 6)),
-  c('blood_offering', 'blood', 'common', 2, 'Oferenda', 'Cada morto sacrificado dá +1 alma.', (m) => (m.consumeSouls += 1)),
+  c('blood_heart', 'blood', 'rare', 2, 'Coração Negro', 'Necromante regenera 1 vida a cada 4s.', (m) => (m.necroRegen += 1 / 4)),
+  c('blood_offering', 'blood', 'common', 2, 'Transfusão', 'Mortos +25% vida. Sacrifícios dão +1 alma.', (m) => {
+    m.deadHpMul *= 1.25;
+    m.consumeSouls += 1;
+  }),
   c('blood_fury', 'blood', 'rare', 2, 'Fúria Sanguínea', 'Sacrifícios dão +30% dano aos mortos por 5s.', (m) => {
     m.frenzyDmg += 0.3;
     m.frenzyTime = Math.max(m.frenzyTime, 5);
@@ -185,7 +194,7 @@ export function computeMods(base: Mods, cards: string[]): Mods {
   if (n.plague >= MASTERY_AT) m.plagueDeathCloud = true;
   if (n.plague >= DOMINION_AT) {
     m.plagueDominion = true;
-    m.poisonDmgMul *= 2;
+    m.poisonDmgMul *= 1.6;
   }
   if (n.spirit >= MASTERY_AT) {
     m.spiritMastery = true;
@@ -195,9 +204,11 @@ export function computeMods(base: Mods, cards: string[]): Mods {
   if (n.blood >= MASTERY_AT) {
     m.bloodMastery = true;
     m.lifesteal += 0.35;
+    m.deadHpMul *= 1.3;
   }
   if (n.blood >= DOMINION_AT) {
     m.bloodDominion = true;
+    m.deadDmgMul *= 1.25;
     m.frenzyDmg += 0.6;
     m.frenzyTime = Math.max(m.frenzyTime, 6);
   }

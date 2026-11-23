@@ -42,6 +42,21 @@ class AudioEngine {
   private last = new Map<string, number>();
   sfxOn = true;
   musicOn = true;
+  analyser: AnalyserNode | null = null;
+
+  /** Nível do sinal de saída (RMS 0..1). Usado no debug para conferir que há som. */
+  level(): number {
+    if (!this.analyser) return 0;
+    const buf = new Float32Array(this.analyser.fftSize);
+    this.analyser.getFloatTimeDomainData(buf);
+    let sum = 0;
+    for (const v of buf) sum += v * v;
+    return Math.sqrt(sum / buf.length);
+  }
+
+  get state(): string {
+    return this.ctx?.state ?? 'sem contexto';
+  }
 
   // música
   private region = 0;
@@ -66,6 +81,9 @@ class AudioEngine {
     comp.threshold.value = -14;
     comp.ratio.value = 6;
     this.master.connect(comp).connect(this.ctx.destination);
+    this.analyser = this.ctx.createAnalyser();
+    this.analyser.fftSize = 2048;
+    comp.connect(this.analyser);
     this.sfxBus = this.ctx.createGain();
     this.sfxBus.gain.value = this.sfxOn ? 0.55 : 0;
     this.sfxBus.connect(this.master);

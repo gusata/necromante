@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { audio } from '../audio/audio';
+import { applySheets, queueManifest, queueSheets } from '../art/aseprite';
 import { generateArt } from '../art/generate';
 import { DEBUG } from '../debug';
 import { loadMeta, meta } from '../platform/save';
@@ -10,9 +11,28 @@ export class BootScene extends Phaser.Scene {
     super('Boot');
   }
 
+  preload() {
+    // o manifesto é opcional: sem ele, toda a arte é a gerada no código
+    this.load.on('loaderror', (file: Phaser.Loader.File) => console.info(`[boot] sem ${file.key}`));
+    queueManifest(this);
+  }
+
+  /** Carrega as spritesheets do Aseprite listadas no manifesto. */
+  private loadSheets(): Promise<string[]> {
+    const entries = queueSheets(this);
+    if (!entries.length) return Promise.resolve([]);
+    return new Promise((resolve) => {
+      this.load.once('complete', () => resolve(applySheets(this, entries)));
+      this.load.start();
+    });
+  }
+
   async create() {
     const t0 = performance.now();
     generateArt(this);
+    const replaced = await this.loadSheets();
+    if (replaced.length) console.info(`[aseprite] ${replaced.length} texturas substituídas: ${replaced.join(', ')}`);
+    (window as unknown as { __aseprite: string[] }).__aseprite = replaced;
     (window as unknown as { __bootMs: number }).__bootMs = Math.round(performance.now() - t0);
     await loadMeta();
     if (DEBUG.metaLevel !== null) {
@@ -29,9 +49,11 @@ export class BootScene extends Phaser.Scene {
     audio.setSfx(meta.settings.sfx);
     audio.setMusic(meta.settings.music);
     // o navegador só libera áudio depois de um gesto do usuário
+    // captura + vários eventos: o iOS só libera em touchend/click, e o Phaser pode consumir o pointerdown
     const unlock = () => audio.unlock();
-    window.addEventListener('pointerdown', unlock);
-    window.addEventListener('keydown', unlock);
+    for (const ev of ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'mousedown', 'mouseup', 'click', 'keydown']) {
+      document.addEventListener(ev, unlock, { capture: true, passive: true });
+    }
     this.scene.start(DEBUG.scene ?? (DEBUG.skipMenu ? 'Run' : 'Menu'));
   }
 }

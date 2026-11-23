@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { audio } from './audio/audio';
 import { DEBUG } from './debug';
 import { BestiaryScene } from './scenes/BestiaryScene';
 import { BootScene } from './scenes/BootScene';
@@ -33,3 +34,4 @@ if (DEBUG.fps) {
 
 // acesso pelo console do navegador para depuração
 (window as unknown as { __game: Phaser.Game }).__game = game;
+(window as unknown as { __audio: typeof audio }).__audio = audio;

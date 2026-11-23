@@ -120,11 +120,11 @@ export const DEAD_DEFS: Record<DeadKind, UnitDef> = {
   skeleton: dead({ name: 'Esqueleto', desc: 'O soldado de sempre.', hp: 5, dmg: 1, speed: 20, range: 6, atkCd: 0.7, radius: 4, armyCost: 1, school: 'bone' }),
   archer: dead({ name: 'Arqueiro de Osso', desc: 'Atira de trás da linha.', hp: 3, dmg: 1, speed: 18, range: 40, atkCd: 1.1, radius: 4, armyCost: 1, school: 'bone', projectile: 100 }),
   giant: dead({ name: 'Colosso de Ossos', desc: 'Três esqueletos fundidos.', hp: 20, dmg: 3, speed: 12, range: 9, atkCd: 1.0, radius: 7, armyCost: 2, school: 'bone' }),
-  zombie: dead({ name: 'Zumbi', desc: 'Lento, resistente e com fome.', hp: 10, dmg: 1, speed: 11, range: 6, atkCd: 0.9, radius: 4, armyCost: 1, school: 'flesh' }),
-  ghoul: dead({ name: 'Carniçal', desc: 'Rápido e voraz.', hp: 5, dmg: 2, speed: 26, range: 6, atkCd: 0.6, radius: 4, armyCost: 1, school: 'flesh' }),
+  zombie: dead({ name: 'Zumbi', desc: 'Lento, resistente e com fome.', hp: 13, dmg: 2, speed: 11, range: 6, atkCd: 0.9, radius: 4, armyCost: 1, school: 'flesh' }),
+  ghoul: dead({ name: 'Carniçal', desc: 'Rápido e voraz.', hp: 7, dmg: 2, speed: 26, range: 6, atkCd: 0.6, radius: 4, armyCost: 1, school: 'flesh' }),
   rat: dead({ name: 'Rato da Peste', desc: 'Pequeno, rápido e infeccioso.', hp: 2, dmg: 1, speed: 32, range: 5, atkCd: 0.4, radius: 3, armyCost: 1, school: 'plague' }),
-  ghost: dead({ name: 'Fantasma', desc: 'Atravessa a linha e ataca a retaguarda.', hp: 4, dmg: 2, speed: 22, range: 6, atkCd: 0.9, radius: 4, armyCost: 1, school: 'spirit', flying: true }),
-  thrall: dead({ name: 'Servo de Sangue', desc: 'Bebe a vida de quem acerta.', hp: 7, dmg: 2, speed: 17, range: 6, atkCd: 0.8, radius: 4, armyCost: 1, school: 'blood' }),
+  ghost: dead({ name: 'Fantasma', desc: 'Atravessa a linha e ataca a retaguarda.', hp: 6, dmg: 3, speed: 22, range: 6, atkCd: 0.9, radius: 4, armyCost: 1, school: 'spirit', flying: true }),
+  thrall: dead({ name: 'Servo de Sangue', desc: 'Bebe a vida de quem acerta.', hp: 12, dmg: 3, speed: 17, range: 6, atkCd: 0.8, radius: 4, armyCost: 1, school: 'blood' }),
   champion: dead({ name: 'Campeão', desc: 'Um chefe que voltou para servir.', hp: 40, dmg: 4, speed: 12, range: 10, atkCd: 1.1, radius: 8, armyCost: 2 }),
 };
 

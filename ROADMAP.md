@@ -67,7 +67,7 @@ As estimativas consideram **uma pessoa em meio período**. Cada fase só termina
 
 - [x] Projeto Vite + TS + Phaser rodando no navegador
 - [x] Config pixel art: 180×320, `pixelArt: true`, letterbox (escala FIT; escala inteira fica pendente)
-- [ ] Capacitor + Android rodando num **celular real**
+- [ ] Capacitor + Android rodando num **celular real** (APK de debug gera com `gradlew assembleDebug`; ainda não testado em aparelho)
 - [x] Laço de passo fixo, RNG com seed, Vitest
 - [x] ESLint/Prettier (feito com Biome: o typescript-eslint ainda não suporta o TypeScript 7)
 - [x] Contador de FPS em modo debug (`?fps`)
@@ -126,7 +126,7 @@ Formas geométricas apenas. Nenhuma arte até aqui.
 ### Fase 5: Arte e juice (3–5 semanas, pode correr em paralelo às fases 3 e 4)
 
 - [x] Guia de estilo: paleta fixa (16–32 cores), tamanhos de sprite (unidades 16×16, chefes 32×32 ou 48×48), contorno ([docs/ESTILO.md](docs/ESTILO.md))
-- [ ] Pipeline Aseprite → spritesheet + JSON → atlas do Phaser (por enquanto a arte é gerada no código a partir de mapas de pixels; o pipeline entra quando houver arte feita à mão)
+- [x] Pipeline Aseprite → spritesheet + JSON (`public/assets/sprites/manifest.json` substitui a arte gerada; exemplo em `docs/exemplo-aseprite/`)
 - [x] Animações: andar, atacar, morrer, **levantar** (a animação mais importante do jogo)
 - [x] Juice: hitstop, tremor de tela, números de dano, flash ao acertar, partículas de alma, vibração
 - [x] Cenários e UI em pixel art, fonte bitmap
@@ -139,7 +139,7 @@ Formas geométricas apenas. Nenhuma arte até aqui.
 - [x] 4 regiões com chefe cada (ex.: Vila, Mosteiro, Fortaleza, Catedral)
 - [x] **Modo infinito** depois da última região, com modificadores crescentes
 - [x] 5 escolas completas, cerca de 20 inimigos, cerca de 40 itens/relíquias (44 pactos)
-- [x] Balanceamento com o simulador sem renderização (taxa de vitória por build)
+- [x] Balanceamento com o simulador sem renderização (taxa de vitória por build: `npm run sim -- 16 2 builds`)
 
 ### Fase 7: Polimento mobile (2–3 semanas)
 
