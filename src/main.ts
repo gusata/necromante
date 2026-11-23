@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { DEBUG } from './debug';
 import { BestiaryScene } from './scenes/BestiaryScene';
 import { BootScene } from './scenes/BootScene';
 import { GraveyardScene } from './scenes/GraveyardScene';
@@ -22,6 +23,13 @@ const game = new Phaser.Game({
   input: { activePointers: 2 },
   scene: [BootScene, MenuScene, GraveyardScene, BestiaryScene, OptionsScene, RunScene],
 });
+
+if (DEBUG.fps) {
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;top:4px;left:4px;color:#aef5bf;font:12px monospace;z-index:9;pointer-events:none';
+  document.body.appendChild(el);
+  setInterval(() => (el.textContent = `${Math.round(game.loop.actualFps)} fps`), 500);
+}
 
 // acesso pelo console do navegador para depuração
 (window as unknown as { __game: Phaser.Game }).__game = game;

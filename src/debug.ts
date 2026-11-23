@@ -4,7 +4,8 @@
  *   ?auto         o jogo se joga sozinho
  *   ?scene=Nome   abre uma cena direto (Graveyard, Bestiary, Options)
  *   ?wave=N       começa na onda N
- *   ?meta=N       finge meta-progressão no nível N (não salva)
+ *   ?meta=N       finge meta-progressão no nível N
+ *   ?fps          mostra o contador de quadros por segundo
  */
 const q = new URLSearchParams(typeof location !== 'undefined' ? location.search : '');
 export const DEBUG = {
@@ -13,4 +14,5 @@ export const DEBUG = {
   scene: q.get('scene'),
   startWave: Number(q.get('wave') ?? 0),
   metaLevel: q.has('meta') ? Number(q.get('meta')) : null,
+  fps: q.has('fps'),
 };

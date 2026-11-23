@@ -16,7 +16,7 @@ export class BootScene extends Phaser.Scene {
     (window as unknown as { __bootMs: number }).__bootMs = Math.round(performance.now() - t0);
     await loadMeta();
     if (DEBUG.metaLevel !== null) {
-      // só em memória: saveMeta grava, então desliga o salvamento trocando a chave não é preciso para testes rápidos
+      // atenção: se a run terminar, o resultado é salvo por cima do progresso real
       for (const b of BUILDINGS) meta.buildings[b.id] = Math.min(DEBUG.metaLevel, b.costs.length);
       meta.bossesBeaten = Math.min(4, DEBUG.metaLevel);
       if (DEBUG.metaLevel > 0) {

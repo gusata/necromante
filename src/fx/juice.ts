@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import type Phaser from 'phaser';
 import { audio } from '../audio/audio';
 import { COL } from '../art/palette';
 import { pxText } from '../art/text';
@@ -44,8 +44,8 @@ export class Shaker {
   update(dt: number) {
     this.t += dt;
     this.trauma = Math.max(0, this.trauma - dt * 1.6);
-    this.kickX *= Math.pow(0.0005, dt);
-    this.kickY *= Math.pow(0.0005, dt);
+    this.kickX *= 0.0005 ** dt;
+    this.kickY *= 0.0005 ** dt;
     const s = this.trauma * this.trauma;
     const max = 6;
     const ox = max * s * Math.sin(this.t * 61.3) * Math.cos(this.t * 17.1) + this.kickX;

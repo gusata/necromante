@@ -69,8 +69,8 @@ As estimativas consideram **uma pessoa em meio período**. Cada fase só termina
 - [x] Config pixel art: 180×320, `pixelArt: true`, letterbox (escala FIT; escala inteira fica pendente)
 - [ ] Capacitor + Android rodando num **celular real**
 - [x] Laço de passo fixo, RNG com seed, Vitest
-- [ ] ESLint/Prettier
-- [ ] Contador de FPS em modo debug
+- [x] ESLint/Prettier (feito com Biome: o typescript-eslint ainda não suporta o TypeScript 7)
+- [x] Contador de FPS em modo debug (`?fps`)
 
 **Critério de saída:** um quadrado colorido arrastável a 60 fps num Android intermediário, com pixels nítidos.
 
@@ -91,55 +91,55 @@ Formas geométricas apenas. Nenhuma arte até aqui.
 
 ### Fase 2: Sinergias (3–4 semanas)
 
-- [ ] Sistema de escolas orientado a dados: tags, contagem e limiares **3 (Maestria)** e **5 (Domínio)**
-- [ ] Escolhas durante a run: entre as ondas, escolher 1 de 3 cartas (unidades, relíquias, feitiços)
-- [ ] Duas escolas completas primeiro: **Ossos** e **Carne**
-- [ ] Depois as outras três: **Praga**, **Espírito**, **Sangue**
-- [ ] Interações entre escolas (ex.: Praga + Carne = infecção em cadeia)
-- [ ] Ferramenta de debug: forçar build, pular onda, simular N runs sem renderizar
+- [x] Sistema de escolas orientado a dados: tags, contagem e limiares **3 (Maestria)** e **5 (Domínio)**
+- [x] Escolhas durante a run: entre as ondas, escolher 1 de 3 cartas (unidades, relíquias, feitiços)
+- [x] Duas escolas completas primeiro: **Ossos** e **Carne**
+- [x] Depois as outras três: **Praga**, **Espírito**, **Sangue**
+- [x] Interações entre escolas (ex.: Praga + Carne = infecção em cadeia)
+- [x] Ferramenta de debug: forçar build, pular onda, simular N runs sem renderizar (`?wave=N`, `?meta=N`, `?auto` e `npm run sim`)
 
 **Critério de saída:** pelo menos 3 builds claramente diferentes que vencem a mesma onda difícil.
 
 ### Fase 3: Inimigos e chefes (2–3 semanas)
 
-- [ ] Inimigos que obrigam a adaptar a build:
+- [x] Inimigos que obrigam a adaptar a build: (20 inimigos no total)
   - Padre: cura os vivos e bane mortos em área
   - Paladino: o que ele mata não pode ser levantado
   - Caçador de bruxas: ignora o exército e vai direto no necromante
   - Camponês com tocha: queima cadáveres no chão
-- [ ] Primeiro chefe com padrão legível
-- [ ] **Levantar o chefe como campeão** depois de vencer
-- [ ] Ondas com orçamento de ameaça (custo por inimigo e curva de dificuldade)
+- [x] Primeiro chefe com padrão legível (4 chefes com ataques telegrafados)
+- [x] **Levantar o chefe como campeão** depois de vencer
+- [x] Ondas com orçamento de ameaça (custo por inimigo e curva de dificuldade)
 
 **Critério de saída:** a primeira região (ondas + chefe) completa e jogável do começo ao fim.
 
 ### Fase 4: Meta-progressão (2–3 semanas)
 
-- [ ] Save local (Capacitor Preferences) com **versão + migração**
-- [ ] **Cemitério** como base: construções compradas com almas, em ramos como Criptas (exército), Ossuário (fusões), Altar de Sangue (sacrifício), Torre do Sino (ondas e recompensas)
-- [ ] Campeões persistentes; chefe repetido = campeão sobe de rank
-- [ ] Desbloqueio gradual de escolas, unidades e regiões
-- [ ] Bestiário com molduras bronze/prata/ouro por abates
+- [x] Save local (Capacitor Preferences) com **versão + migração**
+- [x] **Cemitério** como base: construções compradas com almas, em ramos como Criptas (exército), Ossuário (fusões), Altar de Sangue (sacrifício), Torre do Sino (ondas e recompensas) (8 construções)
+- [x] Campeões persistentes; chefe repetido = campeão sobe de rank
+- [x] Desbloqueio gradual de escolas, unidades e regiões (uma escola nova por chefe derrotado)
+- [x] Bestiário com molduras bronze/prata/ouro por abates
 
 **Critério de saída:** a vontade de jogar "só mais uma run" para comprar a próxima construção.
 
 ### Fase 5: Arte e juice (3–5 semanas, pode correr em paralelo às fases 3 e 4)
 
-- [ ] Guia de estilo: paleta fixa (16–32 cores), tamanhos de sprite (unidades 16×16, chefes 32×32 ou 48×48), contorno
-- [ ] Pipeline Aseprite → spritesheet + JSON → atlas do Phaser
-- [ ] Animações: andar, atacar, morrer, **levantar** (a animação mais importante do jogo)
-- [ ] Juice: hitstop, tremor de tela, números de dano, flash ao acertar, partículas de alma, vibração
-- [ ] Cenários e UI em pixel art, fonte bitmap
-- [ ] SFX e música
+- [x] Guia de estilo: paleta fixa (16–32 cores), tamanhos de sprite (unidades 16×16, chefes 32×32 ou 48×48), contorno ([docs/ESTILO.md](docs/ESTILO.md))
+- [ ] Pipeline Aseprite → spritesheet + JSON → atlas do Phaser (por enquanto a arte é gerada no código a partir de mapas de pixels; o pipeline entra quando houver arte feita à mão)
+- [x] Animações: andar, atacar, morrer, **levantar** (a animação mais importante do jogo)
+- [x] Juice: hitstop, tremor de tela, números de dano, flash ao acertar, partículas de alma, vibração
+- [x] Cenários e UI em pixel art, fonte bitmap
+- [x] SFX e música (sintetizados com WebAudio, sem arquivos)
 
 **Critério de saída:** um gif de 10 segundos do jogo que dê vontade de baixar.
 
 ### Fase 6: Conteúdo (4–6 semanas)
 
-- [ ] 4 regiões com chefe cada (ex.: Vila, Mosteiro, Fortaleza, Catedral)
-- [ ] **Modo infinito** depois da última região, com modificadores crescentes
-- [ ] 5 escolas completas, cerca de 20 inimigos, cerca de 40 itens/relíquias
-- [ ] Balanceamento com o simulador sem renderização (taxa de vitória por build)
+- [x] 4 regiões com chefe cada (ex.: Vila, Mosteiro, Fortaleza, Catedral)
+- [x] **Modo infinito** depois da última região, com modificadores crescentes
+- [x] 5 escolas completas, cerca de 20 inimigos, cerca de 40 itens/relíquias (44 pactos)
+- [x] Balanceamento com o simulador sem renderização (taxa de vitória por build)
 
 ### Fase 7: Polimento mobile (2–3 semanas)
 
