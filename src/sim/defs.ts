@@ -1,4 +1,4 @@
-import type { UnitDef, UnitKind } from './types';
+import type { BossKind, DeadKind, LivingKind, UnitDef, UnitKind } from './types';
 
 /** Área jogável (a faixa de baixo, de 296 a 320, é do HUD). */
 export const FIELD = { w: 180, h: 296 } as const;
@@ -8,10 +8,8 @@ export const NECRO = {
   y: 274,
   hp: 20,
   dmg: 1,
-  /** segundos entre raios */
   castCd: 0.42,
   radius: 8,
-  /** ponta do cajado, relativa a (x, y) */
   staffDx: 5,
   staffDy: -15,
 } as const;
@@ -35,37 +33,113 @@ export const AGGRO_DEAD = 40;
 export const AGGRO_LIVING = 14;
 export const FORMATION_R = 15;
 
-export const PRIEST_HEAL = 2;
-export const PRIEST_HEAL_R = 26;
-export const PRIEST_HEAL_CD = 2.5;
+export const INTERMISSION = 2.5;
+export const WAVES_PER_REGION = 6; // 5 ondas + chefe
+export const REGION_COUNT = 4;
 
-export const INTERMISSION = 3.5;
+export const POISON_DPS = 1;
+export const POISON_TIME = 3;
+export const CLOUD_R = 14;
+export const CLOUD_TIME = 3;
 
-export const waveBudget = (wave: number) => 4 + wave * 4;
-export const spawnInterval = (wave: number) => Math.max(0.35, 1.1 - wave * 0.06);
-export const waveHpMul = (wave: number) => 1 + 0.12 * (wave - 1);
+export const waveHpMul = (wave: number) => 1 + 0.09 * (wave - 1);
 
-const living = (d: Pick<UnitDef, 'hp' | 'dmg' | 'speed' | 'range' | 'atkCd' | 'radius' | 'raisable' | 'threat' | 'minWave'>): UnitDef => ({
-  ...d,
+type Base = Pick<UnitDef, 'name' | 'desc' | 'hp' | 'dmg' | 'speed' | 'range' | 'atkCd' | 'radius'>;
+
+const living = (d: Base & Partial<UnitDef> & { threat: number }): UnitDef => ({
   faction: 'living',
   armyCost: 0,
+  raisable: true,
+  ...d,
 });
 
-const dead = (d: Pick<UnitDef, 'hp' | 'dmg' | 'speed' | 'range' | 'atkCd' | 'radius' | 'armyCost'>): UnitDef => ({
-  ...d,
+const dead = (d: Base & Partial<UnitDef> & { armyCost: number }): UnitDef => ({
   faction: 'dead',
   raisable: false,
   threat: 0,
-  minWave: 0,
+  ...d,
 });
 
-export const UNIT_DEFS: Record<UnitKind, UnitDef> = {
-  peasant: living({ hp: 3, dmg: 1, speed: 11, range: 6, atkCd: 1.0, radius: 4, raisable: true, threat: 1, minWave: 1 }),
-  soldier: living({ hp: 8, dmg: 2, speed: 9, range: 7, atkCd: 1.2, radius: 5, raisable: true, threat: 3, minWave: 3 }),
-  // padres não podem ser levantados: solo sagrado
-  priest: living({ hp: 5, dmg: 1, speed: 8, range: 6, atkCd: 1.4, radius: 4, raisable: false, threat: 4, minWave: 4 }),
-  skeleton: dead({ hp: 5, dmg: 1, speed: 20, range: 6, atkCd: 0.7, radius: 4, armyCost: 1 }),
-  giant: dead({ hp: 20, dmg: 3, speed: 12, range: 9, atkCd: 1.0, radius: 7, armyCost: 2 }),
+export const LIVING_DEFS: Record<LivingKind, UnitDef> = {
+  // ---- A Vila
+  peasant: living({ name: 'Camponês', desc: 'Forcado e coragem. Pouca coisa além disso.', hp: 3, dmg: 1, speed: 11, range: 6, atkCd: 1.0, radius: 4, threat: 1 }),
+  torch: living({ name: 'Tocheiro', desc: 'Queima os cadáveres por onde passa. Mate antes que ele chegue aos corpos.', hp: 4, dmg: 1, speed: 12, range: 6, atkCd: 1.0, radius: 4, threat: 2, traits: ['burnCorpses'] }),
+  militia: living({ name: 'Miliciano', desc: 'Lança de ferro e um capacete emprestado.', hp: 6, dmg: 1, speed: 10, range: 8, atkCd: 0.9, radius: 4, threat: 2 }),
+  hunter: living({ name: 'Caçador', desc: 'Atira flechas de longe nos seus mortos.', hp: 4, dmg: 1, speed: 10, range: 48, atkCd: 1.6, radius: 4, threat: 2, projectile: 90 }),
+  hound: living({ name: 'Cão de Caça', desc: 'Rápido e faminto. Chega antes de todos.', hp: 3, dmg: 1, speed: 26, range: 5, atkCd: 0.6, radius: 3, threat: 1 }),
+  // ---- O Mosteiro
+  monk: living({ name: 'Monge', desc: 'Punhos treinados em anos de silêncio.', hp: 6, dmg: 1, speed: 15, range: 6, atkCd: 0.5, radius: 4, threat: 2 }),
+  priest: living({ name: 'Padre', desc: 'Cura os vivos em volta. Solo sagrado: não pode ser levantado.', hp: 5, dmg: 1, speed: 8, range: 6, atkCd: 1.4, radius: 4, threat: 4, raisable: false, traits: ['healer'] }),
+  nun: living({ name: 'Freira', desc: 'Sua lanterna queima os mortos que chegam perto.', hp: 5, dmg: 1, speed: 9, range: 6, atkCd: 1.2, radius: 4, threat: 3, traits: ['holyLight'] }),
+  ringer: living({ name: 'Sineiro', desc: 'O sino apressa os vivos em volta.', hp: 6, dmg: 1, speed: 9, range: 6, atkCd: 1.2, radius: 4, threat: 3, traits: ['speedAura'] }),
+  flagellant: living({ name: 'Flagelante', desc: 'Explode em luz sagrada ao morrer.', hp: 5, dmg: 2, speed: 13, range: 6, atkCd: 1.0, radius: 4, threat: 3, traits: ['holyBurst'] }),
+  // ---- A Fortaleza
+  soldier: living({ name: 'Soldado', desc: 'Espada, cota de malha e ordens claras.', hp: 9, dmg: 2, speed: 9, range: 7, atkCd: 1.2, radius: 5, threat: 3 }),
+  crossbow: living({ name: 'Besteiro', desc: 'Virotes pesados de muito longe.', hp: 6, dmg: 3, speed: 8, range: 70, atkCd: 2.4, radius: 4, threat: 4, projectile: 130 }),
+  shield: living({ name: 'Escudeiro', desc: 'O escudo bloqueia metade dos raios do necromante.', hp: 14, dmg: 1, speed: 7, range: 7, atkCd: 1.3, radius: 5, threat: 4, traits: ['shieldBlock'] }),
+  knight: living({ name: 'Cavaleiro', desc: 'Investe com tudo quando o alvo está perto.', hp: 16, dmg: 3, speed: 9, range: 8, atkCd: 1.3, radius: 5, threat: 6, traits: ['charge'] }),
+  halberd: living({ name: 'Alabardeiro', desc: 'A alabarda acerta vários mortos de uma vez.', hp: 10, dmg: 2, speed: 8, range: 10, atkCd: 1.5, radius: 5, threat: 4, traits: ['cleave'] }),
+  // ---- A Catedral
+  paladin: living({ name: 'Paladino', desc: 'Consagra o chão: cadáveres perto dele não levantam.', hp: 18, dmg: 2, speed: 9, range: 7, atkCd: 1.1, radius: 5, threat: 6, raisable: false, traits: ['consecrate', 'holyWeapon'] }),
+  inquisitor: living({ name: 'Inquisidor', desc: 'Pulsos sagrados que destroem mortos em volta.', hp: 10, dmg: 1, speed: 9, range: 6, atkCd: 1.2, radius: 4, threat: 5, traits: ['banish'] }),
+  witchhunter: living({ name: 'Caçador de Bruxas', desc: 'Ignora o exército e atira direto no necromante.', hp: 8, dmg: 2, speed: 14, range: 60, atkCd: 1.8, radius: 4, threat: 5, projectile: 120, traits: ['necroHunter'] }),
+  templar: living({ name: 'Templário', desc: 'Armadura pesada e lâmina abençoada.', hp: 24, dmg: 3, speed: 8, range: 7, atkCd: 1.2, radius: 5, threat: 7, traits: ['holyWeapon'] }),
+  bishop: living({ name: 'Bispo', desc: 'Cura e protege os vivos em volta.', hp: 12, dmg: 1, speed: 7, range: 6, atkCd: 1.5, radius: 5, threat: 7, raisable: false, traits: ['healer', 'armorAura'] }),
 };
 
-export const LIVING_KINDS: UnitKind[] = ['peasant', 'soldier', 'priest'];
+export const BOSS_DEFS: Record<BossKind, UnitDef> = {
+  woodcutter: living({
+    name: 'O Lenhador',
+    desc: 'Chefe da Vila. O machado parte o chão em volta.',
+    hp: 110, dmg: 4, speed: 7, range: 12, atkCd: 1.6, radius: 9, threat: 30, raisable: false, boss: true,
+    traits: ['cleave'],
+    abilities: [{ id: 'slam', cd: 5 }, { id: 'summon', cd: 9 }],
+  }),
+  abbot: living({
+    name: 'O Abade',
+    desc: 'Chefe do Mosteiro. Cura seus fiéis e pulsa luz sagrada.',
+    hp: 150, dmg: 3, speed: 6, range: 10, atkCd: 1.4, radius: 9, threat: 40, raisable: false, boss: true,
+    abilities: [{ id: 'nova', cd: 5 }, { id: 'healAll', cd: 7 }, { id: 'summon', cd: 10 }],
+  }),
+  commander: living({
+    name: 'O Comandante',
+    desc: 'Chefe da Fortaleza. Investe em linha reta contra o altar.',
+    hp: 180, dmg: 5, speed: 7, range: 12, atkCd: 1.4, radius: 9, threat: 50, raisable: false, boss: true,
+    traits: ['cleave'],
+    abilities: [{ id: 'charge', cd: 6 }, { id: 'summon', cd: 9 }],
+  }),
+  archbishop: living({
+    name: 'O Arcebispo',
+    desc: 'Chefe da Catedral. Colunas de luz que apagam seus mortos.',
+    hp: 280, dmg: 4, speed: 6, range: 12, atkCd: 1.4, radius: 9, threat: 60, raisable: false, boss: true,
+    abilities: [{ id: 'beam', cd: 4 }, { id: 'nova', cd: 7 }, { id: 'summon', cd: 10 }],
+  }),
+};
+
+export const DEAD_DEFS: Record<DeadKind, UnitDef> = {
+  skeleton: dead({ name: 'Esqueleto', desc: 'O soldado de sempre.', hp: 5, dmg: 1, speed: 20, range: 6, atkCd: 0.7, radius: 4, armyCost: 1, school: 'bone' }),
+  archer: dead({ name: 'Arqueiro de Osso', desc: 'Atira de trás da linha.', hp: 3, dmg: 1, speed: 18, range: 40, atkCd: 1.1, radius: 4, armyCost: 1, school: 'bone', projectile: 100 }),
+  giant: dead({ name: 'Colosso de Ossos', desc: 'Três esqueletos fundidos.', hp: 20, dmg: 3, speed: 12, range: 9, atkCd: 1.0, radius: 7, armyCost: 2, school: 'bone' }),
+  zombie: dead({ name: 'Zumbi', desc: 'Lento, resistente e com fome.', hp: 10, dmg: 1, speed: 11, range: 6, atkCd: 0.9, radius: 4, armyCost: 1, school: 'flesh' }),
+  ghoul: dead({ name: 'Carniçal', desc: 'Rápido e voraz.', hp: 5, dmg: 2, speed: 26, range: 6, atkCd: 0.6, radius: 4, armyCost: 1, school: 'flesh' }),
+  rat: dead({ name: 'Rato da Peste', desc: 'Pequeno, rápido e infeccioso.', hp: 2, dmg: 1, speed: 32, range: 5, atkCd: 0.4, radius: 3, armyCost: 1, school: 'plague' }),
+  ghost: dead({ name: 'Fantasma', desc: 'Atravessa a linha e ataca a retaguarda.', hp: 4, dmg: 2, speed: 22, range: 6, atkCd: 0.9, radius: 4, armyCost: 1, school: 'spirit', flying: true }),
+  thrall: dead({ name: 'Servo de Sangue', desc: 'Bebe a vida de quem acerta.', hp: 7, dmg: 2, speed: 17, range: 6, atkCd: 0.8, radius: 4, armyCost: 1, school: 'blood' }),
+  champion: dead({ name: 'Campeão', desc: 'Um chefe que voltou para servir.', hp: 40, dmg: 4, speed: 12, range: 10, atkCd: 1.1, radius: 8, armyCost: 2 }),
+};
+
+export const UNIT_DEFS: Record<UnitKind, UnitDef> = { ...LIVING_DEFS, ...BOSS_DEFS, ...DEAD_DEFS };
+
+/** Habilidade dos campeões (a mesma do chefe, apontada para os vivos). */
+export const CHAMPION_ABILITY: Record<BossKind, { id: 'slam' | 'healDead' | 'charge' | 'beam'; cd: number }> = {
+  woodcutter: { id: 'slam', cd: 4 },
+  abbot: { id: 'healDead', cd: 5 },
+  commander: { id: 'charge', cd: 5 },
+  archbishop: { id: 'beam', cd: 4 },
+};
+
+export const championStats = (rank: number) => ({ hpMul: 1 + 0.3 * (rank - 1), dmgMul: 1 + 0.25 * (rank - 1) });
+
+export const LIVING_KINDS = Object.keys(LIVING_DEFS) as LivingKind[];
+export const BOSS_KINDS = Object.keys(BOSS_DEFS) as BossKind[];
+export const DEAD_KINDS = Object.keys(DEAD_DEFS) as DeadKind[];

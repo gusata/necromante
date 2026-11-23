@@ -1,6 +1,9 @@
 import Phaser from 'phaser';
+import { BestiaryScene } from './scenes/BestiaryScene';
 import { BootScene } from './scenes/BootScene';
+import { GraveyardScene } from './scenes/GraveyardScene';
 import { MenuScene } from './scenes/MenuScene';
+import { OptionsScene } from './scenes/OptionsScene';
 import { RunScene } from './scenes/RunScene';
 
 const game = new Phaser.Game({
@@ -17,7 +20,7 @@ const game = new Phaser.Game({
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   input: { activePointers: 2 },
-  scene: [BootScene, MenuScene, RunScene],
+  scene: [BootScene, MenuScene, GraveyardScene, BestiaryScene, OptionsScene, RunScene],
 });
 
 // acesso pelo console do navegador para depuração
