@@ -473,9 +473,10 @@ const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 /** 17 níveis de cobertura com dither, para as transições. */
 function ditherTextures(scene: Phaser.Scene) {
   for (let lvl = 0; lvl <= 16; lvl++) {
-    const { tex, ctx } = canvas(scene, `dither${lvl}`, FIELD.w, 320);
+    // padrão 4x4 repetido por TileSprite: quase nenhuma memória
+    const { tex, ctx } = canvas(scene, `dither${lvl}`, 4, 4);
     ctx.fillStyle = '#050309';
-    for (let y = 0; y < 320; y++) for (let x = 0; x < FIELD.w; x++) if (BAYER[(y % 4) * 4 + (x % 4)] < lvl) ctx.fillRect(x, y, 1, 1);
+    for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (BAYER[y * 4 + x] < lvl) ctx.fillRect(x, y, 1, 1);
     tex.refresh();
   }
 }

@@ -72,7 +72,7 @@ export function floatText(scene: Phaser.Scene, x: number, y: number, text: strin
 
 /** Cobertura com dither Bayer 4x4: texturas `dither0..16` geradas no Boot. */
 function cover(scene: Phaser.Scene, depth: number) {
-  return scene.add.image(0, 0, 'dither16').setOrigin(0).setDepth(depth).setScrollFactor(0);
+  return scene.add.tileSprite(0, 0, 180, 320, 'dither16').setOrigin(0).setDepth(depth).setScrollFactor(0);
 }
 const level = (p: number) => `dither${Math.max(0, Math.min(16, Math.round(p * 16)))}`;
 
