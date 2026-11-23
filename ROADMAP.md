@@ -65,10 +65,11 @@ As estimativas consideram **uma pessoa em meio período**. Cada fase só termina
 
 ### Fase 0: Fundação (1 semana)
 
-- [ ] Projeto Vite + TS + Phaser rodando no navegador
-- [ ] Config pixel-perfect: 180×320, `pixelArt: true`, escala inteira, letterbox
+- [x] Projeto Vite + TS + Phaser rodando no navegador
+- [x] Config pixel art: 180×320, `pixelArt: true`, letterbox (escala FIT; escala inteira fica pendente)
 - [ ] Capacitor + Android rodando num **celular real**
-- [ ] Laço de passo fixo, RNG com seed, ESLint/Prettier, Vitest
+- [x] Laço de passo fixo, RNG com seed, Vitest
+- [ ] ESLint/Prettier
 - [ ] Contador de FPS em modo debug
 
 **Critério de saída:** um quadrado colorido arrastável a 60 fps num Android intermediário, com pixels nítidos.
@@ -77,14 +78,14 @@ As estimativas consideram **uma pessoa em meio período**. Cada fase só termina
 
 Formas geométricas apenas. Nenhuma arte até aqui.
 
-- [ ] Necromante fixo com vida; derrota quando os vivos chegam até ele
-- [ ] Círculo arrastável; o necromante ataca sozinho dentro dele
-- [ ] Ondas de 1 tipo de inimigo (camponês)
-- [ ] Inimigo morto deixa **cadáver**; cadáver no círculo é **levantado** como esqueleto
-- [ ] Esqueletos andam até os vivos e lutam (busca de alvo pela grade espacial)
-- [ ] Limite de exército (almas/mana) para forçar escolhas
-- [ ] **Gastar mortos:** explodir, fundir 3 em 1 e consumir para curar
-- [ ] Fim de onda: sobreviventes viram almas (pontuação)
+- [x] Necromante fixo com vida; derrota quando os vivos chegam até ele
+- [x] Círculo arrastável; o necromante ataca sozinho dentro dele
+- [x] Ondas com camponês, soldado (onda 3+) e padre (onda 4+, cura e não pode ser levantado)
+- [x] Inimigo morto deixa **cadáver**; cadáver no círculo é **levantado** como esqueleto
+- [x] Esqueletos andam até os vivos e lutam (colisão O(n²); grade espacial pendente)
+- [x] Limite de exército (almas/mana) para forçar escolhas
+- [x] **Gastar mortos:** explodir, fundir 3 em 1 e consumir para curar
+- [x] Fim de onda: sobreviventes viram almas (pontuação)
 
 **Critério de saída:** 5 pessoas jogam 10 minutos cada e ficam em dúvida entre segurar e gastar. Se ninguém gasta, ou se todos sempre gastam, ajustar antes de seguir.
 
