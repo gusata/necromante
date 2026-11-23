@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import { SCHOOLS } from '../sim/cards';
+import { CHARACTERS } from '../sim/characters';
+import { ITEMS } from '../sim/items';
 import { FIELD, LIVING_KINDS } from '../sim/defs';
 import { RNG } from '../sim/rng';
 import { BOSS_SPECS, HUMANOIDS, humanoidFrames, mix, undeadColors } from './humanoid';
@@ -84,6 +86,9 @@ function upscale(rows: string[], colors?: Colors): (string | null)[][] {
 
 // ------------------------------------------------------------ unidades
 
+/** Chave de textura do necromante jogável (o padrão mantém 'necro'). */
+export const charKey = (id: string) => (id === 'necro' ? 'necro' : `char-${id}`);
+
 export function unitKey(kind: string, boss?: string): string {
   if (kind === 'champion') return `champ-${boss}`;
   if (kind === 'skeleton') return 'skel';
@@ -123,10 +128,17 @@ function unitTextures(scene: Phaser.Scene) {
     humanoidFrames(und).forEach((f, i) => drawGrid(scene, `champ-${boss}${i}`, upscale(f, withPal(und.colors))));
   }
 
-  // necromante: parado, respirando, conjurando
-  spriteTex(scene, 'necro0', S.NECRO);
-  spriteTex(scene, 'necro1', ['................', ...S.NECRO.slice(0, 10), ...S.NECRO.slice(11)]);
-  spriteTex(scene, 'necro-cast', S.NECRO_CAST);
+  // necromantes jogáveis: parado, respirando, conjurando
+  for (const c of CHARACTERS) {
+    const base = c.id === 'necro' ? S.NECRO : S.charSprite(c.id);
+    const cast = c.id === 'necro' ? S.NECRO_CAST : S.charSprite(c.id, true);
+    const colors = S.CHAR_COLORS[c.id];
+    const key = charKey(c.id);
+    spriteTex(scene, `${key}0`, base, colors);
+    spriteTex(scene, `${key}1`, ['................', ...base.slice(0, 10), ...base.slice(11)], colors);
+    spriteTex(scene, `${key}-cast`, cast, colors);
+    scene.anims.create({ key: `${key}-idle`, frames: [{ key: `${key}0` }, { key: `${key}1` }], frameRate: 1.5, repeat: -1 });
+  }
 
   const walk = (key: string, rate = 6) =>
     scene.anims.create({ key: `${key}-walk`, frames: [{ key: `${key}0` }, { key: `${key}1` }], frameRate: rate, repeat: -1 });
@@ -135,7 +147,6 @@ function unitTextures(scene: Phaser.Scene) {
     walk(b, 4);
     walk(`champ-${b}`, 4);
   }
-  scene.anims.create({ key: 'necro-idle', frames: [{ key: 'necro0' }, { key: 'necro1' }], frameRate: 1.5, repeat: -1 });
 }
 
 /** As cores do humanoide + a paleta global (para o upscale ler armas e contornos). */
@@ -426,6 +437,28 @@ function iconTextures(scene: Phaser.Scene) {
   spriteTex(scene, 'px3', ['.w.', 'www', '.w.'], { w: '#ffffff' });
 }
 
+function itemTextures(scene: Phaser.Scene) {
+  for (const it of ITEMS) {
+    const ring = it.slot === 'ring';
+    const c = ring ? '#c9a23a' : it.color;
+    spriteTex(scene, `item-${it.id}`, S.ITEM_ICONS[it.slot], {
+      c,
+      L: mix(c, '#ffffff', 0.35),
+      C: mix(c, '#000000', 0.35),
+      y: ring || it.slot === 'staff' ? it.color : mix(it.color, '#ffffff', 0.5),
+      d: '#17111f',
+      N: '#5a4030',
+    });
+  }
+  // moldura de raridade para ícones
+  const rar = { common: '#6b6452', magic: '#6fa8c8', rare: '#e0b040', legendary: '#ff7a3a' } as const;
+  for (const [r, col] of Object.entries(rar)) panelTex(scene, `slot-${r}`, 24, 24, '#0e0b14', mix(col, '#0e0b14', 0.3), col);
+  panelTex(scene, 'slot-empty', 24, 24, '#0a0810', '#1a1424', '#2a2036');
+  panelTex(scene, 'tab', 56, 14, PAL.d, PAL.P);
+  panelTex(scene, 'tab-on', 56, 14, '#132a1e', PAL.g, PAL.g);
+  panelTex(scene, 'item-card', 170, 44, '#0e0b14', '#2a2036');
+}
+
 function uiTextures(scene: Phaser.Scene) {
   panelTex(scene, 'btn', 56, 16, PAL.d, PAL.P);
   panelTex(scene, 'btn-down', 56, 16, PAL.p, PAL.g);
@@ -496,5 +529,6 @@ export function generateArt(scene: Phaser.Scene) {
   glowTex(scene, 'glow64', 64);
   hudTex(scene);
   uiTextures(scene);
+  itemTextures(scene);
   fontTex(scene);
 }

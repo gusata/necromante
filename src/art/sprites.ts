@@ -232,3 +232,53 @@ export const FONT: Record<string, string[]> = {
   "'": ['.#.', '.#.', '...', '...', '...'],
   '"': ['#.#', '#.#', '...', '...', '...'],
 };
+
+// ------------------------------------------------------------ itens (9x9)
+// c = cor do item, L = clara, C = escura, y = gema/destaque, d = sombra interna, N = madeira
+export const ITEM_ICONS: Record<string, string[]> = {
+  staff: ['......kk.', '.....kyLk', '....kyyyk', '....kkyk.', '...kNk...', '..kNk....', '.kNk.....', 'kNk......', 'kk.......'],
+  hood: ['...kkk...', '..kcLck..', '.kcLccck.', '.kcdddck.', 'kccdddcck', 'kcddddcck', 'kcCdddCck', 'kCCCCCCCk', '.kkkkkkk.'],
+  cloak: ['..kk.kk..', '.kcLkLck.', 'kccccccck', 'kcLccccck', 'kccccccck', 'kcccCccck', 'kccCCcCck', 'kCCkCkCCk', 'kk.k.k.kk'],
+  amulet: ['kk.....kk', '.k.....k.', '..k...k..', '...k.k...', '...kkk...', '..kLcck..', '..kcCck..', '..kccck..', '...kkk...'],
+  ring: ['...kyk...', '..kyLyk..', '..kkykk..', '.kc...ck.', 'kc.....ck', 'kc.....ck', 'kc.....ck', '.kc...ck.', '..kccck..'],
+};
+
+// ------------------------------------------------------------ necromantes jogáveis
+// cabeça: colunas 0..10, linhas 0..6 · ferramenta: colunas 10..15, linhas 0..6 (haste na coluna 12)
+export const CHAR_HEADS: Record<string, string[]> = {
+  witch: ['......k....', '.....kPk...', '....kpPk...', '...kpPPPk..', 'kkkkkkkkkkk', '.kpdddddpk.', '.kpdGddGdk.'],
+  reaper: ['...kkkk....', '..kppppk...', '.kpPPPppk..', '.kpPddddpk.', 'kppddddddk.', 'kpddddddddk', 'kpdGddddGdk'],
+  vampire: ['...........', '...kkkkk...', '..kdddddk..', '..kdffffk..', '.kkfRffRfkk', 'kPkfffffkPk', 'kPPkfFFfkPP'],
+  digger: ['...........', '...kkkkk...', '..kNNNNNk..', 'kkkNNNNNkkk', 'kNNNNNNNNNk', '.kkfeffefkk', '..kffffffk.'],
+};
+export const CHAR_TOOLS: Record<string, string[]> = {
+  witch: ['.kGk..', 'kgGgk.', '.kMk..', '..M...', '..M...', '..M...', '..M...'],
+  reaper: ['..kkkk', '.kMmmk', '..M.kk', '..M...', '..M...', '..M...', '..M...'],
+  vampire: ['.kRk..', 'krRrk.', '.kMk..', '..M...', '..M...', '..M...', '..M...'],
+  digger: ['.kkk..', 'kmmmk.', 'kmmmk.', '.kMk..', '..M...', '..M...', '..M...'],
+};
+export const CHAR_COLORS: Record<string, Record<string, string>> = {
+  necro: {},
+  witch: { p: '#1c2416', P: '#34462a', d: '#10140c', g: '#8fbf3a', G: '#d8ff8a' },
+  reaper: { p: '#141218', P: '#2a2732', d: '#07050b', G: '#e3dccb', g: '#9a96a8', m: '#c9ccd4' },
+  vampire: { p: '#3a0c18', P: '#6e1428', d: '#1a0710', f: '#d8c8d0', F: '#a8949e', R: '#ff3a50', r: '#a01828', G: '#ff6070', g: '#c02040' },
+  digger: { p: '#2e2a24', P: '#4a4236', d: '#1a1712', N: '#4a3a2a', f: '#a97a5e', e: '#07050b', M: '#5a4030', G: '#e0a040', g: '#b07020' },
+};
+/** cor do brilho do cajado/olhos de cada necromante */
+export const CHAR_GLOW: Record<string, number> = { necro: 0x38b46a, witch: 0x8fbf3a, reaper: 0xc8d0e0, vampire: 0xff3a50, digger: 0xe0a040 };
+
+/** Monta o sprite de um necromante a partir do base: troca cabeça e ferramenta. */
+export function charSprite(id: string, cast = false): string[] {
+  const rows = (cast ? NECRO_CAST : NECRO).map((r) => r.split(''));
+  const head = CHAR_HEADS[id];
+  const tool = CHAR_TOOLS[id];
+  if (head) for (let y = 0; y < 7; y++) for (let x = 0; x < 11; x++) rows[y][x] = head[y][x];
+  if (tool) for (let y = 0; y < 7; y++) for (let x = 1; x < 6; x++) rows[y][x + 10] = tool[y][x];
+  if (cast && tool) {
+    // conjurando: a ponta da ferramenta acende
+    rows[0][11] = 'G';
+    rows[0][12] = 'G';
+    rows[0][13] = 'G';
+  }
+  return rows.map((r) => r.join(''));
+}

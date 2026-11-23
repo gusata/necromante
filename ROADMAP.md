@@ -141,6 +141,15 @@ Formas geométricas apenas. Nenhuma arte até aqui.
 - [x] 5 escolas completas, cerca de 20 inimigos, cerca de 40 itens/relíquias (44 pactos)
 - [x] Balanceamento com o simulador sem renderização (taxa de vitória por build: `npm run sim -- 16 2 builds`)
 
+### Fase 6.5: Itens, loja e personagens
+
+- [x] 24 itens em 6 espaços, raridades, níveis por fusão e forja; itens contam como cartas de escola
+- [x] Elites com contorno dourado que derrubam itens; chefes sempre derrubam
+- [x] Cemitério com abas: Construir, Mercado (estoque rotativo) e Arsenal (equipar/forjar)
+- [x] Mercador Encapuzado no meio da run (almas da run por itens)
+- [x] 5 necromantes jogáveis com mecânicas próprias, liberados por conquistas e comprados com almas
+- [x] Balanceamento por personagem no simulador
+
 ### Fase 7: Polimento mobile (2–3 semanas)
 
 - [ ] Orçamento de performance: **60 fps com 300 unidades** num Android intermediário

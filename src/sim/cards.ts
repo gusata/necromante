@@ -166,8 +166,9 @@ export const CARDS: Card[] = [
 
 export const CARD_BY_ID: Record<string, Card> = Object.fromEntries(CARDS.map((k) => [k.id, k]));
 
-export function schoolCounts(cards: string[]): Record<School, number> {
+export function schoolCounts(cards: string[], bonus: Partial<Record<School, number>> = {}): Record<School, number> {
   const n: Record<School, number> = { bone: 0, flesh: 0, plague: 0, spirit: 0, blood: 0 };
+  for (const [s, v] of Object.entries(bonus)) n[s as School] += v ?? 0;
   for (const id of cards) {
     const s = CARD_BY_ID[id]?.school;
     if (s) n[s]++;
@@ -176,10 +177,10 @@ export function schoolCounts(cards: string[]): Record<School, number> {
 }
 
 /** Aplica cartas e sinergias por cima dos modificadores base. */
-export function computeMods(base: Mods, cards: string[]): Mods {
+export function computeMods(base: Mods, cards: string[], bonus: Partial<Record<School, number>> = {}): Mods {
   const m = cloneMods(base);
   for (const id of cards) CARD_BY_ID[id]?.apply(m);
-  const n = schoolCounts(cards);
+  const n = schoolCounts(cards, bonus);
   if (n.bone >= MASTERY_AT) m.boneRebirth = 0.35;
   if (n.bone >= DOMINION_AT) {
     m.boneDominion = true;
@@ -218,12 +219,12 @@ export function computeMods(base: Mods, cards: string[]): Mods {
 const RARITY_WEIGHT: Record<Rarity, number> = { common: 10, rare: 4, legendary: 1 };
 
 /** Sorteia `count` cartas diferentes que ainda podem ser escolhidas. */
-export function rollOffer(rand: () => number, owned: string[], schools: School[], count: number): string[] {
+export function rollOffer(rand: () => number, owned: string[], schools: School[], count: number, bonus: Partial<Record<School, number>> = {}): string[] {
   const have = (id: string) => owned.filter((o) => o === id).length;
   const pool = CARDS.filter(
     (k) => (k.school === null || schools.includes(k.school)) && have(k.id) < k.max && (!k.requires || k.requires.some((r) => owned.includes(r))),
   );
-  const counts = schoolCounts(owned);
+  const counts = schoolCounts(owned, bonus);
   const out: string[] = [];
   while (out.length < count && pool.length) {
     // escolas em que o jogador já investiu aparecem um pouco mais

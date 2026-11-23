@@ -19,6 +19,7 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 | `npm test` | testes da simulação (Vitest) |
 | `npm run sim -- 40 2` | simulador de balanceamento: 40 runs automáticas com meta-progressão nível 2 |
 | `npm run sim -- 16 2 builds` | taxa de vitória por escola (cada run força uma escola) |
+| `npm run sim -- 14 2 chars` | taxa de vitória por personagem |
 | `npm run lint` / `npm run format` | Biome |
 | `npm run build` | checa tipos e gera `dist/` |
 | `npm run android` | build + sync + abre o Android Studio (precisa do Android Studio/JDK instalados) |
@@ -33,6 +34,8 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 | `?meta=3` | finge meta-progressão nível 3 (escolas, campeões, construções). Se a run terminar, o resultado é salvo |
 | `?scene=Graveyard` | abre uma cena direto (`Graveyard`, `Bestiary`, `Options`) |
 | `?fps` | contador de quadros |
+| `?char=reaper` | joga com um personagem (`necro`, `witch`, `digger`, `reaper`, `vampire`) |
+| `?scene=Graveyard&tab=market` | abre o cemitério numa aba (`build`, `market`, `arsenal`) |
 
 `window.__game` no console do navegador dá acesso ao jogo.
 
@@ -50,9 +53,25 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 
 4 regiões com 5 ondas e 1 chefe cada (Vila, Mosteiro, Fortaleza, Catedral). Depois vêm os **círculos do abismo**, infinitos, cada um com um modificador novo. Chefes derrotados viram **campeões** que você pode levar para as próximas runs.
 
+### Personagens
+
+Cinco necromantes, cada um muda a ação principal. Novos personagens são liberados por conquistas e comprados com almas:
+
+| Personagem | Estilo | Libera |
+|---|---|---|
+| O Necromante | raios rápidos em um alvo | desde o início |
+| A Bruxa da Praga | o círculo envenena, explodir deixa nuvem | derrotar o Lenhador |
+| O Coveiro | cada cadáver levanta 2 mortos, exército menor | jogar 3 runs |
+| O Ceifador | a foice acerta todos no círculo | derrotar o Abade |
+| A Vampira | perde vida com o tempo, cura matando | derrotar o Comandante |
+
+### Itens
+
+24 itens em 6 espaços (cajado, capuz, manto, amuleto e 2 anéis), de comum a lendário. Muitos **contam como cartas de uma escola**, então o equipamento prepara a sinergia antes da run. Os lendários mudam regras (Coroa do Lich, Manto do Ceifador, Cajado da Colheita...). Itens caem de **elites** (inimigos com contorno dourado) e de chefes, e ficam com você mesmo se morrer. Item repetido sobe de nível.
+
 ### Meta-progressão
 
-As almas de cada run vão para o **Cemitério**, onde há 8 construções. Cada chefe derrotado pela primeira vez libera uma nova escola de pactos: Ossos e Carne no começo, depois Praga, Espírito e Sangue. O **Bestiário** registra os abates com medalhas de bronze, prata e ouro.
+As almas de cada run vão para o **Cemitério**, que tem três abas: **Construir** (8 construções), **Mercado** (4 itens que mudam a cada run) e **Arsenal** (equipar e forjar itens). Durante a run, depois da onda 3 de cada região, aparece o **Mercador Encapuzado**, que troca as almas da run por itens. Cada chefe derrotado pela primeira vez libera uma nova escola de pactos: Ossos e Carne no começo, depois Praga, Espírito e Sangue. O **Bestiário** registra os abates com medalhas de bronze, prata e ouro.
 
 ## Estrutura
 

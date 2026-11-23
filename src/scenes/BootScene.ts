@@ -44,6 +44,9 @@ export class BootScene extends Phaser.Scene {
         meta.selectedChampion = 'woodcutter';
         meta.souls = 999;
         meta.kills = { peasant: 160, hound: 60, torch: 20, militia: 12, monk: 30, priest: 8 };
+        meta.items = { staff_storm: 2, hood_worn: 0, cloak_crimson: 1, ring_bone: 0, ring_iron: 3, amulet_tooth: 0, hood_lich: 0 };
+        meta.equipped = { staff: 'staff_storm', hood: 'hood_worn', cloak: 'cloak_crimson', ring1: 'ring_bone', ring2: 'ring_iron', amulet: 'amulet_tooth' };
+        meta.characters = ['necro', 'witch', 'digger'];
       }
     }
     audio.setSfx(meta.settings.sfx);
@@ -54,6 +57,7 @@ export class BootScene extends Phaser.Scene {
     for (const ev of ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'mousedown', 'mouseup', 'click', 'keydown']) {
       document.addEventListener(ev, unlock, { capture: true, passive: true });
     }
-    this.scene.start(DEBUG.scene ?? (DEBUG.skipMenu ? 'Run' : 'Menu'));
+    if (DEBUG.char) meta.character = DEBUG.char as typeof meta.character;
+    this.scene.start(DEBUG.scene ?? (DEBUG.skipMenu ? 'Run' : 'Menu'), DEBUG.tab ? { tab: DEBUG.tab } : undefined);
   }
 }

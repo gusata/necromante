@@ -113,8 +113,11 @@ export interface Unit {
   chargeVy: number;
   /** escola de quem acertou por último (para infecção) */
   lastHitBy?: UnitKind;
-  /** marcados por paladinos não deixam nada */
   age: number;
+  /** inimigo de elite: mais forte, pode derrubar itens */
+  elite: boolean;
+  /** tipo do último dano recebido */
+  lastDtype?: DamageType;
 }
 
 export interface Corpse {
@@ -133,6 +136,8 @@ export interface Corpse {
   gone: boolean;
   /** consagrado por um paladino próximo neste quadro */
   holy: boolean;
+  /** levanta mesmo com o exército cheio (Cajado da Colheita) */
+  overcap?: boolean;
 }
 
 export interface Projectile {
@@ -207,4 +212,6 @@ export type GameEvent =
   | { type: 'waveCleared'; wave: number; souls: number }
   | { type: 'cardOffer' }
   | { type: 'synergy'; school: School; level: 1 | 2 }
+  | { type: 'itemDrop'; x: number; y: number; item: string }
+  | { type: 'scythe'; x: number; y: number; r: number }
   | { type: 'gameOver' };

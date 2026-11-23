@@ -22,6 +22,7 @@ import {
   waveHpMul,
 } from './defs';
 import type { Mods } from './mods';
+import { rollItem } from './items';
 import { ENDLESS_MODS, REGIONS } from './regions';
 import { RNG } from './rng';
 import type {
@@ -51,6 +52,8 @@ export interface RunSetup {
   mods: Mods;
   schools: School[];
   champion?: { boss: BossKind; rank: number } | null;
+  /** cartas grátis por escola (itens e personagem) */
+  schoolBonus?: Partial<Record<School, number>>;
 }
 
 const dist2 = (ax: number, ay: number, bx: number, by: number) => (ax - bx) ** 2 + (ay - by) ** 2;
@@ -108,6 +111,9 @@ export class World {
 
   souls = 0;
   kills = 0;
+  /** itens ganhos nesta run (vão para o inventário no fim) */
+  loot: string[] = [];
+  private killHealAcc = 0;
   killsByKind: Partial<Record<UnitKind, number>> = {};
   bossesKilled: BossKind[] = [];
 
@@ -126,7 +132,7 @@ export class World {
     this.setup = setup;
     this.rng = new RNG(setup.seed);
     this.base = setup.mods;
-    this.mods = computeMods(this.base, []);
+    this.mods = computeMods(this.base, [], setup.schoolBonus);
     this.rerollsLeft = this.mods.rerolls;
     this.necro = { x: NECRO.x, y: NECRO.y, hp: this.mods.necroMaxHp, maxHp: this.mods.necroMaxHp, castTimer: 0.5, radius: NECRO.radius, regenAcc: 0 };
     this.circle = { x: FIELD.w / 2, y: 200, r: this.mods.circleR };
@@ -166,7 +172,7 @@ export class World {
   }
 
   schoolCounts(): Record<School, number> {
-    return schoolCounts(this.cards);
+    return schoolCounts(this.cards, this.setup.schoolBonus);
   }
 
   inCircle(x: number, y: number, pad = 0): boolean {
@@ -216,7 +222,7 @@ export class World {
     const m = this.mods;
     for (const d of this.deadInCircle()) {
       const dmg = EXPLODE_DMG * UNIT_DEFS[d.kind].armyCost * m.explodeDmgMul;
-      this.spend(d);
+      if (!(m.explodeKeep > 0 && this.rng.next() < m.explodeKeep)) this.spend(d);
       this.events.push({ type: 'explode', x: d.x, y: d.y, r: m.explodeR });
       this.aoe(d.x, d.y, m.explodeR, 'living', dmg, 'explode');
       if (m.explodePoison) this.addCloud(d.x, d.y);
@@ -278,13 +284,13 @@ export class World {
   reroll(): boolean {
     if (this.phase !== 'choosing' || this.rerollsLeft <= 0) return false;
     this.rerollsLeft--;
-    this.offer = rollOffer(() => this.rng.next(), this.cards, this.setup.schools, this.mods.cardChoices);
+    this.offer = rollOffer(() => this.rng.next(), this.cards, this.setup.schools, this.mods.cardChoices, this.setup.schoolBonus);
     return true;
   }
 
   private recomputeMods() {
     const oldMax = this.mods.necroMaxHp;
-    this.mods = computeMods(this.base, this.cards);
+    this.mods = computeMods(this.base, this.cards, this.setup.schoolBonus);
     const m = this.mods;
     this.necro.maxHp = m.necroMaxHp;
     if (m.necroMaxHp > oldMax) this.necro.hp += m.necroMaxHp - oldMax;
@@ -357,7 +363,7 @@ export class World {
     this.events.push({ type: 'waveCleared', wave: this.wave, souls: gained });
     this.projectiles = [];
     this.telegraphs = [];
-    this.offer = rollOffer(() => this.rng.next(), this.cards, this.setup.schools, this.mods.cardChoices);
+    this.offer = rollOffer(() => this.rng.next(), this.cards, this.setup.schools, this.mods.cardChoices, this.setup.schoolBonus);
     if (this.offer.length) {
       this.phase = 'choosing';
       this.events.push({ type: 'cardOffer' });
@@ -416,6 +422,8 @@ export class World {
   private updateGlobal(dt: number): void {
     const m = this.mods;
     this.frenzyT = Math.max(0, this.frenzyT - dt);
+    if (m.necroDrain > 0 && (this.phase === 'spawning' || this.phase === 'fighting')) this.necro.hp -= m.necroDrain * dt;
+    if (m.lichDecay) for (const u of this.units) if (u.alive && u.faction === 'dead' && u.kind !== 'champion') u.hp -= u.maxHp * 0.012 * dt;
     if (m.necroRegen > 0 && this.necro.hp < this.necro.maxHp) {
       this.necro.regenAcc += m.necroRegen * dt;
       if (this.necro.regenAcc >= 1) {
@@ -453,6 +461,13 @@ export class World {
       n.castTimer = 0;
       return;
     }
+    if (this.mods.scythe) {
+      // foice: um golpe largo em todos dentro do círculo
+      this.events.push({ type: 'scythe', x: this.circle.x, y: this.circle.y, r: this.circle.r });
+      for (const u of targets) this.damage(u, this.mods.necroDmg, 'magic');
+      n.castTimer = NECRO.castCd * 1.8 * this.mods.castCdMul;
+      return;
+    }
     let t = this.rng.pick(targets);
     let fromX = n.x + NECRO.staffDx;
     let fromY = n.y + NECRO.staffDy;
@@ -483,8 +498,12 @@ export class World {
           const kind = c.bones ? 'skeleton' : this.pickRaise();
           const u = this.spawnDead(kind, c.x, c.y);
           this.events.push({ type: 'raised', corpseId: c.id, unitId: u.id, x: c.x, y: c.y, kind });
+          if (m.doubleRaise && this.armyUsed() < m.armyCap) {
+            const u2 = this.spawnDead(kind, c.x + this.rng.range(-5, 5), c.y + this.rng.range(-3, 3));
+            this.events.push({ type: 'raised', corpseId: -1, unitId: u2.id, x: u2.x, y: u2.y, kind });
+          }
         }
-      } else if (c.raisable && !c.holy && used < m.armyCap && (c.forced || this.inCircle(c.x, c.y))) {
+      } else if (c.raisable && !c.holy && (used < m.armyCap || c.overcap) && (c.forced || c.overcap || this.inCircle(c.x, c.y))) {
         c.raise = 0;
         used++;
         this.events.push({ type: 'raiseStart', corpseId: c.id, x: c.x, y: c.y });
@@ -757,7 +776,7 @@ export class World {
       case 'summon': {
         const list = SUMMONS[u.boss ?? (u.kind as BossKind)] ?? [];
         for (const k of list) {
-          const s = this.spawnLiving(k);
+          const s = this.spawnLiving(k, false);
           s.x = u.x + this.rng.range(-14, 14);
           s.y = Math.max(0, u.y + this.rng.range(-8, 4));
         }
@@ -1049,6 +1068,7 @@ export class World {
       if (this.bishops.some((b) => b !== t && dist2(b.x, b.y, t.x, t.y) < 32 * 32)) dmg *= 0.7;
     }
     t.hp -= dmg;
+    t.lastDtype = type;
     const kind = src?.kind ?? srcKind;
     if (kind) t.lastHitBy = kind;
     this.events.push({ type: 'hit', id: t.id, x: t.x, y: t.y, faction: t.faction, dmg, dtype: type, big: dmg >= 4 });
@@ -1068,6 +1088,15 @@ export class World {
     this.events.push({ type: 'death', id: t.id, kind: t.kind, x: t.x, y: t.y, faction: t.faction, facing: t.facing, spent: false, boss: def.boss ? (t.kind as BossKind) : undefined });
     if (t.faction === 'living') {
       this.kills++;
+      if (this.mods.killHeal > 0) {
+        this.killHealAcc += this.mods.killHeal;
+        if (this.killHealAcc >= 1) {
+          this.killHealAcc -= 1;
+          this.healNecro(1);
+        }
+      }
+      if (t.elite && this.rng.next() < 0.4) this.dropItem(t.x, t.y, 0.3);
+      if (def.boss) this.dropItem(t.x, t.y, 0.6 + 0.2 * this.regionIndex, 'magic');
       this.killsByKind[t.kind] = (this.killsByKind[t.kind] ?? 0) + 1;
       this.souls += def.threat * 0.15 * this.mods.soulMul;
       if (this.mods.bloodMastery && ++this.bloodKills % 5 === 0) this.healNecro(1);
@@ -1093,6 +1122,7 @@ export class World {
         age: 0,
         raise: -1,
         raisable: def.raisable || (poisoned && this.mods.poisonedRaisable),
+        overcap: this.mods.boltOvercap && t.lastDtype === 'magic',
         forced: this.mods.fleshInfect && schoolOf(t.lastHitBy) === 'flesh',
         bones: false,
         gone: false,
@@ -1182,6 +1212,7 @@ export class World {
       chargeVx: 0,
       chargeVy: 0,
       age: 0,
+      elite: false,
     };
     this.units.push(u);
     return u;
@@ -1219,9 +1250,22 @@ export class World {
     return waveHpMul(this.wave) * 1.8 ** this.abyss * (this.hasEndless('iron') ? 1.25 : 1);
   }
 
-  spawnLiving(kind: LivingKind): Unit {
+  spawnLiving(kind: LivingKind, canBeElite = true): Unit {
     const d = UNIT_DEFS[kind];
-    return this.makeUnit(kind, this.rng.range(10, FIELD.w - 10), -6, d.hp * this.livingHpMul(), d.dmg + this.abyss);
+    const u = this.makeUnit(kind, this.rng.range(10, FIELD.w - 10), -6, d.hp * this.livingHpMul(), d.dmg + this.abyss);
+    if (canBeElite && this.wave >= 2 && this.rng.next() < Math.min(0.12, 0.02 + this.wave * 0.004)) {
+      u.elite = true;
+      u.maxHp *= 2.5;
+      u.hp = u.maxHp;
+      u.dmg += 1;
+    }
+    return u;
+  }
+
+  private dropItem(x: number, y: number, luck: number, min: 'common' | 'magic' = 'common') {
+    const item = rollItem(() => this.rng.next(), luck, min);
+    this.loot.push(item);
+    this.events.push({ type: 'itemDrop', x, y, item });
   }
 
   private spawnBoss(kind: BossKind): Unit {

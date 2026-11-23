@@ -3,10 +3,12 @@
  *
  *   npm run sim -- [runs] [nivelMeta 0..5]          runs livres (o piloto persegue sinergias)
  *   npm run sim -- [runs] [nivelMeta] builds        compara as 5 escolas: cada run força uma escola
+ *   npm run sim -- [runs] [nivelMeta] chars         compara os personagens
  */
 import { autopilot } from '../src/sim/autopilot';
 import { SCHOOL_ORDER, SCHOOLS } from '../src/sim/cards';
-import { BUILDINGS, freshMeta, metaMods } from '../src/sim/meta';
+import { CHARACTERS } from '../src/sim/characters';
+import { BUILDINGS, freshMeta, metaMods, schoolBonus, unlockedSchools } from '../src/sim/meta';
 import type { School } from '../src/sim/types';
 import { World } from '../src/sim/world';
 
@@ -24,8 +26,8 @@ interface Result {
   build: string;
 }
 
-function play(seed: number, schools: School[], focus?: School): Result {
-  const w = new World({ seed, mods: metaMods(meta), schools });
+function play(seed: number, schools: School[], focus?: School, m = meta): Result {
+  const w = new World({ seed, mods: metaMods(m), schools, schoolBonus: schoolBonus(m) });
   for (let s = 0; s < 60 * 60 * 40 && w.phase !== 'over'; s++) {
     autopilot(w, 1, focus);
     w.update(1 / 60);
@@ -51,7 +53,14 @@ function table(rows: [string, Result[]][]) {
   }
 }
 
-if (mode === 'builds') {
+if (mode === 'chars') {
+  const rows: [string, Result[]][] = CHARACTERS.map((c) => {
+    const m = { ...meta, character: c.id, bossesBeaten: Math.min(3, metaLevel) };
+    return [c.name.replace(/^(O|A) /, ''), Array.from({ length: runs }, (_, i) => play(7000 + i, unlockedSchools(m), undefined, m))];
+  });
+  console.log(`runs=${runs} por personagem, meta=${metaLevel} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
+  table(rows);
+} else if (mode === 'builds') {
   // todas as escolas liberadas; cada linha força uma escola
   const rows: [string, Result[]][] = SCHOOL_ORDER.map((s) => [SCHOOLS[s].name, Array.from({ length: runs }, (_, i) => play(5000 + i, SCHOOL_ORDER, s))]);
   console.log(`runs=${runs} por escola, meta=${metaLevel} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);

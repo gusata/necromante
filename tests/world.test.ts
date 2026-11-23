@@ -146,7 +146,7 @@ describe('meta', () => {
   it('migra o save v1 (só recorde)', () => {
     const m = migrate({ wave: 7, souls: 30 });
     expect(m.best.wave).toBe(7);
-    expect(m.version).toBe(2);
+    expect(m.version).toBe(3);
   });
 
   it('compra construções e aplica os bônus', () => {

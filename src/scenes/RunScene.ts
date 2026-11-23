@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { audio } from '../audio/audio';
-import { unitKey } from '../art/generate';
+import { charKey, unitKey } from '../art/generate';
+import { CHAR_GLOW } from '../art/sprites';
 import { COL } from '../art/palette';
 import { pxText, setPxText } from '../art/text';
 import { DEBUG } from '../debug';
@@ -10,7 +11,8 @@ import { meta, saveMeta } from '../platform/save';
 import { autopilot } from '../sim/autopilot';
 import { CARD_BY_ID, DOMINION_AT, MASTERY_AT, SCHOOL_ORDER, SCHOOLS } from '../sim/cards';
 import { BOSS_DEFS, CIRCLE_REACH, FIELD, NECRO, UNIT_DEFS } from '../sim/defs';
-import { buildingLevel, metaMods, unlockedSchools } from '../sim/meta';
+import { ITEM_BY_ID, ITEM_PRICE, RARITY_COLOR, rollItem } from '../sim/items';
+import { buildingLevel, gainItem, metaMods, rollMarket, schoolBonus, unlockedSchools } from '../sim/meta';
 import { circleName } from '../sim/regions';
 import type { BossKind, Corpse, GameEvent, School, Unit } from '../sim/types';
 import { World } from '../sim/world';
@@ -32,6 +34,7 @@ interface UnitView {
   squash: number;
   trailAt: number;
   born: number;
+  outline?: Phaser.GameObjects.Sprite[];
 }
 interface CorpseView {
   img: Phaser.GameObjects.Image;
@@ -104,7 +107,10 @@ export class RunScene extends Phaser.Scene {
   private slowFactor = 1;
   private modal: Phaser.GameObjects.GameObject[] = [];
   private cardViews: { id: string; c: Phaser.GameObjects.Container }[] = [];
-  private modalKind: 'cards' | 'pause' | 'results' | null = null;
+  private modalKind: 'cards' | 'pause' | 'results' | 'merchant' | null = null;
+  private merchantPending = false;
+  private necroKey = 'necro';
+  private bag!: { icon: Phaser.GameObjects.Image; count: Phaser.GameObjects.BitmapText };
   private ended = false;
 
   constructor() {
@@ -129,6 +135,8 @@ export class RunScene extends Phaser.Scene {
     this.acc = 0;
     this.hitstopUntil = 0;
     this.slowUntil = 0;
+    this.merchantPending = false;
+    this.necroKey = charKey(meta.character);
 
     const sel = meta.selectedChampion;
     const champ = sel && buildingLevel(meta, 'hall') > 0 && meta.champions[sel] ? sel : null;
@@ -137,6 +145,7 @@ export class RunScene extends Phaser.Scene {
       mods: metaMods(meta),
       schools: unlockedSchools(meta),
       champion: champ ? { boss: champ, rank: meta.champions[champ]! } : null,
+      schoolBonus: schoolBonus(meta),
     });
 
     this.shaker = new Shaker(this.cameras.main);
@@ -153,11 +162,11 @@ export class RunScene extends Phaser.Scene {
     this.hudGfx = this.add.graphics().setDepth(DEPTH.hud + 1);
 
     this.add.image(NECRO.x, NECRO.y + 3, 'altar').setDepth(DEPTH.altar);
-    this.necro = this.add.sprite(NECRO.x, NECRO.y + 4, 'necro0').setOrigin(0.5, 1).setDepth(DEPTH.world + NECRO.y);
-    this.necro.play('necro-idle');
+    this.necro = this.add.sprite(NECRO.x, NECRO.y + 4, `${this.necroKey}0`).setOrigin(0.5, 1).setDepth(DEPTH.world + NECRO.y);
+    this.necro.play(`${this.necroKey}-idle`);
     this.orb = this.add
       .image(NECRO.x + NECRO.staffDx, NECRO.y + NECRO.staffDy, 'glow16')
-      .setTint(COL.g)
+      .setTint(CHAR_GLOW[meta.character] ?? COL.g)
       .setBlendMode(Phaser.BlendModes.ADD)
       .setDepth(DEPTH.glow);
     this.tweens.add({ targets: this.orb, alpha: 0.55, scale: 1.25, yoyo: true, repeat: -1, duration: 700, ease: 'Sine.easeInOut' });
@@ -223,6 +232,10 @@ export class RunScene extends Phaser.Scene {
     const bossName = pxText(this, 90, 22, '', COL.R).setOrigin(0.5, 0).setDepth(DEPTH.hud).setVisible(false);
     this.hud = { wave, souls, soulIcon, army, schools, bossName, hpFlashUntil: 0, hpShake: 0, shownSouls: 0, bossShownHp: 1 };
     this.add.image(3, FIELD.h + 3, 'icon-heart').setOrigin(0).setDepth(DEPTH.hud);
+    this.bag = {
+      icon: this.add.image(150, 16, 'item-ring_iron').setDepth(DEPTH.hud).setVisible(false),
+      count: pxText(this, 156, 13, '', COL.y).setDepth(DEPTH.hud),
+    };
 
     const defs: [string, () => boolean, () => boolean][] = [
       ['EXPLODIR', () => this.world.canExplode(), () => this.world.explode()],
@@ -298,6 +311,10 @@ export class RunScene extends Phaser.Scene {
       }
     }
     if (this.modalKind === 'cards' && this.world.phase !== 'choosing') this.closeModal();
+    if (this.merchantPending && !this.modalKind && !this.ended && this.world.phase === 'intermission') {
+      if (DEBUG.autopilot) this.merchantPending = false;
+      else this.showMerchant();
+    }
 
     const events = this.world.events;
     this.world.events = [];
@@ -499,10 +516,58 @@ export class RunScene extends Phaser.Scene {
       case 'synergy':
         this.onSynergy(e.school, e.level);
         break;
+      case 'scythe':
+        this.fxList.push({ kind: 'ring', x: e.x, y: e.y, r: e.r, color: 0xe3dccb, life: 0.22, max: 0.22 });
+        this.fxList.push({ kind: 'ring', x: e.x, y: e.y, r: e.r * 0.7, color: 0xffffff, life: 0.14, max: 0.14 });
+        for (let a = 0; a < 6; a++) this.emit.spark.explode(2, e.x + Math.cos(a) * e.r * 0.8, e.y + Math.sin(a) * e.r * 0.8);
+        this.castUntil = time + 160;
+        this.shaker.add(0.08);
+        audio.play('whoosh');
+        break;
+      case 'itemDrop':
+        this.onItemDrop(e.item, e.x, e.y);
+        break;
       case 'gameOver':
         this.onGameOver();
         break;
     }
+  }
+
+  /** Item caiu: feixe na cor da raridade, ícone salta e voa para a bolsa. */
+  private onItemDrop(id: string, x: number, y: number) {
+    const it = ITEM_BY_ID[id];
+    const color = parseInt(RARITY_COLOR[it.rarity].slice(1), 16);
+    const big = it.rarity === 'rare' || it.rarity === 'legendary';
+    this.fxList.push({ kind: 'column', x, y: 0, r: big ? 6 : 3, color, life: 0.6, max: 0.6 });
+    this.tempLights.push({ x, y: y - 6, key: 'light48', life: 0.8, max: 0.8 });
+    this.emit.gold.explode(big ? 24 : 10, x, y - 6);
+    audio.play(big ? 'synergy' : 'buy');
+    buzz(big ? 'heavy' : 'medium');
+    if (big) this.shaker.add(it.rarity === 'legendary' ? 0.6 : 0.3);
+    if (it.rarity === 'legendary') flash(this, color, 0.3, 300);
+    const icon = this.add.image(x, y - 6, `item-${id}`).setDepth(DEPTH.hud + 2).setScale(2);
+    const frame = this.add.image(x, y - 6, `slot-${it.rarity}`).setDepth(DEPTH.hud + 1).setScale(0.9);
+    const name = pxText(this, x, y - 24, it.name.toUpperCase(), color).setOrigin(0.5).setDepth(DEPTH.hud + 2);
+    name.x = Phaser.Math.Clamp(x, name.width / 2 + 2, FIELD.w - name.width / 2 - 2);
+    this.tweens.add({ targets: [icon, frame], y: y - 22, duration: 300, ease: 'Back.easeOut' });
+    this.tweens.add({ targets: name, y: y - 40, alpha: 0, delay: 700, duration: 400, onComplete: () => name.destroy() });
+    this.tweens.add({
+      targets: [icon, frame],
+      x: this.bag.icon.x,
+      y: this.bag.icon.y,
+      scale: 0.5,
+      delay: 800,
+      duration: 450,
+      ease: 'Cubic.easeIn',
+      onComplete: () => {
+        icon.destroy();
+        frame.destroy();
+        this.bag.icon.setTexture(`item-${id}`).setVisible(true);
+        setPxText(this.bag.count, `${this.world.loot.length}`);
+        this.tweens.add({ targets: this.bag.icon, scale: 1.8, duration: 80, yoyo: true });
+        audio.play('soul');
+      },
+    });
   }
 
   private onDeath(e: Extract<GameEvent, { type: 'death' }>) {
@@ -655,6 +720,7 @@ export class RunScene extends Phaser.Scene {
 
   private onWaveCleared(souls: number) {
     audio.setIntensity(0);
+    if (this.world.localWave === 3) this.merchantPending = true;
     this.banner(`+${souls} ALMAS`, COL.G, 120);
     let i = 0;
     for (const u of this.world.units) {
@@ -704,7 +770,7 @@ export class RunScene extends Phaser.Scene {
     buzz('heavy');
     this.shaker.add(0.9);
     flash(this, COL.R, 0.5, 600);
-    shatter(this, 'necro0', NECRO.x, NECRO.y + 4, { power: 50 });
+    shatter(this, `${this.necroKey}0`, NECRO.x, NECRO.y + 4, { power: 50 });
     this.necro.setVisible(false);
     this.orb.setVisible(false);
     this.time.delayedCall(1300, () => this.showResults(false));
@@ -753,6 +819,15 @@ export class RunScene extends Phaser.Scene {
       else if (u.faction === 'dead' && w.frenzyT > 0) v.spr.setTint(0xffa0a0);
       else v.spr.clearTint();
       if (u.kind === 'ghost') v.spr.setAlpha(0.8);
+      if (v.outline) {
+        const pulse = 0.55 + Math.sin(time * 0.012) * 0.45;
+        for (const o of v.outline) {
+          const [dx, dy] = o.getData('d') as [number, number];
+          o.setTexture(v.spr.texture.key, v.spr.frame.name).setPosition(v.spr.x + dx, v.spr.y + dy).setFlipX(v.spr.flipX);
+          o.setScale(v.spr.scaleX, v.spr.scaleY).setDepth(v.spr.depth - 0.5).setAlpha(pulse);
+        }
+        if (Math.random() < 0.06) this.emit.gold.explode(1, u.x + Phaser.Math.Between(-4, 4), u.y - v.spr.height);
+      }
 
       // rastro da investida
       if (u.chargeT > 0 && time > v.trailAt) {
@@ -776,6 +851,7 @@ export class RunScene extends Phaser.Scene {
       if (seen.has(id)) continue;
       v.spr.destroy();
       v.shadow.destroy();
+      for (const o of v.outline ?? []) o.destroy();
       this.units.delete(id);
     }
   }
@@ -790,6 +866,15 @@ export class RunScene extends Phaser.Scene {
     if (u.faction === 'living') {
       spr.setAlpha(0);
       this.tweens.add({ targets: spr, alpha: 1, duration: 250 });
+    }
+    if (u.elite) {
+      // contorno dourado: 4 cópias deslocadas atrás do sprite
+      v.outline = [
+        [-1, 0],
+        [1, 0],
+        [0, -1],
+        [0, 1],
+      ].map(([dx, dy]) => this.add.sprite(u.x + dx, u.y + dy, `${key}0`).setOrigin(0.5, 1).setTintFill(0xf6cf6a).setData('d', [dx, dy]));
     }
     if (u.kind === 'champion') {
       this.emit.soul.explode(20, u.x, u.y - 10);
@@ -876,7 +961,7 @@ export class RunScene extends Phaser.Scene {
     const n = this.world.necro;
     if (time < this.castUntil) {
       this.necro.anims.pause();
-      this.necro.setTexture('necro-cast');
+      this.necro.setTexture(`${this.necroKey}-cast`);
     } else if (this.necro.anims.isPaused) {
       this.necro.anims.resume();
     }
@@ -1048,7 +1133,10 @@ export class RunScene extends Phaser.Scene {
     const lights: Light[] = [...this.scenery.lights, { x: NECRO.x, y: NECRO.y - 8, key: 'light80' }];
     if (!this.ended) lights.push({ x, y, key: 'light80', scale: (r * 2.4) / 80, alpha: 0.75 });
     for (const l of this.tempLights) lights.push({ ...l, alpha: l.life / l.max });
-    for (const u of this.world.units) if (u.kind === 'torch' || u.kind === 'nun') lights.push({ x: u.x, y: u.y - 10, key: 'light24' });
+    for (const u of this.world.units) {
+      if (u.kind === 'torch' || u.kind === 'nun') lights.push({ x: u.x, y: u.y - 10, key: 'light24' });
+      else if (u.elite) lights.push({ x: u.x, y: u.y - 8, key: 'light24', alpha: 0.8 });
+    }
     for (const t of this.world.telegraphs) lights.push({ x: t.x, y: t.y, key: 'light24', alpha: 0.6 });
     this.dark.draw(lights, time);
   }
@@ -1224,6 +1312,64 @@ export class RunScene extends Phaser.Scene {
     });
   }
 
+  /** Mercador Encapuzado: troca almas da run por itens que ficam com você. */
+  private showMerchant() {
+    if (this.modalKind || this.ended) return;
+    this.merchantPending = false;
+    this.modalKind = 'merchant';
+    const w = this.world;
+    const offer = [0, 1, 2].map(() => rollItem(Math.random, 0.2 + this.world.regionIndex * 0.15));
+    const shade = this.add.rectangle(0, 0, 180, 320, 0x050309, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
+    this.tweens.add({ targets: shade, fillAlpha: 0.86, duration: 250 });
+    const hood = this.add.sprite(90, 70, 'char-reaper0').setOrigin(0.5, 1).setScale(2).setDepth(DEPTH.modal + 1).setTint(0x9a8a70);
+    const t1 = pxText(this, 90, 78, 'MERCADOR ENCAPUZADO', COL.y).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1);
+    const t2 = pxText(this, 90, 88, 'almas da run por itens que ficam com você', COL.C).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1);
+    const soulsLine = pxText(this, 90, 100, '', COL.G).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1);
+    this.modal.push(shade, hood, t1, t2, soulsLine);
+    audio.play('bell');
+    const refresh = () => setPxText(soulsLine, `você tem ${Math.floor(w.souls)} almas`);
+    refresh();
+    offer.forEach((id, i) => {
+      const it = ITEM_BY_ID[id];
+      const price = Math.round(ITEM_PRICE[it.rarity] * 0.45);
+      const y = 114 + i * 48;
+      const c = this.add.container(5, y + 120).setDepth(DEPTH.modal + 1).setAlpha(0);
+      const parts: Phaser.GameObjects.GameObject[] = [
+        this.add.image(0, 0, 'item-card').setOrigin(0),
+        this.add.image(16, 22, `slot-${it.rarity}`),
+        this.add.image(16, 22, `item-${id}`).setScale(2),
+        pxText(this, 32, 4, it.name.toUpperCase(), parseInt(RARITY_COLOR[it.rarity].slice(1), 16)),
+        pxText(this, 32, 13, wrap(it.desc(meta.items[id] !== undefined ? meta.items[id] + 1 : 0), 33), COL.c),
+        pxText(this, 165, 34, `${price} almas`, w.souls >= price ? COL.G : COL.B).setOrigin(1, 0),
+      ];
+      c.add(parts);
+      c.setInteractive(new Phaser.Geom.Rectangle(0, 0, 170, 44), Phaser.Geom.Rectangle.Contains);
+      c.on('pointerdown', () => {
+        if (c.getData('sold')) return;
+        if (w.souls < price) {
+          audio.play('deny');
+          this.tweens.add({ targets: c, x: 7, duration: 40, yoyo: true, repeat: 2 });
+          return;
+        }
+        c.setData('sold', true);
+        w.souls -= price;
+        w.loot.push(id);
+        refresh();
+        setPxText(this.bag.count, `${w.loot.length}`);
+        this.bag.icon.setTexture(`item-${id}`).setVisible(true);
+        audio.play('buy');
+        buzz('medium');
+        this.shaker.add(0.2);
+        this.tweens.add({ targets: c, alpha: 0.35, duration: 200 });
+        (parts[5] as Phaser.GameObjects.BitmapText).setText('VENDIDO').setTint(COL.y);
+      });
+      this.tweens.add({ targets: c, y, alpha: 1, delay: 100 + i * 90, duration: 350, ease: 'Back.easeOut' });
+      this.modal.push(c);
+    });
+    const b = button(this, 90, 270, 'SEGUIR', () => this.closeModal(), { depth: DEPTH.modal + 1, color: COL.G });
+    this.modal.push(b.img, b.label);
+  }
+
   private closeModal() {
     for (const o of this.modal) o.destroy();
     this.modal = [];
@@ -1304,6 +1450,12 @@ export class RunScene extends Phaser.Scene {
       meta.kills[b] = (meta.kills[b] ?? 0) + 1;
       champs.push(`${BOSS_DEFS[b].name.toLowerCase()} rank ${rank}`);
     }
+    const loot: string[] = [];
+    for (const id of w.loot) {
+      const lvl = gainItem(meta, id);
+      loot.push(`${ITEM_BY_ID[id].name.toLowerCase()}${lvl > 0 ? ` (nível ${lvl})` : ''}`);
+    }
+    rollMarket(meta);
     const before = meta.bossesBeaten;
     meta.bossesBeaten = Math.max(before, Math.min(4, w.bossesKilled.length));
     if (record) meta.best = { wave: w.wave, souls: earned };
@@ -1322,6 +1474,8 @@ export class RunScene extends Phaser.Scene {
       [`+${earned} almas para o cemitério`, COL.G, 1],
     ];
     for (const c of champs) lines.push([`campeão: ${c}`, COL.y, 1]);
+    for (const l of loot.slice(0, 5)) lines.push([`item: ${l}`, 0xe0b040, 1]);
+    if (loot.length > 5) lines.push([`+${loot.length - 5} itens`, 0xe0b040, 1]);
     if (meta.bossesBeaten > before && before < 3) lines.push(['nova escola liberada!', COL.y, 1]);
     if (record) lines.push(['NOVO RECORDE!', COL.y, 1]);
     let y = 70;

@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { audio } from '../audio/audio';
-import { unitKey } from '../art/generate';
+import { charKey, unitKey } from '../art/generate';
+import { CHAR_GLOW } from '../art/sprites';
 import { COL } from '../art/palette';
 import { pxText } from '../art/text';
 import { button, DEPTH, transitionIn, transitionTo } from '../fx/juice';
@@ -27,9 +28,11 @@ export class MenuScene extends Phaser.Scene {
     const cx = 90;
     const baseY = 150;
     this.add.image(cx, baseY, 'altar').setScale(2).setDepth(DEPTH.altar);
-    const necro = this.add.image(cx, baseY, 'necro0').setOrigin(0.5, 1).setScale(3).setDepth(DEPTH.world + baseY);
+    const ck = charKey(meta.character);
+    const necro = this.add.sprite(cx, baseY, `${ck}0`).setOrigin(0.5, 1).setScale(3).setDepth(DEPTH.world + baseY);
+    necro.play(`${ck}-idle`);
     this.tweens.add({ targets: necro, y: baseY - 2, duration: 1400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
-    const orb = this.add.image(cx + 15, baseY - 54, 'glow32').setTint(COL.g).setBlendMode(Phaser.BlendModes.ADD).setDepth(DEPTH.glow);
+    const orb = this.add.image(cx + 15, baseY - 54, 'glow32').setTint(CHAR_GLOW[meta.character] ?? COL.g).setBlendMode(Phaser.BlendModes.ADD).setDepth(DEPTH.glow);
     this.tweens.add({ targets: orb, alpha: 0.5, scale: 1.25, yoyo: true, repeat: -1, duration: 900, ease: 'Sine.easeInOut' });
     this.extraLights = [{ x: cx, y: baseY - 26, key: 'light80', scale: 1.3 }];
 
@@ -64,7 +67,7 @@ export class MenuScene extends Phaser.Scene {
     if (meta.best.wave > 0) pxText(this, cx, 174, `recorde: onda ${meta.best.wave}`, COL.y).setOrigin(0.5).setDepth(DEPTH.hud);
 
     const items: [string, () => void, number][] = [
-      ['JOGAR', () => transitionTo(this, 'Run'), COL.G],
+      ['JOGAR', () => transitionTo(this, 'Characters'), COL.G],
       ['CEMITÉRIO', () => transitionTo(this, 'Graveyard'), COL.c],
       ['BESTIÁRIO', () => transitionTo(this, 'Bestiary'), COL.c],
       ['OPÇÕES', () => transitionTo(this, 'Options'), COL.c],
@@ -84,8 +87,7 @@ export class MenuScene extends Phaser.Scene {
       const hint = pxText(this, cx, 290, 'toque em jogar para começar', COL.B).setOrigin(0.5).setDepth(DEPTH.hud);
       this.tweens.add({ targets: hint, alpha: 0.3, yoyo: true, repeat: -1, duration: 700 });
     }
-    this.input.keyboard?.once('keydown-ENTER', () => transitionTo(this, 'Run'));
-    this.input.keyboard?.once('keydown-SPACE', () => transitionTo(this, 'Run'));
+    this.input.keyboard?.once('keydown-ENTER', () => transitionTo(this, 'Characters'));
     transitionIn(this);
   }
 

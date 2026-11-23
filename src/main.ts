@@ -3,6 +3,7 @@ import { audio } from './audio/audio';
 import { DEBUG } from './debug';
 import { BestiaryScene } from './scenes/BestiaryScene';
 import { BootScene } from './scenes/BootScene';
+import { CharactersScene } from './scenes/CharactersScene';
 import { GraveyardScene } from './scenes/GraveyardScene';
 import { MenuScene } from './scenes/MenuScene';
 import { OptionsScene } from './scenes/OptionsScene';
@@ -22,7 +23,7 @@ const game = new Phaser.Game({
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   input: { activePointers: 2 },
-  scene: [BootScene, MenuScene, GraveyardScene, BestiaryScene, OptionsScene, RunScene],
+  scene: [BootScene, MenuScene, CharactersScene, GraveyardScene, BestiaryScene, OptionsScene, RunScene],
 });
 
 if (DEBUG.fps) {

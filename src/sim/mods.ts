@@ -58,6 +58,22 @@ export interface Mods {
   rerolls: number;
   championMul: number;
 
+  // itens lendários e personagens
+  /** mortos pelo raio levantam mesmo com o exército cheio */
+  boltOvercap: boolean;
+  /** mortos perdem vida aos poucos */
+  lichDecay: boolean;
+  /** chance de explodir sem gastar o morto */
+  explodeKeep: number;
+  /** foice: acerta todos no círculo */
+  scythe: boolean;
+  /** vida perdida por segundo */
+  necroDrain: number;
+  /** vida ganha por abate */
+  killHeal: number;
+  /** cada cadáver levanta 2 */
+  doubleRaise: boolean;
+
   // sinergias (definidas pela contagem de cartas por escola)
   boneRebirth: number;
   boneDominion: boolean;
@@ -115,6 +131,13 @@ export function baseMods(): Mods {
     cardChoices: 3,
     rerolls: 0,
     championMul: 1,
+    boltOvercap: false,
+    lichDecay: false,
+    explodeKeep: 0,
+    scythe: false,
+    necroDrain: 0,
+    killHeal: 0,
+    doubleRaise: false,
     boneRebirth: 0,
     boneDominion: false,
     fleshInfect: false,
