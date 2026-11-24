@@ -1,14 +1,16 @@
 /**
  * Simulador de balanceamento: joga runs com o piloto automático, sem renderizar.
  *
- *   npm run sim -- [runs] [nivelMeta 0..5]          runs livres (o piloto persegue sinergias)
- *   npm run sim -- [runs] [nivelMeta] builds        compara as 5 escolas: cada run força uma escola
+ *   npm run sim -- [runs] [nivelMeta 0..5]          runs livres (equipamento de uma escola que gira por seed)
+ *   npm run sim -- [runs] [nivelMeta] builds        compara as 5 escolas: equipamento todo de uma escola
  *   npm run sim -- [runs] [nivelMeta] chars         compara os personagens
  */
 import { autopilot } from '../src/sim/autopilot';
 import { SCHOOL_ORDER, SCHOOLS } from '../src/sim/cards';
 import { CHARACTERS } from '../src/sim/characters';
-import { BUILDINGS, freshMeta, metaMods, schoolBonus, unlockedSchools } from '../src/sim/meta';
+import { EQUIP_SLOTS, ITEMS, type ItemRarity, SLOT_OF } from '../src/sim/items';
+import { equip, freshMeta, type MetaState, metaMods, schoolBonus, unlockedSchools } from '../src/sim/meta';
+import { fillTree } from '../src/sim/tree';
 import type { School } from '../src/sim/types';
 import { World } from '../src/sim/world';
 
@@ -17,7 +19,7 @@ const metaLevel = Number(process.argv[3] ?? 0);
 const mode = process.argv[4] ?? 'free';
 
 const meta = freshMeta();
-for (const b of BUILDINGS) meta.buildings[b.id] = Math.min(metaLevel, b.costs.length);
+fillTree(meta, metaLevel);
 
 interface Result {
   wave: number;
@@ -26,17 +28,41 @@ interface Result {
   build: string;
 }
 
-function play(seed: number, schools: School[], focus?: School, m = meta): Result {
+/**
+ * Equipamento típico do nível de meta: 0 nada, 1 comuns, 2 até mágicos, 3+ até raros.
+ * Metade dos espaços (ou todos, no modo builds) puxa a escola `focus`.
+ */
+function geared(base: MetaState, focus: School | undefined, all = false): MetaState {
+  const m: MetaState = { ...base, items: { ...base.items }, equipped: {} };
+  if (metaLevel <= 0) return m;
+  const order: ItemRarity[] = ['common', 'magic', 'rare'];
+  const cap = Math.min(2, metaLevel - 1);
+  const lvl = Math.max(0, metaLevel - 2);
+  EQUIP_SLOTS.forEach((slot, i) => {
+    const want = focus && (all || i % 2 === 0) ? focus : undefined;
+    const fits = ITEMS.filter((it) => it.slot === SLOT_OF[slot] && order.indexOf(it.rarity) >= 0 && order.indexOf(it.rarity) <= cap && !Object.values(m.equipped).includes(it.id));
+    const pick =
+      fits.filter((it) => (want ? it.school?.[want] : !it.school)).sort((a, b) => order.indexOf(b.rarity) - order.indexOf(a.rarity))[0] ??
+      fits.sort((a, b) => order.indexOf(b.rarity) - order.indexOf(a.rarity))[0];
+    if (!pick) return;
+    m.items[pick.id] = lvl;
+    equip(m, pick.id, slot);
+  });
+  return m;
+}
+
+function play(seed: number, schools: School[], focus?: School, m0 = meta, all = false): Result {
+  const m = geared(m0, focus ?? SCHOOL_ORDER[seed % SCHOOL_ORDER.length], all);
   const w = new World({ seed, mods: metaMods(m), schools, schoolBonus: schoolBonus(m), character: m.character });
   // para na onda 40: no abismo profundo a horda fica enorme e a simulação demora demais
   for (let s = 0; s < 60 * 60 * 40 && w.phase !== 'over' && w.wave <= 40; s++) {
-    autopilot(w, 1, focus);
+    autopilot(w, 1);
     w.update(1 / 60);
     w.events.length = 0;
   }
   const counts = w.schoolCounts();
   const top = SCHOOL_ORDER.reduce((a, b) => (counts[b] > counts[a] ? b : a));
-  const build = counts[top] >= 5 ? `${top}*` : counts[top] >= 3 ? top : 'misto';
+  const build = counts[top] >= 4 ? `${top}*` : counts[top] >= 2 ? top : 'misto';
   return { wave: w.wave, souls: Math.floor(w.souls), bosses: w.bossesKilled.length, build };
 }
 
@@ -63,7 +89,7 @@ if (mode === 'chars') {
   table(rows);
 } else if (mode === 'builds') {
   // todas as escolas liberadas; cada linha força uma escola
-  const rows: [string, Result[]][] = SCHOOL_ORDER.map((s) => [SCHOOLS[s].name, Array.from({ length: runs }, (_, i) => play(5000 + i, SCHOOL_ORDER, s))]);
+  const rows: [string, Result[]][] = SCHOOL_ORDER.map((s) => [SCHOOLS[s].name, Array.from({ length: runs }, (_, i) => play(5000 + i, SCHOOL_ORDER, s, meta, true))]);
   console.log(`runs=${runs} por escola, meta=${metaLevel} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
   table(rows);
 } else {

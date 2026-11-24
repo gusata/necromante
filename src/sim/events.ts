@@ -37,14 +37,14 @@ export const EVENTS: EventDef[] = [
     title: 'Altar Profano',
     text: 'Um altar manchado pede carne morta.',
     options: [
-      ['SACRIFICAR', 'metade do exército por um pacto raro à sua escolha'],
+      ['SACRIFICAR', 'metade do exército por um item raro'],
       ['RECUSAR', 'nada acontece'],
     ],
     can: (w) => w.deadCount() >= 4,
     resolve: (w, c) => {
       if (c !== 0) return;
       w.sacrificeHalf();
-      w.offerRares();
+      w.grantRareItem();
     },
   },
   {
@@ -66,15 +66,15 @@ export const EVENTS: EventDef[] = [
     title: 'Pacto de Sangue',
     text: 'Uma voz oferece poder em troca de sangue.',
     options: [
-      ['ACEITAR', '-5 de vida máxima por um pacto raro à sua escolha'],
+      ['ACEITAR', '-50 de vida máxima por um item raro'],
       ['RECUSAR', 'nada acontece'],
     ],
     can: (w) => w.necro.maxHp > 12,
     auto: (w) => (w.necro.maxHp >= 24 ? 0 : 1),
     resolve: (w, c) => {
       if (c !== 0) return;
-      w.grantCard('ev_scar');
-      w.offerRares();
+      w.grantBoon('ev_scar');
+      w.grantRareItem();
     },
   },
   {
@@ -100,7 +100,7 @@ export const EVENTS: EventDef[] = [
       ['BEBER', 'cura toda a vida por 40% das almas da run'],
       ['SEGUIR', 'nada acontece'],
     ],
-    can: (w) => w.necro.hp < w.necro.maxHp * 0.8 && w.souls >= 10,
+    can: (w) => w.necro.hp < w.necro.maxHp * 0.8 && w.souls >= 100,
     auto: (w) => (w.necro.hp < w.necro.maxHp * 0.5 ? 0 : 1),
     resolve: (w, c) => {
       if (c !== 0) return;
@@ -116,7 +116,7 @@ export const EVENTS: EventDef[] = [
       ['JOGAR', '50%: dobra as almas da run. 50%: perde metade'],
       ['SEGUIR', 'nada acontece'],
     ],
-    can: (w) => w.souls >= 15,
+    can: (w) => w.souls >= 150,
     auto: () => 1,
     resolve: (w, c) => {
       if (c !== 0) return;
@@ -134,7 +134,7 @@ export const EVENTS: EventDef[] = [
       ['SELAR', 'nada acontece'],
     ],
     resolve: (w, c) => {
-      if (c === 0) w.grantCard('ev_crypt');
+      if (c === 0) w.grantBoon('ev_crypt');
     },
   },
   {

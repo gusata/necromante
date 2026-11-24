@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { autopilot } from '../src/sim/autopilot';
-import { CARDS, computeMods, rollOffer } from '../src/sim/cards';
+import { computeMods, DOMINION_AT, MASTERY_AT } from '../src/sim/cards';
 import { ARMY_CAP, NECRO, START_SKELETONS } from '../src/sim/defs';
-import { buy, freshMeta, metaMods, migrate, SAVE_VERSION, unlockedSchools } from '../src/sim/meta';
+import { freshMeta, metaMods, migrate, SAVE_VERSION, unlockedSchools } from '../src/sim/meta';
+import { buyNode } from '../src/sim/tree';
 import { baseMods } from '../src/sim/mods';
 import { World, type RunSetup } from '../src/sim/world';
 
@@ -22,7 +23,7 @@ describe('World', () => {
     step(b, 40, true);
     expect(a.units.map((u) => [u.kind, u.x, u.y, u.hp])).toEqual(b.units.map((u) => [u.kind, u.x, u.y, u.hp]));
     expect(a.necro.hp).toBe(b.necro.hp);
-    expect(a.cards).toEqual(b.cards);
+    expect(a.boons).toEqual(b.boons);
   });
 
   it('começa com esqueletos e inicia a onda 1 na Vila', () => {
@@ -95,12 +96,6 @@ describe('World', () => {
     expect(Math.hypot(w.circle.x - w.necro.x, w.circle.y - w.necro.y)).toBeLessThanOrEqual(180.01);
   });
 
-  it('oferece cartas ao fim da onda e aplica a escolhida', () => {
-    const w = new World(setup());
-    step(w, 120, true);
-    expect(w.cards.length).toBeGreaterThan(0);
-  });
-
   it('chefe aparece na onda 6', () => {
     const w = new World(setup());
     w.startWave(6);
@@ -109,31 +104,21 @@ describe('World', () => {
   });
 });
 
-describe('cartas e sinergias', () => {
-  it('3 cartas de uma escola liberam a maestria, 5 o domínio', () => {
-    const bone = CARDS.filter((c) => c.school === 'bone').map((c) => c.id);
-    expect(computeMods(baseMods(), bone.slice(0, 2)).boneRebirth).toBe(0);
-    expect(computeMods(baseMods(), bone.slice(0, 3)).boneRebirth).toBeGreaterThan(0);
-    const dom = computeMods(baseMods(), bone.slice(0, 5));
+describe('escolas pelos itens', () => {
+  it('2 itens de uma escola liberam a maestria (e um morto novo), 4 o domínio', () => {
+    expect(computeMods(baseMods(), [], { bone: MASTERY_AT - 1 }).boneRebirth).toBe(0);
+    const mast = computeMods(baseMods(), [], { bone: MASTERY_AT });
+    expect(mast.boneRebirth).toBeGreaterThan(0);
+    expect(mast.raisePool.archer).toBeGreaterThan(0);
+    expect(mast.raisePool.lich).toBeUndefined();
+    const dom = computeMods(baseMods(), [], { bone: DOMINION_AT });
     expect(dom.boneDominion).toBe(true);
     expect(dom.fuseCount).toBe(2);
-  });
-
-  it('não oferece cartas de escolas bloqueadas nem acima do máximo', () => {
-    let i = 0;
-    const rand = () => ((i = (i * 9301 + 49297) % 233280) / 233280);
-    for (let k = 0; k < 50; k++) {
-      const offer = rollOffer(rand, ['bone_archers'], ['bone'], 4);
-      expect(offer).not.toContain('bone_archers');
-      for (const id of offer) expect(['bone', null]).toContain(CARDS.find((c) => c.id === id)!.school);
-    }
+    expect(dom.raisePool.lich).toBeGreaterThan(0);
   });
 
   it('domínio do espírito atordoa os vivos', () => {
-    const spirit = CARDS.filter((c) => c.school === 'spirit').map((c) => c.id).slice(0, 5);
-    const w = new World(setup());
-    w.cards = spirit;
-    (w as unknown as { recomputeMods: () => void }).recomputeMods();
+    const w = new World(setup({ schoolBonus: { spirit: DOMINION_AT } }));
     w.startWave(1);
     step(w, 3);
     w.screamT = 0;
@@ -149,14 +134,14 @@ describe('meta', () => {
     expect(m.version).toBe(SAVE_VERSION);
   });
 
-  it('compra construções e aplica os bônus', () => {
+  it('compra nós da árvore e aplica os bônus', () => {
     const m = freshMeta();
-    m.souls = 100;
-    expect(buy(m, 'crypts')).toBe(true);
-    expect(m.souls).toBe(75);
+    m.souls = 1000;
+    expect(buyNode(m, 'nichos')).toBe(true);
+    expect(m.souls).toBe(800);
     expect(metaMods(m).armyCap).toBe(ARMY_CAP + 4);
     m.souls = 0;
-    expect(buy(m, 'crypts')).toBe(false);
+    expect(buyNode(m, 'nichos')).toBe(false);
   });
 
   it('libera escolas conforme os chefes derrotados', () => {
@@ -167,15 +152,11 @@ describe('meta', () => {
   });
 });
 
-describe('pré-requisitos das cartas', () => {
-  it('não oferece buff de zumbi sem ter zumbis', () => {
-    let seed = 7;
-    const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
-    for (let k = 0; k < 200; k++) {
-      const offer = rollOffer(rand, [], ['bone', 'flesh', 'plague', 'spirit', 'blood'], 4);
-      expect(offer).not.toContain('flesh_rot');
-      expect(offer).not.toContain('flesh_bite');
-      expect(offer).not.toContain('spirit_wail');
-    }
+describe('sem cartas', () => {
+  it('a run não para para escolher nada no fim da onda', () => {
+    const w = new World(setup());
+    step(w, 120, true);
+    expect(w.wave).toBeGreaterThan(2);
+    expect((w as unknown as { offer?: unknown }).offer).toBeUndefined();
   });
 });

@@ -20,6 +20,7 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 | `npm run sim -- 40 2` | simulador de balanceamento: 40 runs automáticas com meta-progressão nível 2 |
 | `npm run sim -- 16 2 builds` | taxa de vitória por escola (cada run força uma escola) |
 | `npm run sim -- 14 2 chars` | taxa de vitória por personagem |
+| `npx tsx scripts/checkpoint-sim.ts 8 2` | compara runs começando em cada região (checkpoint) |
 | `npx tsx scripts/diag.ts 1 2` | uma run onda a onda: tempo, tamanho da horda, pico na tela, custo da simulação (`START=25` começa no abismo) |
 | `npm run lint` / `npm run format` | Biome |
 | `npm run build` | checa tipos e gera `dist/` |
@@ -54,13 +55,21 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 
 A primeira run tem um tutorial sem texto: uma mão mostra o gesto na hora em que ele é útil.
 
+### Visual
+
+- Mortos aliados têm uma borda verde-alma, para se destacar dos vivos na horda.
+- Cada região tem uma cor forte: Vila em terra quente, Mosteiro em pedra esverdeada, Fortaleza em aço azulado, Catedral em mármore roxo e abismo em vermelho.
+- Vida e dano aparecem multiplicados por 10 na tela (a simulação usa números pequenos).
+- O Domínio de uma escola muda o clima da partida (chuva de ossos, névoa de praga, almas subindo...).
+- Interface em tema quente: painéis marrom-escuros com moldura dourada e botão principal dourado.
+
 ### Horda
 
 O jogo é um **mar de unidades**: os vivos chegam em bandos (de 40 a mais de 150 por onda, e mais no abismo), o exército vai de 60 mortos para cima e o necromante lança raios em cadeia. Os vivos comuns morrem com um ou dois golpes. Os perigosos (paladino, bispo, templário) continuam raros e resistentes. Explodir dezenas de mortos de uma vez vira um único impacto, e o contador de **combo** mostra os abates seguidos. Quando sobram poucos vivos, os mortos partem para a caça e a onda termina sem travar.
 
 ### Estrutura de uma run
 
-4 regiões com 5 ondas e 1 chefe cada (Vila, Mosteiro, Fortaleza, Catedral). Depois vêm os **círculos do abismo**, infinitos, cada um com um modificador novo. O primeiro chefe do abismo é o **Serafim**, um chefe secreto. Chefes derrotados viram **campeões** que você pode levar para as próximas runs.
+4 regiões com 5 ondas e 1 chefe cada (Vila, Mosteiro, Fortaleza, Catedral). Vencer o chefe de uma região libera o **checkpoint**: na tela de personagem dá para começar a próxima run nela, com 4 escolhas de pacto e 18 esqueletos por região pulada (e uma encruzilhada para escolher a rota). Depois vêm os **círculos do abismo**, infinitos, cada um com um modificador novo. O primeiro chefe do abismo é o **Serafim**, um chefe secreto. Chefes derrotados viram **campeões** que você pode levar para as próximas runs.
 
 - **Encruzilhada:** depois de cada chefe você escolhe a rota até a próxima região (ex.: Trilha dos Enforcados, +30% inimigos e +50% almas).
 - **Eventos:** depois das ondas 2 e 4 de cada região pode aparecer uma escolha com risco (Altar Profano, Poço das Almas, Pacto de Sangue...).
@@ -98,7 +107,9 @@ Além de esqueletos, arqueiros, colossos, zumbis, carniçais, ratos, fantasmas e
 
 ### Meta-progressão
 
-As almas de cada run vão para o **Cemitério**, que tem cinco abas: **Obras** (8 construções; a [árvore da Necrópole](docs/ARVORE.md) é a proposta para substituí-las), **Mercado** (4 itens que mudam a cada run), **Arsenal** (equipar e forjar espaços), **Altar** (gemas) e **Tesouro**. Durante a run, depois da onda 3 de cada região, aparece o **Mercador Encapuzado**, que troca as almas da run por itens. Cada chefe derrotado pela primeira vez libera uma nova escola de pactos: Ossos e Carne no começo, depois Praga, Espírito e Sangue. O **Bestiário** registra os abates com medalhas de bronze, prata e ouro. Os **Registros** mostram estatísticas da vida toda, as últimas 20 runs (com o MVP do exército) e 20 **conquistas** que dão almas.
+Fora da partida, uma **barra de ícones** no topo leva a tudo: Início, Mercado, Arsenal, Árvore, Altar, Tesouro, Bestiário, Registros e Opções. O **Início** mostra o necromante no altar (setas trocam de personagem), onde começar, a heresia e o botão **INICIAR**.
+
+As almas de cada run (os números foram multiplicados por 10 no save v5, junto com os custos) vão para a **[Árvore da Necrópole](docs/ARVORE.md)**: 6 ramos com 48 nós em camadas, liberadas por níveis no ramo e por chefes vencidos, cada ramo terminando numa Coroa. Ela substituiu as 8 construções (a migração devolve as almas gastas). O **Mercado** tem 4 itens que mudam a cada run, o **Arsenal** equipa e forja espaços, o **Altar** encaixa gemas e o **Tesouro** é um salão com os lendários e conjuntos encontrados. Durante a run, depois da onda 3 de cada região, aparece o **Mercador Encapuzado**, que troca as almas da run por itens. Cada chefe derrotado pela primeira vez libera uma nova escola de pactos: Ossos e Carne no começo, depois Praga, Espírito e Sangue. O **Bestiário** registra os abates com medalhas de bronze, prata e ouro. Os **Registros** mostram estatísticas da vida toda, as últimas 20 runs (com o MVP do exército) e 20 **conquistas** que dão almas.
 
 ## Estrutura
 

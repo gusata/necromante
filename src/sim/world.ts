@@ -1,12 +1,13 @@
-import { CARD_BY_ID, computeMods, DOMINION_AT, MASTERY_AT, rollOffer, schoolCounts } from './cards';
+import { computeMods, DOMINION_AT, MASTERY_AT, SCHOOL_ORDER, schoolCounts } from './cards';
 import {
   AGGRO_DEAD,
+  BODY_MID,
   AGGRO_LIVING,
-  cardWave,
   DEAD_SPEED_MUL,
   ELITE_MUL,
   HORDE_BUDGET,
   LIVING_SPEED_MUL,
+  SIZE_SCALE,
   SOULS_PER_THREAT,
   BOSS_DEFS,
   CHAMPION_ABILITY,
@@ -32,7 +33,7 @@ import { combineFx, EVENT_BY_ID, EVENTS, neutralFx, ROUTE_BY_ID, ROUTES, routeFx
 import { applyHeresy, type HeresyEffects, heresyEffects } from './heresy';
 import { rollGem } from './gems';
 import { cloneMods, type Mods } from './mods';
-import { rollItem } from './items';
+import { type ItemRarity, RELIC_BOSS_CHANCE, RELIC_ELITE_CHANCE, rollItem, rollRelic } from './items';
 import { ENDLESS_MODS, REGIONS } from './regions';
 import { RNG } from './rng';
 import { FactionGrids } from './spatial';
@@ -55,7 +56,31 @@ import type {
   UnitKind,
 } from './types';
 
-export type Phase = 'intermission' | 'spawning' | 'fighting' | 'choosing' | 'event' | 'over';
+export type Phase = 'intermission' | 'spawning' | 'fighting' | 'event' | 'over';
+
+/** Registro da run para a telemetria. Dano no necromante em unidades da simulação (a tela mostra x10). */
+export interface RunLog {
+  waves: { w: number; t: number; hp: number; army: number; size: number; hurt: Record<string, number> }[];
+  hurt: Record<string, number>;
+  hurtWave: Record<string, number>;
+  actions: { explode: number; fuse: number; consume: number; ritual: number };
+  events: string[];
+  waveStart: number;
+}
+
+/** força que cada chefe vencido dá aos mortos (vida e dano) e vida ao necromante */
+export const BOSS_POWER = 0.3;
+function grow(m: Mods, power: number): Mods {
+  m.deadDmgMul *= 1 + BOSS_POWER * power;
+  m.deadHpMul *= 1 + BOSS_POWER * power;
+  m.necroMaxHp += 3 * power;
+  return m;
+}
+
+/** peso de cada lado na hora de se empurrar */
+const MASS: Record<string, number> = { living: 1.5, dead: 1 };
+/** multiplicador de peso de quem está no meio da luta */
+const ENGAGED_MASS = 3;
 
 /** Campos que não entram no save: derivados, recriados ou caches. */
 const NOT_SAVED = new Set([
@@ -88,7 +113,7 @@ export interface RunSetup {
   mods: Mods;
   schools: School[];
   champion?: { boss: BossKind; rank: number } | null;
-  /** cartas grátis por escola (itens e personagem) */
+  /** contagem por escola (itens e personagem) */
   schoolBonus?: Partial<Record<School, number>>;
   /** nível de heresia (dificuldade) */
   heresy?: number;
@@ -96,7 +121,12 @@ export interface RunSetup {
   endless?: string[];
   /** personagem (define o ritual) */
   character?: string;
+  /** checkpoint: região onde a run começa (0 = Vila) */
+  startRegion?: number;
 }
+
+/** compensação por região pulada no checkpoint */
+export const CHECKPOINT_SKELETONS = 18;
 
 export interface PendingEvent {
   id: string;
@@ -166,9 +196,12 @@ export class World {
 
   base: Mods;
   mods: Mods;
-  cards: string[] = [];
-  offer: string[] = [];
-  rerollsLeft: number;
+  /** efeitos de evento que duram a run (cicatriz, cripta aberta) */
+  boons: string[] = [];
+  /** chefes absorvidos: cada um deixa os mortos mais fortes até o fim da run */
+  power = 0;
+  /** registro para a telemetria (vai no resumo da run) */
+  log: RunLog = { waves: [], hurt: {}, hurtWave: {}, actions: { explode: 0, fuse: 0, consume: 0, ritual: 0 }, events: [], waveStart: 0 };
 
   necro: { x: number; y: number; hp: number; maxHp: number; castTimer: number; radius: number; regenAcc: number };
   circle: { x: number; y: number; r: number };
@@ -187,6 +220,8 @@ export class World {
   event: PendingEvent | null = null;
   eventsSeen: string[] = [];
   private eventDone = false;
+  /** já usou o Imortal nesta run */
+  revived = false;
   /** rota escolhida na última encruzilhada (vale para a região) */
   route: string | null = null;
   /** efeitos guardados para a próxima onda */
@@ -232,14 +267,35 @@ export class World {
     this.base = cloneMods(setup.mods);
     applyHeresy(this.base, setup.heresy ?? 0);
     this.endless = [...(setup.endless ?? [])];
-    this.mods = computeMods(this.base, [], setup.schoolBonus);
-    this.rerollsLeft = this.mods.rerolls;
+    this.mods = grow(computeMods(this.base, [], setup.schoolBonus), 0);
     this.necro = { x: NECRO.x, y: NECRO.y, hp: this.mods.necroMaxHp, maxHp: this.mods.necroMaxHp, castTimer: 0.5, radius: NECRO.radius, regenAcc: 0 };
     this.circle = { x: FIELD.w / 2, y: 200, r: this.mods.circleR };
     for (let i = 0; i < this.mods.startSkeletons; i++) {
       this.spawnDead('skeleton', this.circle.x + this.rng.range(-10, 10), this.circle.y + this.rng.range(-8, 8));
     }
     if (setup.champion) this.spawnChampion(setup.champion.boss, setup.champion.rank, this.circle.x, this.circle.y + 10);
+    const start = Math.max(0, Math.min(REGIONS.length - 1, setup.startRegion ?? 0));
+    if (start > 0) this.startAtRegion(start);
+    // escolas: a maestria e o domínio vêm dos itens equipados, então já valem desde o começo
+    const n = this.schoolCounts();
+    for (const sc of SCHOOL_ORDER) {
+      if (n[sc] >= MASTERY_AT) this.events.push({ type: 'synergy', school: sc, level: n[sc] >= DOMINION_AT ? 2 : 1 });
+    }
+  }
+
+  /** Checkpoint: a run começa numa região mais funda, com os mortos que teria ganho no caminho. */
+  private startAtRegion(r: number) {
+    this.wave = r * WAVES_PER_REGION;
+    // os chefes do caminho contam como absorvidos
+    this.power = r;
+    this.mods = grow(computeMods(this.base, this.boons, this.setup.schoolBonus), this.power);
+    this.necro.maxHp = this.mods.necroMaxHp;
+    this.necro.hp = this.necro.maxHp;
+    for (let i = 0; i < r * CHECKPOINT_SKELETONS; i++) {
+      this.spawnDead('skeleton', this.circle.x + this.rng.range(-16, 16), this.circle.y + this.rng.range(-10, 10));
+    }
+    // abre a encruzilhada antes da primeira onda do cerco
+    this.afterChoice();
   }
 
   // ================================================================ salvar e retomar
@@ -256,7 +312,10 @@ export class World {
     w.units = [];
     Object.assign(w, JSON.parse(JSON.stringify(snap.state)));
     w.rng.state = snap.rng;
-    w.mods = computeMods(w.base, w.cards, w.setup.schoolBonus);
+    w.boons = w.boons ?? [];
+    w.power = w.power ?? 0;
+    w.log = w.log ?? { waves: [], hurt: {}, hurtWave: {}, actions: { explode: 0, fuse: 0, consume: 0, ritual: 0 }, events: [], waveStart: 0 };
+    w.mods = grow(computeMods(w.base, w.boons, w.setup.schoolBonus), w.power);
     w.circle.r = w.mods.circleR;
     w.events = [];
     w.rebuildGrids(true);
@@ -298,7 +357,7 @@ export class World {
   }
 
   schoolCounts(): Record<School, number> {
-    return schoolCounts(this.cards, this.setup.schoolBonus);
+    return schoolCounts(this.setup.schoolBonus);
   }
 
   inCircle(x: number, y: number, pad = 0): boolean {
@@ -312,7 +371,7 @@ export class World {
   }
 
   private get playing() {
-    return this.phase !== 'over' && this.phase !== 'choosing' && this.phase !== 'event';
+    return this.phase !== 'over' && this.phase !== 'event';
   }
   canExplode(): boolean {
     return this.playing && this.deadInCircle().length > 0;
@@ -345,6 +404,7 @@ export class World {
 
   explode(): boolean {
     if (!this.canExplode()) return false;
+    this.log.actions.explode++;
     this.rebuildGrids();
     const m = this.mods;
     const list = this.deadInCircle();
@@ -365,6 +425,7 @@ export class World {
   /** Funde esqueletos do círculo em colossos: até 4 de uma vez na horda. */
   fuse(): boolean {
     if (!this.canFuse()) return false;
+    this.log.actions.fuse++;
     const skels = this.deadInCircle('skeleton');
     const n = this.mods.fuseCount;
     for (let g = 0; g < 4 && skels.length >= n; g++) {
@@ -386,6 +447,7 @@ export class World {
 
   consume(): boolean {
     if (!this.canConsume()) return false;
+    this.log.actions.consume++;
     const m = this.mods;
     let heal = 0;
     const eaten = this.deadInCircle().slice(0, m.consumeMax);
@@ -403,25 +465,9 @@ export class World {
     return true;
   }
 
-  pickCard(id: string): boolean {
-    if (this.phase !== 'choosing' || !this.offer.includes(id)) return false;
-    const before = this.schoolCounts();
-    this.cards.push(id);
-    this.recomputeMods();
-    const s = CARD_BY_ID[id].school;
-    if (s) {
-      const n = this.schoolCounts()[s];
-      if (before[s] < MASTERY_AT && n >= MASTERY_AT) this.events.push({ type: 'synergy', school: s, level: 1 });
-      if (before[s] < DOMINION_AT && n >= DOMINION_AT) this.events.push({ type: 'synergy', school: s, level: 2 });
-    }
-    this.offer = [];
-    this.afterChoice();
-    return true;
-  }
-
   // ================================================================ eventos e encruzilhadas
 
-  /** Depois da carta: talvez um evento, senão o intervalo até a próxima onda. */
+  /** Fim da onda: talvez um evento, senão o intervalo até a próxima onda. */
   private afterChoice() {
     if (!this.eventDone) {
       this.eventDone = true;
@@ -442,11 +488,11 @@ export class World {
     if (this.isBossWave) {
       const pool = [...ROUTES];
       const choices: string[] = [];
-      while (choices.length < 2 && pool.length) choices.push(pool.splice(Math.floor(this.rng.next() * pool.length), 1)[0].id);
+      while (choices.length < this.mods.routeChoices && pool.length) choices.push(pool.splice(Math.floor(this.rng.next() * pool.length), 1)[0].id);
       return { id: 'route', choices };
     }
     const local = this.localWave;
-    if ((local !== 2 && local !== 4) || this.rng.next() > 0.65) return null;
+    if ((local !== 2 && local !== 4) || this.rng.next() > 0.65 * this.mods.eventChance) return null;
     const ok = EVENTS.filter((e) => !e.can || e.can(this));
     const fresh = ok.filter((e) => !this.eventsSeen.includes(e.id));
     const pool = fresh.length ? fresh : ok;
@@ -460,6 +506,7 @@ export class World {
     if (this.phase !== 'event' || !this.event) return false;
     const ev = this.event;
     this.event = null;
+    this.log.events.push(ev.id === 'route' ? `rota:${ev.choices[choice] ?? ev.choices[0]}` : `${ev.id}:${choice}`);
     if (ev.id === 'route') {
       const r = ROUTE_BY_ID[ev.choices[choice] ?? ev.choices[0]];
       this.route = r.id;
@@ -488,13 +535,9 @@ export class World {
     this.prune();
   }
 
-  /** Oferta de cartas só raras e lendárias (eventos). */
-  offerRares() {
-    this.offer = rollOffer(() => this.rng.next(), this.cards, this.setup.schools, 3, this.setup.schoolBonus, true);
-    if (this.offer.length) {
-      this.phase = 'choosing';
-      this.events.push({ type: 'cardOffer' });
-    }
+  /** Eventos: um item raro ou melhor cai no círculo. */
+  grantRareItem() {
+    this.dropItem(this.circle.x, this.circle.y, 0.5 + this.regionIndex * 0.15, 'rare');
   }
 
   /** Levanta mortos de graça perto do círculo, mesmo acima do limite. */
@@ -505,9 +548,9 @@ export class World {
     }
   }
 
-  /** Carta escondida (efeito de evento). */
-  grantCard(id: string) {
-    this.cards.push(id);
+  /** Efeito de evento que dura a run. */
+  grantBoon(id: string) {
+    this.boons.push(id);
     this.recomputeMods();
   }
 
@@ -524,8 +567,9 @@ export class World {
   /** Cada necromante tem um ritual próprio, carregado por abates. */
   castRitual(): boolean {
     if (!this.canRitual()) return false;
+    this.log.actions.ritual++;
     this.rebuildGrids();
-    this.ritual = 0;
+    this.ritual = this.mods.ritualKeep > 0 && this.rng.next() < this.mods.ritualKeep ? 1 : 0;
     this.stats.rituals++;
     const m = this.mods;
     const c = this.circle;
@@ -579,7 +623,7 @@ export class World {
         const n = this.necro;
         const dmg = 3 + m.necroDmg * 2;
         for (const u of living) {
-          this.events.push({ type: 'bolt', x1: n.x + NECRO.staffDx, y1: n.y + NECRO.staffDy, x2: u.x, y2: u.y - 4 });
+          this.events.push({ type: 'bolt', x1: n.x + NECRO.staffDx, y1: n.y + NECRO.staffDy, x2: u.x, y2: u.y - BODY_MID });
           this.damage(u, dmg, 'magic');
         }
       }
@@ -588,16 +632,9 @@ export class World {
     return true;
   }
 
-  reroll(): boolean {
-    if (this.phase !== 'choosing' || this.rerollsLeft <= 0) return false;
-    this.rerollsLeft--;
-    this.offer = rollOffer(() => this.rng.next(), this.cards, this.setup.schools, this.mods.cardChoices, this.setup.schoolBonus);
-    return true;
-  }
-
   private recomputeMods() {
     const oldMax = this.mods.necroMaxHp;
-    this.mods = computeMods(this.base, this.cards, this.setup.schoolBonus);
+    this.mods = grow(computeMods(this.base, this.boons, this.setup.schoolBonus), this.power);
     const m = this.mods;
     this.necro.maxHp = m.necroMaxHp;
     if (m.necroMaxHp > oldMax) this.necro.hp += m.necroMaxHp - oldMax;
@@ -644,6 +681,13 @@ export class World {
     this.prune();
     this.checkWaveEnd();
 
+    if (this.necro.hp <= 0 && this.mods.revive && !this.revived) {
+      // coroa do Altar de Sangue: o necromante volta, e o exército paga o preço
+      this.revived = true;
+      this.necro.hp = this.necro.maxHp / 2;
+      this.sacrificeHalf();
+      this.events.push({ type: 'revive' });
+    }
     if (this.necro.hp <= 0) {
       this.necro.hp = 0;
       this.phase = 'over';
@@ -685,25 +729,26 @@ export class World {
   private checkWaveEnd(): void {
     if (this.phase !== 'fighting') return;
     if (this.units.some((u) => u.alive && u.faction === 'living')) return;
-    const gained = Math.round((2 + this.regionIndex * 2 + this.armyUsed() * 0.1) * this.mods.soulMul * this.waveFx.souls);
+    const gained = Math.round((20 + this.regionIndex * 20 + this.armyUsed()) * this.mods.soulMul * this.waveFx.souls);
     this.souls += gained;
     this.events.push({ type: 'waveCleared', wave: this.wave, souls: gained });
+    this.log.waves.push({
+      w: this.wave,
+      t: Math.round(this.time - this.log.waveStart),
+      hp: Math.round(this.necro.hp * 10),
+      army: this.armyUsed(),
+      size: this.waveSize,
+      hurt: Object.fromEntries(Object.entries(this.log.hurtWave).map(([k, v]) => [k, Math.round(v * 10)])),
+    });
+    this.log.hurtWave = {};
     this.projectiles = [];
     this.telegraphs = [];
-    // horda: cartas só nas ondas pares (o chefe é a onda 6), para o jogo não parar toda hora
-    this.offer = cardWave(this.localWave)
-      ? rollOffer(() => this.rng.next(), this.cards, this.setup.schools, this.mods.cardChoices, this.setup.schoolBonus)
-      : [];
-    if (this.offer.length) {
-      this.phase = 'choosing';
-      this.events.push({ type: 'cardOffer' });
-    } else {
-      this.afterChoice();
-    }
+    this.afterChoice();
   }
 
   startWave(n: number): void {
     this.wave = n;
+    this.log.waveStart = this.time;
     this.bossId = null;
     this.eventDone = false;
     this.waveFx = combineFx(routeFx(this.route), this.nextWave);
@@ -729,6 +774,7 @@ export class World {
       this.spawnQueue = this.buildQueue(local);
     }
     this.waveSize = this.spawnQueue.length;
+    if (local === 1 && this.mods.regionSkeletons > 0) this.raiseFree('skeleton', this.mods.regionSkeletons);
     for (let i = 0; i < this.mods.freeSkeletonsPerWave; i++) {
       this.spawnDead('skeleton', this.circle.x + this.rng.range(-8, 8), this.circle.y + this.rng.range(-6, 6));
     }
@@ -811,9 +857,9 @@ export class World {
     const hit = new Set<number>();
     for (let i = 0; i <= this.mods.boltChain && t; i++) {
       hit.add(t.id);
-      this.events.push({ type: 'bolt', x1: fromX, y1: fromY, x2: t.x, y2: t.y - 4 });
+      this.events.push({ type: 'bolt', x1: fromX, y1: fromY, x2: t.x, y2: t.y - BODY_MID });
       fromX = t.x;
-      fromY = t.y - 4;
+      fromY = t.y - BODY_MID;
       const from = t;
       this.damage(t, this.mods.necroDmg, 'magic');
       t = this.nearest(from, 'living', 34, (o) => !hit.has(o.id))!;
@@ -834,9 +880,15 @@ export class World {
           c.gone = true;
           const kind = c.bones ? 'skeleton' : this.pickRaise();
           const u = this.spawnDead(kind, c.x, c.y);
+          if (m.eliteRaise > 0 && this.rng.next() < m.eliteRaise) {
+            u.elite = true;
+            u.maxHp *= 1.6;
+            u.hp = u.maxHp;
+            u.dmg *= 1.6;
+          }
           this.stats.raised++;
           this.events.push({ type: 'raised', corpseId: c.id, unitId: u.id, x: c.x, y: c.y, kind });
-          if (m.doubleRaise && this.armyUsed() < m.armyCap) {
+          if ((m.doubleRaise || (m.doubleRaiseChance > 0 && this.rng.next() < m.doubleRaiseChance)) && this.armyUsed() < m.armyCap) {
             const u2 = this.spawnDead(kind, c.x + this.rng.range(-5, 5), c.y + this.rng.range(-3, 3));
             this.events.push({ type: 'raised', corpseId: -1, unitId: u2.id, x: u2.x, y: u2.y, kind });
           }
@@ -935,7 +987,7 @@ export class World {
         if (def.projectile) this.fire(u, null);
         else {
           this.events.push({ type: 'swing', id: u.id, tx: n.x, ty: n.y });
-          this.hurtNecro(this.dmgOf(u), u.x, u.y);
+          this.hurtNecro(this.dmgOf(u), u.x, u.y, u.kind);
         }
       }
     } else {
@@ -1055,11 +1107,11 @@ export class World {
     this.projectiles.push({
       id: this.nextId++,
       x: u.x,
-      y: u.y - 6,
+      y: u.y - BODY_MID - 2,
       targetId: t?.id ?? -1,
       atNecro: !t,
       tx: t ? t.x : this.necro.x,
-      ty: t ? t.y - 4 : this.necro.y - 6,
+      ty: t ? t.y - BODY_MID : this.necro.y - 14,
       speed: def.projectile ?? 100,
       dmg: this.dmgOf(u),
       type: u.kind === 'lich' ? 'magic' : 'normal',
@@ -1142,7 +1194,7 @@ export class World {
       const payload: LivingKind = ri <= 1 ? 'peasant' : ri === 2 ? 'militia' : 'flagellant';
       const tx = this.necro.x + this.rng.range(-34, 34);
       const ty = this.necro.y - this.rng.range(18, 56);
-      this.telegraphs.push({ id: this.nextId++, shape: 'circle', x: tx, y: ty, r: 10, x2: u.x, y2: u.y - 6, t: 1, max: 1, ability: 'throw', ownerId: u.id, hits: 'dead', dmg: 2, payload });
+      this.telegraphs.push({ id: this.nextId++, shape: 'circle', x: tx, y: ty, r: 10, x2: u.x, y2: u.y - BODY_MID - 2, t: 1, max: 1, ability: 'throw', ownerId: u.id, hits: 'dead', dmg: 2, payload });
       this.events.push({ type: 'swing', id: u.id, tx, ty });
     } else if (has(u, 'banish')) {
       u.traitTimer = 4;
@@ -1270,13 +1322,13 @@ export class World {
         const cx = t.ability === 'nova' ? owner.x : t.x;
         const cy = t.ability === 'nova' ? owner.y : t.y;
         this.aoe(cx, cy, t.r, t.hits, t.dmg, 'holy', owner);
-        if (t.hits === 'dead' && dist2(cx, cy, this.necro.x, this.necro.y) <= (t.r + this.necro.radius) ** 2) this.hurtNecro(Math.ceil(t.dmg / 2), cx, cy);
+        if (t.hits === 'dead' && dist2(cx, cy, this.necro.x, this.necro.y) <= (t.r + this.necro.radius) ** 2) this.hurtNecro(Math.ceil(t.dmg / 2), cx, cy, owner.kind);
       } else {
         for (const o of this.units) {
           if (o.alive && o.faction === t.hits && distToSegment2(o.x, o.y, t.x, t.y, t.x2, t.y2) <= t.r * t.r) this.damage(o, t.dmg, 'holy', owner);
         }
         if (t.hits === 'dead' && distToSegment2(this.necro.x, this.necro.y, t.x, t.y, t.x2, t.y2) <= (t.r + this.necro.radius) ** 2) {
-          this.hurtNecro(3, this.necro.x, this.necro.y);
+          this.hurtNecro(3, this.necro.x, this.necro.y, owner.kind);
         }
       }
     }
@@ -1310,7 +1362,7 @@ export class World {
       }
     });
     if (u.faction === 'living' && dist2(u.x, u.y, this.necro.x, this.necro.y) <= (u.radius + this.necro.radius + 4) ** 2) {
-      this.hurtNecro(3, u.x, u.y);
+      this.hurtNecro(3, u.x, u.y, u.kind);
       // o altar repele: o chefe é arremessado de volta e fica tonto
       const dx = u.x - this.necro.x;
       const dy = u.y - this.necro.y;
@@ -1335,12 +1387,12 @@ export class World {
     for (const p of this.projectiles) {
       if (p.atNecro) {
         p.tx = this.necro.x;
-        p.ty = this.necro.y - 6;
+        p.ty = this.necro.y - 14;
       } else {
         const t = this.unitById(p.targetId);
         if (t) {
           p.tx = t.x;
-          p.ty = t.y - 4;
+          p.ty = t.y - BODY_MID;
         } else p.targetId = -1;
       }
       const dx = p.tx - p.x;
@@ -1349,7 +1401,7 @@ export class World {
       const step = p.speed * dt;
       if (len <= step + 2) {
         p.gone = true;
-        if (p.atNecro) this.hurtNecro(p.dmg, p.x, p.y);
+        if (p.atNecro) this.hurtNecro(p.dmg, p.x, p.y, p.sourceKind);
         else {
           const t = this.unitById(p.targetId);
           if (t) {
@@ -1454,8 +1506,12 @@ export class World {
         const nx = d > 0.001 ? dx / d : b.id % 2 ? 1 : -1;
         const ny = d > 0.001 ? dy / d : 0;
         const over = min - d;
-        const wa = b.radius / min;
-        const wb = a.radius / min;
+        // peso: quem está lutando (golpeou há pouco) finca o pé; os de trás não empurram a linha da frente.
+        // os vivos pesam um pouco mais, para o exército não varrer a horda para cima
+        const ma = MASS[a.faction] * a.radius * a.radius * (a.atkTimer > 0 ? ENGAGED_MASS : 1);
+        const mb = MASS[b.faction] * b.radius * b.radius * (b.atkTimer > 0 ? ENGAGED_MASS : 1);
+        const wa = mb / (ma + mb);
+        const wb = ma / (ma + mb);
         a.x -= nx * over * wa;
         a.y -= ny * over * wa;
         b.x += nx * over * wb;
@@ -1491,6 +1547,7 @@ export class World {
     let dmg = amount;
     if (t.faction === 'dead') {
       if (type === 'holy' && src && has(src, 'holyWeapon')) dmg *= 2;
+      if (type === 'holy') dmg *= 1 - Math.min(0.6, this.mods.holyResist);
       dmg *= 1 - this.mods.deadArmor;
     } else {
       if (type === 'magic' && has(t, 'shieldBlock') && !this.mods.spiritMastery) dmg *= 0.5;
@@ -1518,7 +1575,7 @@ export class World {
     if (t.faction === 'living') {
       this.kills++;
       if (this.ritual < 1) {
-        this.ritual = Math.min(1, this.ritual + 1 / RITUAL_KILLS + 1e-9);
+        this.ritual = Math.min(1, this.ritual + 1 / (RITUAL_KILLS * this.mods.ritualMul) + 1e-9);
         if (this.ritual >= 1) this.events.push({ type: 'ritualReady' });
       }
       if (t.lastHitBy && UNIT_DEFS[t.lastHitBy].faction === 'dead') this.stats.deadKills[t.lastHitBy] = (this.stats.deadKills[t.lastHitBy] ?? 0) + 1;
@@ -1529,15 +1586,19 @@ export class World {
           this.healNecro(1);
         }
       }
-      if (t.elite && (this.waveFx.eliteLoot || this.rng.next() < 0.4)) this.dropItem(t.x, t.y, 0.3);
-      if (def.boss) this.dropItem(t.x, t.y, 0.6 + 0.2 * this.regionIndex, 'magic');
+      if (t.elite && (this.waveFx.eliteLoot || this.rng.next() < 0.22 + this.mods.eliteLootBonus)) this.dropItem(t.x, t.y, 0.15 * this.regionIndex);
+      if (def.boss) this.dropItem(t.x, t.y, 0.3 + 0.15 * this.regionIndex, this.mods.bossRareLoot ? 'rare' : 'magic');
+      // relíquias: cada cerco guarda as suas, e quase nunca caem
+      const relicP = (def.boss ? RELIC_BOSS_CHANCE : t.elite ? RELIC_ELITE_CHANCE : 0) * this.mods.relicLuck * (1 + 0.5 * this.abyss);
+      if (relicP > 0 && this.rng.next() < relicP) this.dropRelic(t.x, t.y);
       // gemas: elites às vezes, chefes sempre (duas), e raramente de qualquer vivo
-      if (t.elite && this.rng.next() < 0.25) this.dropGem(t.x, t.y, 0.1 * this.regionIndex);
+      const gm = this.mods.gemMul;
+      if (t.elite && this.rng.next() < 0.25 * gm) this.dropGem(t.x, t.y, 0.1 * this.regionIndex + (gm - 1) * 0.4);
       if (def.boss) {
         this.dropGem(t.x - 6, t.y, 0.2 + 0.15 * this.regionIndex, 1 + Math.min(1, this.abyss));
         this.dropGem(t.x + 6, t.y, 0.2 + 0.15 * this.regionIndex);
       }
-      if (!t.elite && !def.boss && this.rng.next() < 0.0015) this.dropGem(t.x, t.y, 0);
+      if (!t.elite && !def.boss && this.rng.next() < 0.0015 * gm) this.dropGem(t.x, t.y, (gm - 1) * 0.4);
       this.killsByKind[t.kind] = (this.killsByKind[t.kind] ?? 0) + 1;
       this.souls += def.threat * SOULS_PER_THREAT * this.mods.soulMul * this.waveFx.souls;
       if (this.mods.bloodMastery && ++this.bloodKills % 20 === 0) this.healNecro(1);
@@ -1548,7 +1609,11 @@ export class World {
       if (this.mods.plagueDominion && t.poisonT > 0) this.addCloud(t.x, t.y);
       if (def.boss) {
         this.bossesKilled.push(t.kind as BossKind);
-        this.souls += 12 * (this.regionIndex + 1) * this.mods.soulMul;
+        // o exército absorve o chefe: mais vida e dano até o fim da run
+        this.power++;
+        this.recomputeMods();
+        this.events.push({ type: 'eventResult', text: `mortos absorvem o chefe: +${Math.round(BOSS_POWER * 100)}%`, good: true });
+        this.souls += 120 * (this.regionIndex + 1) * this.mods.soulMul;
         this.events.push({ type: 'bossDeath', boss: t.kind as BossKind, x: t.x, y: t.y });
         // o chefe cai: os vivos restantes fogem
         for (const o of this.units) if (o.alive && o.faction === 'living' && o !== t) o.stunT = 0.6;
@@ -1602,9 +1667,11 @@ export class World {
     if (this.mods.frenzyTime > 0 && this.mods.frenzyDmg > 0) this.frenzyT = this.mods.frenzyTime;
   }
 
-  private hurtNecro(dmg: number, x: number, y: number) {
+  private hurtNecro(dmg: number, x: number, y: number, src = '?') {
     if (this.phase === 'over') return;
     this.necro.hp -= dmg;
+    this.log.hurt[src] = (this.log.hurt[src] ?? 0) + dmg;
+    this.log.hurtWave[src] = (this.log.hurtWave[src] ?? 0) + dmg;
     this.events.push({ type: 'necroHit', dmg, x, y });
   }
 
@@ -1654,7 +1721,7 @@ export class World {
       range: d.range,
       atkCd: d.atkCd,
       atkTimer: 0,
-      radius: d.radius,
+      radius: d.radius * SIZE_SCALE,
       alive: true,
       moving: false,
       facing: 1,
@@ -1734,8 +1801,15 @@ export class World {
     this.events.push({ type: 'gemDrop', x, y, gem });
   }
 
-  private dropItem(x: number, y: number, luck: number, min: 'common' | 'magic' = 'common') {
-    const item = rollItem(() => this.rng.next(), luck, min);
+  private dropRelic(x: number, y: number) {
+    const item = rollRelic(() => this.rng.next(), this.regionIndex % REGIONS.length);
+    if (!item) return;
+    this.loot.push(item);
+    this.events.push({ type: 'itemDrop', x, y, item });
+  }
+
+  private dropItem(x: number, y: number, luck: number, min: ItemRarity = 'common') {
+    const item = rollItem(() => this.rng.next(), luck + this.mods.itemLuck, min);
     this.loot.push(item);
     this.events.push({ type: 'itemDrop', x, y, item });
   }

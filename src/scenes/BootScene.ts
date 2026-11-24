@@ -4,7 +4,7 @@ import { applySheets, queueManifest, queueSheets } from '../art/aseprite';
 import { generateArt } from '../art/generate';
 import { DEBUG } from '../debug';
 import { loadMeta, meta } from '../platform/save';
-import { BUILDINGS } from '../sim/meta';
+import { fillTree } from '../sim/tree';
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -37,12 +37,12 @@ export class BootScene extends Phaser.Scene {
     await loadMeta();
     if (DEBUG.metaLevel !== null) {
       // atenção: se a run terminar, o resultado é salvo por cima do progresso real
-      for (const b of BUILDINGS) meta.buildings[b.id] = Math.min(DEBUG.metaLevel, b.costs.length);
+      fillTree(meta, DEBUG.metaLevel);
       meta.bossesBeaten = Math.min(4, DEBUG.metaLevel);
       if (DEBUG.metaLevel > 0) {
         meta.champions = { woodcutter: 2, abbot: 1, commander: 1, archbishop: 1 };
         meta.selectedChampion = 'woodcutter';
-        meta.souls = 999;
+        meta.souls = 9999;
         meta.kills = { peasant: 160, hound: 60, torch: 20, militia: 12, monk: 30, priest: 8 };
         meta.items = { staff_storm: 2, hood_worn: 0, cloak_crimson: 1, ring_bone: 0, ring_iron: 3, amulet_tooth: 0, hood_lich: 0 };
         meta.equipped = { staff: 'staff_storm', hood: 'hood_worn', cloak: 'cloak_crimson', ring1: 'ring_bone', ring2: 'ring_iron', amulet: 'amulet_tooth' };

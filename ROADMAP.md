@@ -163,8 +163,11 @@ Formas geométricas apenas. Nenhuma arte até aqui.
 - [x] Tesouro (bônus permanente de lendários e conjuntos), 3 conjuntos que cruzam escolas, gemas no altar, forja por espaço
 - [x] Bandos pelas laterais e o Arremessador
 - [x] Mira por toque direto (opção)
-- [ ] Árvore da Necrópole no lugar das construções (desenho pronto em [docs/ARVORE.md](docs/ARVORE.md))
-- [ ] Checkpoint: começar a run na região do último chefe vencido
+- [x] Árvore da Necrópole no lugar das construções ([docs/ARVORE.md](docs/ARVORE.md))
+- [x] Interface nova: barra de ícones, tela inicial com o necromante, tema quente, tesouro em nichos, HUD com selo da região e vida em números
+- [x] Mortos com borda de aliado, cor forte por região, números grandes (x10), efeitos de Domínio
+- [x] Checkpoint: começar a run na região do último chefe vencido
+- [x] Sprites maiores: humanoides e esqueletos em 16×22, necromante ampliado 2x
 - [ ] Objetos por região que o círculo ativa (baú do saqueador, relicários, estandarte, velas)
 
 ### Fase 7: Polimento mobile (2–3 semanas)

@@ -2,7 +2,7 @@
  * Parâmetros de debug na URL:
  *   ?run          pula o menu
  *   ?auto         o jogo se joga sozinho
- *   ?scene=Nome   abre uma cena direto (Graveyard, Bestiary, Records, Options, Characters)
+ *   ?scene=Nome   abre uma cena direto (Graveyard, Bestiary, Records, Options)
  *   ?wave=N       começa na onda N
  *   ?meta=N       finge meta-progressão no nível N
  *   ?fps          mostra o contador de quadros por segundo

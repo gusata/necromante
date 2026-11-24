@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { autopilot } from '../src/sim/autopilot';
-import { rollOffer } from '../src/sim/cards';
+import { ITEMS, relicsOf, rollItem, rollRelic } from '../src/sim/items';
 import { EVENTS, ROUTES } from '../src/sim/events';
 import { heresyEffects } from '../src/sim/heresy';
 import { freshMeta, migrate } from '../src/sim/meta';
@@ -22,7 +22,7 @@ const state = (w: World) => [
   w.necro.hp,
   w.souls,
   w.kills,
-  w.cards.join(),
+  w.boons.join(),
   w.units.map((u) => [u.kind, Math.round(u.x * 100), Math.round(u.y * 100), u.hp]),
 ];
 
@@ -106,11 +106,24 @@ describe('eventos e encruzilhadas', () => {
     expect(w.waveFx.souls).toBeCloseTo(1.5);
   });
 
-  it('cartas escondidas nunca são oferecidas', () => {
-    for (let s = 0; s < 50; s++) {
-      const offer = rollOffer(() => Math.random(), [], ['bone', 'flesh', 'plague', 'spirit', 'blood'], 4);
-      expect(offer.some((id) => id.startsWith('ev_'))).toBe(false);
+  it('relíquias: duas por cerco, nunca saem no sorteio comum', () => {
+    for (let r = 0; r < 4; r++) expect(relicsOf(r)).toHaveLength(2);
+    let seed = 3;
+    const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const rarityOf = (id: string) => ITEMS.find((i) => i.id === id)!.rarity;
+    for (let k = 0; k < 3000; k++) expect(rarityOf(rollItem(rand, 1))).not.toBe('legendary');
+    for (let k = 0; k < 50; k++) expect(relicsOf(1).map((i) => i.id)).toContain(rollRelic(rand, 1));
+  });
+
+  it('raros são difíceis: menos de 1 em 12 sem sorte', () => {
+    let seed = 5;
+    const rand = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    let rare = 0;
+    for (let k = 0; k < 4000; k++) {
+      const id = rollItem(rand, 0);
+      if (['rare', 'set'].includes(ITEMS.find((i) => i.id === id)!.rarity)) rare++;
     }
+    expect(rare / 4000).toBeLessThan(1 / 12);
   });
 
   it('o piloto automático joga eventos sem travar', () => {
@@ -228,18 +241,13 @@ describe('horda', () => {
     expect(w.waveSize).toBeGreaterThan(40);
   });
 
-  it('cartas só nas ondas pares (o chefe é a 6)', () => {
-    for (const [wave, offered] of [
-      [1, false],
-      [2, true],
-      [3, false],
-      [6, true],
-    ] as [number, boolean][]) {
+  it('o fim da onda não para para escolher nada', () => {
+    for (const wave of [1, 2, 6]) {
       const w = new World(setup());
       w.wave = wave;
       w.phase = 'fighting';
       (w as unknown as { checkWaveEnd: () => void }).checkWaveEnd();
-      expect((w.phase as string) === 'choosing').toBe(offered);
+      expect(['intermission', 'event']).toContain(w.phase);
     }
   });
 
@@ -335,5 +343,77 @@ describe('arremessador e laterais', () => {
       }
     }
     expect(flanks).toBeGreaterThan(0);
+  });
+});
+
+describe('checkpoint', () => {
+  it('começar na Fortaleza: esqueletos extras, encruzilhada e onda 13', async () => {
+    const { CHECKPOINT_SKELETONS } = await import('../src/sim/world');
+    const w = new World(setup({ startRegion: 2 }));
+    expect(w.wave).toBe(12);
+    expect(w.units.filter((u) => u.kind === 'skeleton').length).toBeGreaterThanOrEqual(2 * CHECKPOINT_SKELETONS);
+    expect(w.phase).toBe('event');
+    expect(w.event?.id).toBe('route');
+    w.resolveEvent(0);
+    step(w, 3, false);
+    expect(w.wave).toBe(13);
+    expect(w.region.name).toBe('A Fortaleza');
+  });
+
+  it('só libera regiões de chefes vencidos', async () => {
+    const { freshMeta: fm, maxStartRegion } = await import('../src/sim/meta');
+    const m = fm();
+    expect(maxStartRegion(m)).toBe(0);
+    m.bossesBeaten = 2;
+    expect(maxStartRegion(m)).toBe(2);
+    m.bossesBeaten = 4;
+    expect(maxStartRegion(m)).toBe(3);
+  });
+});
+
+describe('árvore da necrópole', () => {
+  it('camadas travadas por níveis no ramo e por chefes', async () => {
+    const { freshMeta: fm } = await import('../src/sim/meta');
+    const { buyNode, lockReason, NODE_BY_ID, nodeCost } = await import('../src/sim/tree');
+    const m = fm();
+    m.souls = 1e6;
+    expect(lockReason(m, NODE_BY_ID.rito_ligeiro)).not.toBeNull();
+    for (let i = 0; i < 6; i++) expect(buyNode(m, 'nichos') || buyNode(m, 'covas_rasas')).toBe(true);
+    expect(lockReason(m, NODE_BY_ID.rito_ligeiro)).not.toBeNull(); // falta o chefe
+    m.bossesBeaten = 1;
+    expect(lockReason(m, NODE_BY_ID.rito_ligeiro)).toBeNull();
+    expect(buyNode(m, 'rito_ligeiro')).toBe(true);
+    // custos crescem por nível
+    expect(nodeCost(m, NODE_BY_ID.rito_ligeiro)!).toBeGreaterThan(700);
+    expect(lockReason(m, NODE_BY_ID.necropole_viva)).not.toBeNull();
+  });
+
+  it('coroa abre o anel II (+3 níveis) e o Imortal salva uma vez', async () => {
+    const { freshMeta: fm, metaMods } = await import('../src/sim/meta');
+    const { maxLevel, NODE_BY_ID } = await import('../src/sim/tree');
+    const m = fm();
+    expect(maxLevel(m, NODE_BY_ID.nichos)).toBe(5);
+    m.tree.necropole_viva = 1;
+    expect(maxLevel(m, NODE_BY_ID.nichos)).toBe(8);
+    m.tree.imortal = 1;
+    const w = new World(setup({ mods: metaMods(m) }));
+    step(w, 3, false);
+    w.necro.hp = -5;
+    w.update(1 / 60);
+    expect(w.phase).not.toBe('over');
+    expect(w.necro.hp).toBeGreaterThan(0);
+    w.necro.hp = -5;
+    w.update(1 / 60);
+    expect(w.phase).toBe('over');
+  });
+
+  it('migração v5: devolve as almas das construções e multiplica por 10', async () => {
+    const { migrate: mg } = await import('../src/sim/meta');
+    const m = mg({ version: 4, souls: 100, totalSouls: 200, buildings: { crypts: 2, hall: 1 }, best: { wave: 9, souls: 30 } });
+    // 100 x10 = 1000, mais as criptas (250 + 600) e o salão (800)
+    expect(m.souls).toBe(1000 + 250 + 600 + 800);
+    expect(m.tree.salao).toBe(1);
+    expect(m.buildings).toEqual({});
+    expect(m.best.souls).toBe(300);
   });
 });

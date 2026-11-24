@@ -9,11 +9,15 @@ export const NECRO = {
   hp: 20,
   dmg: 1,
   castCd: 0.3,
-  radius: 8,
-  staffDx: 5,
-  staffDy: -15,
+  radius: 12,
+  staffDx: 10,
+  staffDy: -32,
 } as const;
 
+/** sprites 16x22: o corpo ocupa mais espaço que o antigo 12x14 */
+export const SIZE_SCALE = 1.3;
+/** altura do meio do corpo acima dos pés (onde raios e flechas acertam) */
+export const BODY_MID = 10;
 export const CIRCLE_R = 30;
 /** cadáveres a até esta distância da borda do círculo também levantam */
 export const RAISE_PAD = 12;
@@ -44,14 +48,12 @@ export const INTERMISSION = 1.2;
 /** multiplicador do orçamento de ameaça das ondas */
 export const HORDE_BUDGET = 7;
 /** almas por ponto de ameaça abatido */
-export const SOULS_PER_THREAT = 0.04;
+export const SOULS_PER_THREAT = 0.4;
 /** velocidade global (o jogo era lento demais) */
 export const LIVING_SPEED_MUL = 1.35;
 export const DEAD_SPEED_MUL = 1.2;
 /** elites ficam mais raros, já que há muito mais vivos */
 export const ELITE_MUL = 0.3;
-/** cartas só nas ondas pares (a 6 é o chefe) */
-export const cardWave = (local: number) => local % 2 === 0;
 export const WAVES_PER_REGION = 6; // 5 ondas + chefe
 export const REGION_COUNT = 4;
 

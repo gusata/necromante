@@ -30,7 +30,25 @@ export const PAL: Record<string, string> = {
   z: '#221d2a', // pedra
   Z: '#302939', // pedra, luz
   q: '#0c0a11', // musgo morto
+  // interface (tema quente: marrom e ouro)
+  u: '#f2e3c6', // texto principal, creme
+  v: '#a89078', // texto secundário
+  U: '#f0c050', // ouro claro (títulos, preços)
 };
+
+/** Cores da interface: painéis marrom-escuros com moldura dourada. */
+export const UI = {
+  bg: '#14100c',
+  panel: '#1f1712',
+  panel2: '#2a1f17',
+  edge: '#4a3524',
+  edge2: '#6a4c32',
+  dark: '#0b0806',
+  gold: '#e0b040',
+  goldLight: '#ffe08a',
+  goldDark: '#8a5a18',
+  green: '#3fb070',
+} as const;
 
 export const hex = (c: string) => parseInt(c.slice(1), 16);
 

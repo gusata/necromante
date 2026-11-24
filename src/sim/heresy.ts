@@ -14,13 +14,13 @@ export const MAX_HERESY = 10;
 export const HERESY: HeresyLevel[] = [
   { name: 'Dúvida', desc: 'vivos +15% vida' },
   { name: 'Suspeita', desc: 'elites 2x mais comuns' },
-  { name: 'Blasfêmia', desc: 'necromante -4 vida' },
+  { name: 'Blasfêmia', desc: 'necromante -40 vida' },
   { name: 'Sacrilégio', desc: 'ondas 20% maiores' },
   { name: 'Profanação', desc: 'cadáveres duram 25% menos' },
   { name: 'Apostasia', desc: 'chefes +30% vida' },
   { name: 'Anátema', desc: 'vivos 10% mais rápidos' },
-  { name: 'Excomunhão', desc: 'uma carta a menos por escolha' },
-  { name: 'Cruzada', desc: 'vivos +1 dano' },
+  { name: 'Excomunhão', desc: 'elites derrubam menos itens' },
+  { name: 'Cruzada', desc: 'vivos +10 dano' },
   { name: 'Juízo Final', desc: 'sem esqueletos iniciais, exército -10%' },
 ];
 
@@ -52,7 +52,7 @@ export function applyHeresy(m: Mods, level: number): void {
   m.soulMul += 0.1 * level;
   if (level >= 3) m.necroMaxHp = Math.max(6, m.necroMaxHp - 4);
   if (level >= 5) m.corpseLife *= 0.75;
-  if (level >= 8) m.cardChoices = Math.max(2, m.cardChoices - 1);
+  if (level >= 8) m.eliteLootBonus -= 0.1;
   if (level >= 10) {
     m.startSkeletons = 0;
     m.armyCap = Math.max(4, Math.round(m.armyCap * 0.9));

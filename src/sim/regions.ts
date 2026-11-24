@@ -41,8 +41,8 @@ export const REGIONS: Region[] = [
     name: 'A Catedral',
     subtitle: 'a luz final',
     boss: 'archbishop',
-    pool: { templar: [3, 1], paladin: [3, 1], soldier: [2, 1], inquisitor: [3, 2], witchhunter: [2, 2], bishop: [2, 3], crossbow: [2, 1], flagellant: [2, 1], hurler: [2, 1] },
-    budget: (l) => 60 + l * 12,
+    pool: { templar: [3, 1], paladin: [3, 2], soldier: [3, 1], inquisitor: [3, 2], witchhunter: [2, 3], bishop: [2, 3], crossbow: [2, 1], flagellant: [2, 1], hurler: [2, 2] },
+    budget: (l) => 46 + l * 15,
     escort: ['paladin', 'templar', 'inquisitor', 'bishop', 'witchhunter'],
   },
 ];
@@ -58,9 +58,9 @@ export const ENDLESS_MODS: EndlessMod[] = [
   { id: 'fervor', name: 'Fervor', desc: 'Vivos 15% mais rápidos.' },
   { id: 'iron', name: 'Ferro', desc: 'Vivos +25% vida.' },
   { id: 'horde', name: 'Horda', desc: 'Ondas 25% maiores.' },
-  { id: 'zeal', name: 'Zelo', desc: 'Vivos +1 dano.' },
+  { id: 'zeal', name: 'Zelo', desc: 'Vivos +10 dano.' },
   { id: 'dawn', name: 'Aurora', desc: 'Cadáveres duram metade.' },
-  { id: 'faith', name: 'Fé', desc: 'Vivos curam 1 vida a cada 4s.' },
+  { id: 'faith', name: 'Fé', desc: 'Vivos curam 10 de vida a cada 4s.' },
 ];
 
 export const circleName = (n: number) => `Círculo ${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? n}`;

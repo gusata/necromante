@@ -18,11 +18,12 @@ import {
 } from './items';
 import { baseMods, type Mods } from './mods';
 import type { HistoryEntry, LifetimeStats } from './progress';
+import { applyTree, extraMarket, extraSlotLevel, extraSockets, forgeDiscount, refreshDiscount } from './tree';
 import type { BossKind, School, UnitKind } from './types';
 
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 export const MARKET_SIZE = 4;
-export const MARKET_REFRESH_COST = 25;
+export const MARKET_REFRESH_COST = 250;
 
 export interface Settings {
   sfx: boolean;
@@ -34,6 +35,8 @@ export interface Settings {
   speed: number;
   /** mira: arrastar (relativo) ou tocar direto onde o círculo deve ir */
   aim: 'drag' | 'direct';
+  /** envia estatísticas anônimas de jogo (teste e equilíbrio) */
+  telemetry: boolean;
 }
 
 export interface MetaState {
@@ -64,6 +67,8 @@ export interface MetaState {
   heresy: number;
   /** maior heresia liberada (0 = ainda não venceu a Catedral) */
   heresyMax: number;
+  /** checkpoint escolhido: região onde a próxima run começa */
+  startRegion: number;
   history: HistoryEntry[];
   stats: LifetimeStats;
   achievements: string[];
@@ -76,6 +81,8 @@ export interface MetaState {
   gems: Record<string, number>;
   /** encaixes do altar */
   sockets: (string | null)[];
+  /** árvore da necrópole: nó -> nível */
+  tree: Record<string, number>;
 }
 
 const freshStats = (): LifetimeStats => ({ kills: 0, raised: 0, exploded: 0, rituals: 0, bossKills: 0, victories: 0, time: 0, bestKills: 0, bestArmy: 0 });
@@ -94,7 +101,7 @@ export function freshMeta(): MetaState {
     bossesBeaten: 0,
     best: { wave: 0, souls: 0 },
     runs: 0,
-    settings: { sfx: true, music: true, haptics: true, shake: 1, speed: 1, aim: 'drag' },
+    settings: { sfx: true, music: true, haptics: true, shake: 1, speed: 1, aim: 'drag', telemetry: true },
     items: {},
     equipped: {},
     market: [],
@@ -103,6 +110,7 @@ export function freshMeta(): MetaState {
     tutorial: [],
     heresy: 0,
     heresyMax: 0,
+    startRegion: 0,
     history: [],
     stats: freshStats(),
     achievements: [],
@@ -111,6 +119,7 @@ export function freshMeta(): MetaState {
     slots: {},
     gems: {},
     sockets: Array.from({ length: BASE_SOCKETS }, () => null),
+    tree: {},
   };
 }
 
@@ -123,6 +132,20 @@ export function migrate(raw: unknown): MetaState {
   if (r.version === undefined) {
     base.best = { wave: r.wave ?? 0, souls: r.souls ?? 0 };
     return base;
+  }
+  // v5: a economia de almas foi multiplicada por 10 (números maiores, mesmo equilíbrio)
+  if (r.version < 5) {
+    r.souls = (r.souls ?? 0) * 10;
+    r.totalSouls = (r.totalSouls ?? 0) * 10;
+    if (r.best) r.best = { ...r.best, souls: (r.best.souls ?? 0) * 10 };
+    if (r.history) r.history = r.history.map((h) => ({ ...h, souls: h.souls * 10 }));
+    // as construções deram lugar à árvore: devolve 100% das almas gastas (já em x10)
+    let refund = 0;
+    for (const b of BUILDINGS) for (let i = 0; i < (r.buildings?.[b.id] ?? 0); i++) refund += b.costs[i] ?? 0;
+    r.souls += refund;
+    // quem já tinha o salão continua com o campeão liberado
+    if ((r.buildings?.hall ?? 0) > 0) r.tree = { ...(r.tree ?? {}), salao: 1 };
+    r.buildings = {};
   }
   return {
     ...base,
@@ -145,6 +168,7 @@ export function migrate(raw: unknown): MetaState {
     slots: { ...(r.slots ?? {}) },
     gems: { ...(r.gems ?? {}) },
     sockets: r.sockets ? [...r.sockets] : base.sockets,
+    tree: { ...(r.tree ?? {}) },
     // quem já jogava antes do tutorial existir não precisa dele
     tutorial: r.tutorial ? [...r.tutorial] : (r.runs ?? 0) > 0 ? [...TUTORIAL_STEPS] : [],
   };
@@ -167,7 +191,7 @@ export const BUILDINGS: Building[] = [
     name: 'Criptas',
     desc: 'Mais espaço para os mortos.',
     icon: 'b-crypt',
-    costs: [25, 60, 120, 220, 360],
+    costs: [250, 600, 1200, 2200, 3600],
     apply: (m, l) => (m.armyCap += 4 * l),
     effect: (l) => `+${4 * l} limite do exército`,
   },
@@ -176,7 +200,7 @@ export const BUILDINGS: Building[] = [
     name: 'Ossuário',
     desc: 'Ossos mais duros, golpes mais fortes.',
     icon: 'b-ossuary',
-    costs: [30, 70, 140, 250, 400],
+    costs: [300, 700, 1400, 2500, 4000],
     apply: (m, l) => {
       m.deadHpMul *= 1 + 0.1 * l;
       m.deadDmgMul *= 1 + 0.08 * l;
@@ -188,40 +212,37 @@ export const BUILDINGS: Building[] = [
     name: 'Altar de Sangue',
     desc: 'O necromante resiste mais.',
     icon: 'b-altar',
-    costs: [20, 50, 100, 180, 300],
+    costs: [200, 500, 1000, 1800, 3000],
     apply: (m, l) => (m.necroMaxHp += 4 * l),
-    effect: (l) => `+${l * 4} vida do necromante`,
+    effect: (l) => `+${l * 40} vida do necromante`,
   },
   {
     id: 'library',
     name: 'Biblioteca Proibida',
     desc: 'Raios mais rápidos e mais fortes.',
     icon: 'b-library',
-    costs: [40, 90, 180, 320, 500],
+    costs: [400, 900, 1800, 3200, 5000],
     apply: (m, l) => {
       m.castCdMul *= 1 - 0.06 * l;
       if (l >= 3) m.necroDmg += 1;
     },
-    effect: (l) => `raios ${l * 6}% mais rápidos${l >= 3 ? ', +1 dano' : ''}`,
+    effect: (l) => `raios ${l * 6}% mais rápidos${l >= 3 ? ', +10 dano' : ''}`,
   },
   {
     id: 'bell',
     name: 'Torre do Sino',
-    desc: 'Mais escolhas de cartas.',
+    desc: 'Mais escolhas de cartas (removida: só serve para devolver as almas).',
     icon: 'b-bell',
-    costs: [60, 150, 300],
-    apply: (m, l) => {
-      if (l >= 1) m.cardChoices += 1;
-      m.rerolls += Math.max(0, l - 1);
-    },
-    effect: (l) => (l === 0 ? 'nada ainda' : l === 1 ? '4 cartas por escolha' : `4 cartas, ${l - 1} troca(s)`),
+    costs: [600, 1500, 3000],
+    apply: () => {},
+    effect: () => '',
   },
   {
     id: 'gravedigger',
     name: 'Casa do Coveiro',
     desc: 'Começa com mais mortos.',
     icon: 'b-grave',
-    costs: [35, 90, 200],
+    costs: [350, 900, 2000],
     apply: (m, l) => {
       m.startSkeletons += 3 * l;
       m.corpseLife += l;
@@ -233,7 +254,7 @@ export const BUILDINGS: Building[] = [
     name: 'Relicário',
     desc: 'Mais almas por run.',
     icon: 'b-reliquary',
-    costs: [50, 120, 240, 400, 600],
+    costs: [500, 1200, 2400, 4000, 6000],
     apply: (m, l) => (m.soulMul += 0.1 * l),
     effect: (l) => `+${l * 10}% almas`,
   },
@@ -242,7 +263,7 @@ export const BUILDINGS: Building[] = [
     name: 'Salão dos Campeões',
     desc: 'Leve um chefe derrotado para a batalha.',
     icon: 'b-hall',
-    costs: [80, 200, 400],
+    costs: [800, 2000, 4000],
     apply: (m, l) => (m.championMul *= 1 + 0.2 * Math.max(0, l - 1)),
     effect: (l) => (l === 0 ? 'sem campeões' : `campeão liberado${l > 1 ? `, +${(l - 1) * 20}% força` : ''}`),
   },
@@ -263,6 +284,9 @@ export function buy(meta: MetaState, id: string): boolean {
 }
 
 /** Escolas liberadas: Ossos e Carne no início, uma nova a cada chefe derrotado, mais as do personagem. */
+/** Checkpoint: maior região onde dá para começar (a do último chefe vencido em sequência). */
+export const maxStartRegion = (meta: MetaState) => Math.min(3, meta.bossesBeaten);
+
 export function unlockedSchools(meta: MetaState): School[] {
   const order: School[] = ['bone', 'flesh', 'plague', 'spirit', 'blood'];
   const own = CHARACTER_BY_ID[meta.character]?.schools ?? [];
@@ -272,10 +296,7 @@ export function unlockedSchools(meta: MetaState): School[] {
 /** Construções + itens equipados + personagem. */
 export function metaMods(meta: MetaState): Mods {
   const m = baseMods();
-  for (const b of BUILDINGS) {
-    const l = buildingLevel(meta, b.id);
-    if (l > 0) b.apply(m, l);
-  }
+  applyTree(m, meta);
   // itens equipados: nível do item + nível da forja do espaço
   const setPieces: Record<string, number> = {};
   for (const slot of EQUIP_SLOTS) {
@@ -297,7 +318,7 @@ export function metaMods(meta: MetaState): Mods {
   return m;
 }
 
-/** Cartas "de graça" por escola, vindas de itens e do personagem. */
+/** Contagem de cada escola: itens equipados (conjuntos contam duas) e o personagem. */
 export function schoolBonus(meta: MetaState): Partial<Record<School, number>> {
   const out: Partial<Record<School, number>> = {};
   const add = (b?: Partial<Record<School, number>>) => {
@@ -342,16 +363,30 @@ export function unequip(meta: MetaState, slot: EquipSlot) {
 }
 
 /** Custo para forjar o espaço (null = no máximo). */
-export const slotForgeCost = (meta: MetaState, slot: EquipSlot): number | null => SLOT_FORGE_COST[meta.slots[slot] ?? 0] ?? null;
+export function slotForgeCost(meta: MetaState, slot: EquipSlot): number | null {
+  const lvl = meta.slots[slot] ?? 0;
+  if (lvl >= maxSlotLevel(meta)) return null;
+  // nível extra da Bigorna custa 50% a mais que o último
+  const base = SLOT_FORGE_COST[lvl] ?? SLOT_FORGE_COST[SLOT_FORGE_COST.length - 1] * 1.5;
+  return Math.round((base * (1 - forgeDiscount(meta))) / 10) * 10;
+}
+
+export const maxSlotLevel = (meta: MetaState) => MAX_SLOT_LEVEL + extraSlotLevel(meta);
 
 /** Forja o espaço: o bônus fica no espaço e vale para qualquer item equipado ali. */
 export function forgeSlot(meta: MetaState, slot: EquipSlot): boolean {
   const lvl = meta.slots[slot] ?? 0;
   const cost = slotForgeCost(meta, slot);
-  if (cost === null || lvl >= MAX_SLOT_LEVEL || meta.souls < cost) return false;
+  if (cost === null || meta.souls < cost) return false;
   meta.souls -= cost;
   meta.slots[slot] = lvl + 1;
   return true;
+}
+
+/** O altar tem 3 encaixes mais os da árvore (Encaixe). */
+export function syncSockets(meta: MetaState) {
+  const want = BASE_SOCKETS + extraSockets(meta);
+  while (meta.sockets.length < want) meta.sockets.push(null);
 }
 
 /** Espaço onde o item está equipado. */
@@ -394,7 +429,7 @@ export function marketPrice(meta: MetaState, id: string): number {
 export function rollMarket(meta: MetaState, rand: () => number = Math.random) {
   const out = new Set<string>();
   let guard = 0;
-  while (out.size < MARKET_SIZE && guard++ < 100) {
+  while (out.size < MARKET_SIZE + extraMarket(meta) && guard++ < 100) {
     const id = rollItem(rand, Math.min(1, meta.bossesBeaten * 0.25));
     if ((meta.items[id] ?? -1) < MAX_ITEM_LEVEL) out.add(id);
   }
@@ -411,9 +446,12 @@ export function buyFromMarket(meta: MetaState, id: string): boolean {
   return true;
 }
 
+export const refreshCost = (meta: MetaState) => Math.round(MARKET_REFRESH_COST * (1 - refreshDiscount(meta)));
+
 export function refreshMarket(meta: MetaState): boolean {
-  if (meta.souls < MARKET_REFRESH_COST) return false;
-  meta.souls -= MARKET_REFRESH_COST;
+  const cost = refreshCost(meta);
+  if (meta.souls < cost) return false;
+  meta.souls -= cost;
   rollMarket(meta);
   return true;
 }

@@ -71,32 +71,32 @@ export interface Achievement {
 const beat = (r: RunResult, b: BossKind) => r.bossesKilled.includes(b);
 
 export const ACHIEVEMENTS: Achievement[] = [
-  { id: 'first', name: 'Primeiro Sangue', desc: 'vença a primeira onda', reward: 20, check: (_, r) => r.wave >= 2 },
-  { id: 'woodcutter', name: 'Machado no Chão', desc: 'derrote o lenhador', reward: 40, check: (_, r) => beat(r, 'woodcutter') },
-  { id: 'abbot', name: 'Silêncio Eterno', desc: 'derrote o abade', reward: 60, check: (_, r) => beat(r, 'abbot') },
-  { id: 'commander', name: 'Muralhas Caídas', desc: 'derrote o comandante', reward: 80, check: (_, r) => beat(r, 'commander') },
-  { id: 'cathedral', name: 'Fim da Luz', desc: 'derrote o arcebispo', reward: 150, check: (_, r) => beat(r, 'archbishop') },
-  { id: 'abyss', name: 'Olhar o Abismo', desc: 'chegue ao abismo', reward: 100, check: (_, r) => r.wave > REGIONS.length * 6 },
-  { id: 'seraph', name: 'Asas Partidas', desc: 'derrote o chefe secreto', reward: 300, check: (_, r) => beat(r, 'seraph') },
-  { id: 'army', name: 'Maré de Ossos', desc: 'tenha 40 mortos ao mesmo tempo', reward: 80, check: (_, r) => r.stats.maxArmy >= 40 },
-  { id: 'army100', name: 'Legião', desc: 'tenha 100 mortos ao mesmo tempo', reward: 200, check: (_, r) => r.stats.maxArmy >= 100 },
-  { id: 'kills500', name: 'Ceifeiro', desc: '500 abates numa run', reward: 60, check: (_, r) => r.kills >= 500 },
-  { id: 'kills2000', name: 'Massacre', desc: '2.000 abates numa run', reward: 150, check: (_, r) => r.kills >= 2000 },
-  { id: 'kills20k', name: 'Praga Ambulante', desc: '20.000 abates no total', reward: 200, check: (m) => m.stats.kills >= 20000 },
-  { id: 'boom', name: 'Fogos de Artifício', desc: 'exploda 20 mortos de uma vez', reward: 60, check: (_, r) => r.stats.bigExplode >= 20 },
-  { id: 'rituals', name: 'Sacerdote das Trevas', desc: 'use o ritual 10 vezes numa run', reward: 80, check: (_, r) => r.stats.rituals >= 10 },
-  { id: 'dominion', name: 'Domínio', desc: 'chegue ao domínio de uma escola', reward: 50, check: (_, r) => SCHOOL_ORDER.some((s) => r.schoolCounts[s] >= 5) },
-  { id: 'five', name: 'Mestre das Cinco', desc: 'domínio nas 5 escolas, em qualquer run', reward: 300, check: (m) => m.dominions.length >= 5 },
-  { id: 'heresy5', name: 'Herege', desc: 'vença a catedral na heresia 5', reward: 200, check: (_, r) => r.heresy >= 5 && beat(r, 'archbishop') },
-  { id: 'heresy10', name: 'Juízo Final', desc: 'vença a catedral na heresia 10', reward: 500, check: (_, r) => r.heresy >= 10 && beat(r, 'archbishop') },
+  { id: 'first', name: 'Primeiro Sangue', desc: 'vença a primeira onda', reward: 200, check: (_, r) => r.wave >= 2 },
+  { id: 'woodcutter', name: 'Machado no Chão', desc: 'derrote o lenhador', reward: 400, check: (_, r) => beat(r, 'woodcutter') },
+  { id: 'abbot', name: 'Silêncio Eterno', desc: 'derrote o abade', reward: 600, check: (_, r) => beat(r, 'abbot') },
+  { id: 'commander', name: 'Muralhas Caídas', desc: 'derrote o comandante', reward: 800, check: (_, r) => beat(r, 'commander') },
+  { id: 'cathedral', name: 'Fim da Luz', desc: 'derrote o arcebispo', reward: 1500, check: (_, r) => beat(r, 'archbishop') },
+  { id: 'abyss', name: 'Olhar o Abismo', desc: 'chegue ao abismo', reward: 1000, check: (_, r) => r.wave > REGIONS.length * 6 },
+  { id: 'seraph', name: 'Asas Partidas', desc: 'derrote o chefe secreto', reward: 3000, check: (_, r) => beat(r, 'seraph') },
+  { id: 'army', name: 'Maré de Ossos', desc: 'tenha 40 mortos ao mesmo tempo', reward: 800, check: (_, r) => r.stats.maxArmy >= 40 },
+  { id: 'army100', name: 'Legião', desc: 'tenha 100 mortos ao mesmo tempo', reward: 2000, check: (_, r) => r.stats.maxArmy >= 100 },
+  { id: 'kills500', name: 'Ceifeiro', desc: '500 abates numa run', reward: 600, check: (_, r) => r.kills >= 500 },
+  { id: 'kills2000', name: 'Massacre', desc: '2.000 abates numa run', reward: 1500, check: (_, r) => r.kills >= 2000 },
+  { id: 'kills20k', name: 'Praga Ambulante', desc: '20.000 abates no total', reward: 2000, check: (m) => m.stats.kills >= 20000 },
+  { id: 'boom', name: 'Fogos de Artifício', desc: 'exploda 20 mortos de uma vez', reward: 600, check: (_, r) => r.stats.bigExplode >= 20 },
+  { id: 'rituals', name: 'Sacerdote das Trevas', desc: 'use o ritual 10 vezes numa run', reward: 800, check: (_, r) => r.stats.rituals >= 10 },
+  { id: 'dominion', name: 'Domínio', desc: 'chegue ao domínio de uma escola', reward: 500, check: (_, r) => SCHOOL_ORDER.some((s) => r.schoolCounts[s] >= 5) },
+  { id: 'five', name: 'Mestre das Cinco', desc: 'domínio nas 5 escolas, em qualquer run', reward: 3000, check: (m) => m.dominions.length >= 5 },
+  { id: 'heresy5', name: 'Herege', desc: 'vença a catedral na heresia 5', reward: 2000, check: (_, r) => r.heresy >= 5 && beat(r, 'archbishop') },
+  { id: 'heresy10', name: 'Juízo Final', desc: 'vença a catedral na heresia 10', reward: 5000, check: (_, r) => r.heresy >= 10 && beat(r, 'archbishop') },
   {
     id: 'legend',
     name: 'Lendário',
     desc: 'consiga um item lendário',
-    reward: 80,
+    reward: 800,
     check: (m) => Object.keys(m.items).some((id) => ITEM_BY_ID[id]?.rarity === 'legendary'),
   },
-  { id: 'daily', name: 'Rotina Macabra', desc: 'chegue à onda 6 num desafio diário', reward: 60, check: (_, r) => !!r.daily && r.wave >= 6 },
+  { id: 'daily', name: 'Rotina Macabra', desc: 'chegue à onda 6 num desafio diário', reward: 600, check: (_, r) => !!r.daily && r.wave >= 6 },
 ];
 
 // ------------------------------------------------------------ desafio diário
@@ -198,7 +198,7 @@ export function applyRunResult(meta: MetaState, r: RunResult): RunSummary {
   let dailyBest = false;
   if (r.daily) {
     if (meta.daily.date !== r.daily) meta.daily = { date: r.daily, best: 0, tries: 0 };
-    if (meta.daily.tries === 0) bonus += r.wave * 3;
+    if (meta.daily.tries === 0) bonus += r.wave * 30;
     meta.daily.tries++;
     if (r.wave > meta.daily.best) {
       meta.daily.best = r.wave;

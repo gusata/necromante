@@ -203,7 +203,9 @@ export function button(
   const down = opts.down ?? 'btn-wide-down';
   const depth = opts.depth ?? DEPTH.hud;
   const img = scene.add.image(x, y, tex).setDepth(depth).setInteractive({ useHandCursor: true });
-  const label = pxText(scene, x, y - 2, text, opts.color ?? COL.c).setOrigin(0.5, 0).setDepth(depth + 1);
+  // botão dourado: texto escuro sem sombra, para ler bem no fundo claro
+  const gold = tex.startsWith('btn-gold');
+  const label = pxText(scene, x, y - 2, text, gold ? 0x3a1c04 : (opts.color ?? COL.u), gold).setOrigin(0.5, 0).setDepth(depth + 1);
   let enabled = true;
   img.on('pointerdown', () => {
     if (!enabled) {

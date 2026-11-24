@@ -105,11 +105,10 @@ export class Tutorial {
     this.slow = this.stepT < 0.4 ? 1 - this.stepT * 1.5 : 0.4;
     const b = this.buttonPos(i);
     const tap = Math.max(0, Math.sin(time * 0.012));
-    hand.setPosition(b.x + 26, b.y + 6 - Math.round(tap * 4));
+    // os botões são redondos: b.x, b.y é o centro
+    hand.setPosition(b.x + 6, b.y + 4 - Math.round(tap * 4));
     const pulse = 0.5 + Math.sin(time * 0.015) * 0.5;
-    this.ring
-      .lineStyle(1, COL.G, 0.4 + pulse * 0.6)
-      .strokeRect(b.x - 1 - Math.round(pulse * 2), b.y - 1 - Math.round(pulse * 2), 58 + Math.round(pulse * 4), 18 + Math.round(pulse * 4));
+    this.ring.lineStyle(1, COL.G, 0.4 + pulse * 0.6).strokeCircle(b.x, b.y, 13 + Math.round(pulse * 2));
   }
 
   private pick(w: World) {

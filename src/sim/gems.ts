@@ -58,7 +58,7 @@ export const GEMS: Record<GemType, GemDef> = {
     type: 'diamond',
     name: 'Diamante',
     color: '#e8f4ff',
-    desc: (r) => `+${Math.round(RANK_MUL[r])} vida do necromante`,
+    desc: (r) => `+${Math.round(RANK_MUL[r]) * 10} vida do necromante`,
     apply: (m, r) => (m.necroMaxHp += Math.round(RANK_MUL[r])),
   },
 };

@@ -242,5 +242,6 @@ export type GameEvent =
   | { type: 'scythe'; x: number; y: number; r: number }
   | { type: 'ritual'; char: string; x: number; y: number; r: number }
   | { type: 'ritualReady' }
+  | { type: 'revive' }
   | { type: 'wail'; x: number; y: number; r: number }
   | { type: 'gameOver' };
