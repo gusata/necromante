@@ -28,9 +28,10 @@ export class OptionsScene extends Phaser.Scene {
       ['MÚSICA', () => onOff(s.music), () => (s.music = !s.music)],
       ['VIBRAÇÃO', () => onOff(s.haptics), () => (s.haptics = !s.haptics)],
       ['TREMOR DE TELA', () => shakeName(s.shake), () => (s.shake = s.shake === 1 ? 0.5 : s.shake === 0.5 ? 0 : 1)],
+      ['MIRA', () => (s.aim === 'direct' ? 'TOCAR DIRETO' : 'ARRASTAR'), () => (s.aim = s.aim === 'direct' ? 'drag' : 'direct')],
     ];
     rows.forEach(([label, value, toggle], i) => {
-      const y = 60 + i * 40;
+      const y = 52 + i * 36;
       pxText(this, 90, y - 14, label, COL.C).setOrigin(0.5, 0);
       const b: UIButton = button(this, 90, y + 2, value(), () => {
         toggle();

@@ -8,6 +8,7 @@ import { button, DEPTH, flash, Shaker, transitionIn, transitionTo, type UIButton
 import { buzz } from '../platform/haptics';
 import { meta, saveMeta } from '../platform/save';
 import { CHARACTERS } from '../sim/characters';
+import { HERESY, heresyName } from '../sim/heresy';
 import { buyCharacter, characterState } from '../sim/meta';
 import { Darkness, Scenery } from './scenery';
 
@@ -23,6 +24,8 @@ export class CharactersScene extends Phaser.Scene {
   private soulsText!: Phaser.GameObjects.BitmapText;
   private action!: UIButton;
   private dots: Phaser.GameObjects.Rectangle[] = [];
+  private heresyText?: Phaser.GameObjects.BitmapText;
+  private heresyDesc?: Phaser.GameObjects.BitmapText;
   private dark!: Darkness;
   private scenery!: Scenery;
   private shaker!: Shaker;
@@ -54,7 +57,7 @@ export class CharactersScene extends Phaser.Scene {
     this.status = pxText(this, 90, 232, '', COL.y).setOrigin(0.5, 0).setDepth(DEPTH.hud);
 
     CHARACTERS.forEach((_, i) => {
-      this.dots.push(this.add.rectangle(90 + (i - (CHARACTERS.length - 1) / 2) * 8, 248, 4, 4, COL.B).setDepth(DEPTH.hud));
+      this.dots.push(this.add.rectangle(90 + (i - (CHARACTERS.length - 1) / 2) * 8, 244, 4, 4, COL.B).setDepth(DEPTH.hud));
     });
 
     // setas
@@ -77,10 +80,53 @@ export class CharactersScene extends Phaser.Scene {
     this.input.keyboard?.on('keydown-ENTER', () => this.act());
     this.input.keyboard?.once('keydown-ESC', () => transitionTo(this, 'Menu'));
 
-    this.action = button(this, 90, 270, 'JOGAR', () => this.act(), { color: COL.G });
-    button(this, 90, 300, 'VOLTAR', () => transitionTo(this, 'Menu'));
+    // heresia (dificuldade): liberada depois de vencer a Catedral
+    if (meta.heresyMax > 0) {
+      meta.heresy = Math.min(meta.heresy, meta.heresyMax);
+      this.heresyText = pxText(this, 90, 251, '', COL.R).setOrigin(0.5, 0).setDepth(DEPTH.hud);
+      this.heresyDesc = pxText(this, 90, 259, '', COL.C).setOrigin(0.5, 0).setDepth(DEPTH.hud);
+      const side = (x: number, dir: number) => {
+        pxText(this, x, 251, dir < 0 ? '<' : '>', COL.R)
+          .setOrigin(0.5, 0)
+          .setDepth(DEPTH.hud);
+        this.add
+          .zone(x, 256, 30, 18)
+          .setInteractive({ useHandCursor: true })
+          .on('pointerdown', () => this.heresyStep(dir));
+      };
+      side(12, -1);
+      side(168, 1);
+      this.input.keyboard?.on('keydown-UP', () => this.heresyStep(1));
+      this.input.keyboard?.on('keydown-DOWN', () => this.heresyStep(-1));
+      this.refreshHeresy();
+    }
+
+    this.action = button(this, 90, 279, 'JOGAR', () => this.act(), { color: COL.G });
+    button(this, 90, 304, 'VOLTAR', () => transitionTo(this, 'Menu'));
     this.refresh(0);
     transitionIn(this);
+  }
+
+  private heresyStep(dir: number) {
+    const next = Math.max(0, Math.min(meta.heresyMax, meta.heresy + dir));
+    if (next === meta.heresy) {
+      audio.play('deny');
+      return;
+    }
+    meta.heresy = next;
+    saveMeta();
+    audio.play(dir > 0 ? 'hurt' : 'click');
+    buzz(dir > 0 ? 'medium' : 'light');
+    if (dir > 0) this.shaker.add(0.15 + meta.heresy * 0.03);
+    this.refreshHeresy();
+  }
+
+  private refreshHeresy() {
+    if (!this.heresyText || !this.heresyDesc) return;
+    const h = meta.heresy;
+    setPxText(this.heresyText, h === 0 ? 'heresia: nenhuma' : `heresia ${heresyName(h)}`);
+    this.heresyText.setTint(h === 0 ? COL.C : COL.R);
+    setPxText(this.heresyDesc, h === 0 ? `ate o nivel ${meta.heresyMax}` : `${HERESY[h - 1].desc}. almas +${h * 10}%`);
   }
 
   private move(dir: number) {
@@ -105,7 +151,13 @@ export class CharactersScene extends Phaser.Scene {
     }
     setPxText(this.name, state === 'locked' ? '???' : c.name.toUpperCase());
     setPxText(this.title, c.title);
-    this.traits.setText(c.traits.map((t) => `- ${t}`).join('\n').toUpperCase().normalize('NFD').replace(/\p{Diacritic}/gu, ''));
+    this.traits.setText(
+      [...c.traits.map((t) => `- ${t}`), `ritual: ${c.ritual.name}`]
+        .join('\n')
+        .toUpperCase()
+        .normalize('NFD')
+        .replace(/\p{Diacritic}/gu, ''),
+    );
     this.traits.setAlpha(state === 'locked' ? 0.4 : 1);
     this.dots.forEach((d, i) => d.setFillStyle(i === this.index ? COL.G : COL.B));
 

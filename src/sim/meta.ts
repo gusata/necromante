@@ -1,9 +1,26 @@
 import { CHARACTER_BY_ID, CHARACTERS, type CharacterId } from './characters';
-import { EQUIP_SLOTS, type EquipSlot, ITEM_BY_ID, ITEM_PRICE, MAX_ITEM_LEVEL, rollItem, SLOT_OF, upgradeCost } from './items';
+import { applyGems, BASE_SOCKETS, mergeGems } from './gems';
+import {
+  EQUIP_SLOTS,
+  type EquipSlot,
+  effectiveLevel,
+  HOARD_COMPLETE,
+  HOARD_ITEMS,
+  ITEM_BY_ID,
+  ITEM_PRICE,
+  MAX_ITEM_LEVEL,
+  MAX_SLOT_LEVEL,
+  rollItem,
+  SET_BY_ID,
+  SLOT_FORGE_COST,
+  SLOT_OF,
+  upgradeCost,
+} from './items';
 import { baseMods, type Mods } from './mods';
+import type { HistoryEntry, LifetimeStats } from './progress';
 import type { BossKind, School, UnitKind } from './types';
 
-export const SAVE_VERSION = 3;
+export const SAVE_VERSION = 4;
 export const MARKET_SIZE = 4;
 export const MARKET_REFRESH_COST = 25;
 
@@ -13,6 +30,10 @@ export interface Settings {
   haptics: boolean;
   /** 0..1 */
   shake: number;
+  /** velocidade do jogo na run (1 ou 2) */
+  speed: number;
+  /** mira: arrastar (relativo) ou tocar direto onde o círculo deve ir */
+  aim: 'drag' | 'direct';
 }
 
 export interface MetaState {
@@ -37,7 +58,29 @@ export interface MetaState {
   market: string[];
   character: CharacterId;
   characters: CharacterId[];
+  /** passos do tutorial já mostrados */
+  tutorial: string[];
+  /** heresia escolhida para a próxima run */
+  heresy: number;
+  /** maior heresia liberada (0 = ainda não venceu a Catedral) */
+  heresyMax: number;
+  history: HistoryEntry[];
+  stats: LifetimeStats;
+  achievements: string[];
+  /** escolas que já chegaram ao domínio em alguma run */
+  dominions: School[];
+  daily: { date: string; best: number; tries: number };
+  /** nível da forja de cada espaço (vale para qualquer item ali) */
+  slots: Partial<Record<EquipSlot, number>>;
+  /** gemas guardadas (chave tipo+nível -> quantidade), fora do altar */
+  gems: Record<string, number>;
+  /** encaixes do altar */
+  sockets: (string | null)[];
 }
+
+const freshStats = (): LifetimeStats => ({ kills: 0, raised: 0, exploded: 0, rituals: 0, bossKills: 0, victories: 0, time: 0, bestKills: 0, bestArmy: 0 });
+
+export const TUTORIAL_STEPS = ['drag', 'explode', 'consume', 'fuse'] as const;
 
 export function freshMeta(): MetaState {
   return {
@@ -51,12 +94,23 @@ export function freshMeta(): MetaState {
     bossesBeaten: 0,
     best: { wave: 0, souls: 0 },
     runs: 0,
-    settings: { sfx: true, music: true, haptics: true, shake: 1 },
+    settings: { sfx: true, music: true, haptics: true, shake: 1, speed: 1, aim: 'drag' },
     items: {},
     equipped: {},
     market: [],
     character: 'necro',
     characters: ['necro'],
+    tutorial: [],
+    heresy: 0,
+    heresyMax: 0,
+    history: [],
+    stats: freshStats(),
+    achievements: [],
+    dominions: [],
+    daily: { date: '', best: 0, tries: 0 },
+    slots: {},
+    gems: {},
+    sockets: Array.from({ length: BASE_SOCKETS }, () => null),
   };
 }
 
@@ -83,6 +137,16 @@ export function migrate(raw: unknown): MetaState {
     equipped: { ...(r.equipped ?? {}) },
     market: [...(r.market ?? [])],
     characters: [...new Set<CharacterId>(['necro', ...(r.characters ?? [])])],
+    history: [...(r.history ?? [])],
+    stats: { ...freshStats(), ...(r.stats ?? {}) },
+    achievements: [...(r.achievements ?? [])],
+    dominions: [...(r.dominions ?? [])],
+    daily: { ...base.daily, ...(r.daily ?? {}) },
+    slots: { ...(r.slots ?? {}) },
+    gems: { ...(r.gems ?? {}) },
+    sockets: r.sockets ? [...r.sockets] : base.sockets,
+    // quem já jogava antes do tutorial existir não precisa dele
+    tutorial: r.tutorial ? [...r.tutorial] : (r.runs ?? 0) > 0 ? [...TUTORIAL_STEPS] : [],
   };
 }
 
@@ -104,8 +168,8 @@ export const BUILDINGS: Building[] = [
     desc: 'Mais espaço para os mortos.',
     icon: 'b-crypt',
     costs: [25, 60, 120, 220, 360],
-    apply: (m, l) => (m.armyCap += l),
-    effect: (l) => `+${l} limite do exército`,
+    apply: (m, l) => (m.armyCap += 4 * l),
+    effect: (l) => `+${4 * l} limite do exército`,
   },
   {
     id: 'ossuary',
@@ -159,10 +223,10 @@ export const BUILDINGS: Building[] = [
     icon: 'b-grave',
     costs: [35, 90, 200],
     apply: (m, l) => {
-      m.startSkeletons += l;
+      m.startSkeletons += 3 * l;
       m.corpseLife += l;
     },
-    effect: (l) => `+${l} esqueleto(s), cadáver +${l}s`,
+    effect: (l) => `+${3 * l} esqueletos, cadáver +${l}s`,
   },
   {
     id: 'reliquary',
@@ -212,9 +276,23 @@ export function metaMods(meta: MetaState): Mods {
     const l = buildingLevel(meta, b.id);
     if (l > 0) b.apply(m, l);
   }
-  for (const id of equippedItems(meta)) ITEM_BY_ID[id].apply(m, meta.items[id] ?? 0);
+  // itens equipados: nível do item + nível da forja do espaço
+  const setPieces: Record<string, number> = {};
+  for (const slot of EQUIP_SLOTS) {
+    const id = meta.equipped[slot];
+    if (!id || !(id in meta.items) || !ITEM_BY_ID[id]) continue;
+    const it = ITEM_BY_ID[id];
+    it.apply(m, effectiveLevel(meta.items[id] ?? 0, meta.slots[slot] ?? 0));
+    if (it.set) setPieces[it.set] = (setPieces[it.set] ?? 0) + 1;
+  }
+  for (const [set, n] of Object.entries(setPieces)) SET_BY_ID[set]?.apply(m, n);
+  // tesouro: lendários e conjuntos dão bônus permanente, equipados ou não
+  const hoard = HOARD_ITEMS();
+  for (const it of hoard) if (it.id in meta.items) it.hoard?.apply(m, meta.items[it.id]);
+  if (hoard.every((it) => it.id in meta.items)) HOARD_COMPLETE.apply(m);
+  applyGems(m, meta.sockets);
   CHARACTER_BY_ID[meta.character]?.apply(m);
-  m.armyCap = Math.max(4, m.armyCap);
+  m.armyCap = Math.max(15, m.armyCap);
   m.necroMaxHp = Math.max(6, m.necroMaxHp);
   return m;
 }
@@ -263,14 +341,49 @@ export function unequip(meta: MetaState, slot: EquipSlot) {
   delete meta.equipped[slot];
 }
 
-export function forge(meta: MetaState, id: string): boolean {
-  const lvl = meta.items[id];
-  if (lvl === undefined || lvl >= MAX_ITEM_LEVEL) return false;
-  const cost = upgradeCost(ITEM_BY_ID[id], lvl);
-  if (meta.souls < cost) return false;
+/** Custo para forjar o espaço (null = no máximo). */
+export const slotForgeCost = (meta: MetaState, slot: EquipSlot): number | null => SLOT_FORGE_COST[meta.slots[slot] ?? 0] ?? null;
+
+/** Forja o espaço: o bônus fica no espaço e vale para qualquer item equipado ali. */
+export function forgeSlot(meta: MetaState, slot: EquipSlot): boolean {
+  const lvl = meta.slots[slot] ?? 0;
+  const cost = slotForgeCost(meta, slot);
+  if (cost === null || lvl >= MAX_SLOT_LEVEL || meta.souls < cost) return false;
   meta.souls -= cost;
-  meta.items[id] = lvl + 1;
+  meta.slots[slot] = lvl + 1;
   return true;
+}
+
+/** Espaço onde o item está equipado. */
+export const slotOfItem = (meta: MetaState, id: string): EquipSlot | undefined => EQUIP_SLOTS.find((s) => meta.equipped[s] === id);
+
+// ------------------------------------------------------------ gemas
+
+/** Põe uma gema da bolsa num encaixe (o primeiro vazio, se não disser qual). A que estava lá volta para a bolsa. */
+export function socketGem(meta: MetaState, key: string, index?: number): boolean {
+  if (!meta.gems[key]) return false;
+  const i = index ?? meta.sockets.indexOf(null);
+  if (i < 0 || i >= meta.sockets.length) return false;
+  const old = meta.sockets[i];
+  if (old) meta.gems[old] = (meta.gems[old] ?? 0) + 1;
+  meta.gems[key]--;
+  if (!meta.gems[key]) delete meta.gems[key];
+  meta.sockets[i] = key;
+  return true;
+}
+
+export function unsocketGem(meta: MetaState, index: number): boolean {
+  const key = meta.sockets[index];
+  if (!key) return false;
+  meta.sockets[index] = null;
+  meta.gems[key] = (meta.gems[key] ?? 0) + 1;
+  return true;
+}
+
+export const mergeAllGems = (meta: MetaState) => mergeGems(meta.gems);
+
+export function gainGem(meta: MetaState, key: string) {
+  meta.gems[key] = (meta.gems[key] ?? 0) + 1;
 }
 
 export function marketPrice(meta: MetaState, id: string): number {

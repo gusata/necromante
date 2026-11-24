@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { SCHOOLS } from '../sim/cards';
 import { CHARACTERS } from '../sim/characters';
+import { GEMS } from '../sim/gems';
 import { ITEMS } from '../sim/items';
 import { FIELD, LIVING_KINDS } from '../sim/defs';
 import { RNG } from '../sim/rng';
@@ -117,7 +118,10 @@ function unitTextures(scene: Phaser.Scene) {
   frames3('skel', S.SKEL);
   frames3('archer', S.SKEL_ARCHER);
   S.SKEL.forEach((f, i) => drawGrid(scene, `giant${i}`, upscale(f)));
-  for (const k of ['zombie', 'ghoul', 'thrall']) frames3(k, humanoidFrames(HUMANOIDS[k]));
+  for (const k of ['zombie', 'ghoul', 'thrall', 'lich', 'plaguebearer', 'bloodknight']) frames3(k, humanoidFrames(HUMANOIDS[k]));
+  // abominação: um zumbi ampliado, como o colosso
+  humanoidFrames(HUMANOIDS.abomination).forEach((f, i) => drawGrid(scene, `abomination${i}`, upscale(f, withPal(HUMANOIDS.abomination.colors))));
+  frames3('banshee', S.GHOST, { G: '#f4eefc', g: '#a08cc8', k: '#2a1d3a' });
   frames3('rat', S.RAT, { b: '#5e6151', B: '#3f4237', G: '#c8ff8a' });
   frames3('ghost', S.GHOST, { G: '#bfe9ff', g: '#6fa8c8' });
 
@@ -142,7 +146,23 @@ function unitTextures(scene: Phaser.Scene) {
 
   const walk = (key: string, rate = 6) =>
     scene.anims.create({ key: `${key}-walk`, frames: [{ key: `${key}0` }, { key: `${key}1` }], frameRate: rate, repeat: -1 });
-  for (const k of [...LIVING_KINDS, 'skel', 'archer', 'giant', 'zombie', 'ghoul', 'thrall', 'rat', 'ghost']) walk(k, k === 'rat' || k === 'hound' ? 10 : 6);
+  for (const k of [
+    ...LIVING_KINDS,
+    'skel',
+    'archer',
+    'giant',
+    'zombie',
+    'ghoul',
+    'thrall',
+    'rat',
+    'ghost',
+    'lich',
+    'abomination',
+    'plaguebearer',
+    'banshee',
+    'bloodknight',
+  ])
+    walk(k, k === 'rat' || k === 'hound' ? 10 : k === 'abomination' ? 4 : 6);
   for (const b of Object.keys(BOSS_SPECS)) {
     walk(b, 4);
     walk(`champ-${b}`, 4);
@@ -423,6 +443,9 @@ function iconTextures(scene: Phaser.Scene) {
   spriteTex(scene, 'icon-heart', S.HEART_ICON);
   spriteTex(scene, 'icon-pause', S.PAUSE_ICON);
   spriteTex(scene, 'icon-lock', S.LOCK_ICON);
+  spriteTex(scene, 'icon-hand', S.HAND_ICON);
+  spriteTex(scene, 'icon-ritual', S.RITUAL_ICON);
+  for (const g of Object.values(GEMS)) spriteTex(scene, `gem-${g.type}`, S.GEM_ICON, { g: g.color, L: mix(g.color, '#ffffff', 0.5), C: mix(g.color, '#000000', 0.4) });
   for (const [id, info] of Object.entries(SCHOOLS)) spriteTex(scene, `school-${id}`, S.SCHOOL_ICONS[id], { s: info.color, k: PAL.k });
   spriteTex(scene, 'school-neutral', S.SCHOOL_ICONS.neutral, { s: '#c9a23a', k: PAL.k });
   for (const [id, rows] of Object.entries(S.BUILDING_ICONS)) spriteTex(scene, id, rows);
@@ -451,7 +474,7 @@ function itemTextures(scene: Phaser.Scene) {
     });
   }
   // moldura de raridade para ícones
-  const rar = { common: '#6b6452', magic: '#6fa8c8', rare: '#e0b040', legendary: '#ff7a3a' } as const;
+  const rar = { common: '#6b6452', magic: '#6fa8c8', rare: '#e0b040', legendary: '#ff7a3a', set: '#4ee08a' } as const;
   for (const [r, col] of Object.entries(rar)) panelTex(scene, `slot-${r}`, 24, 24, '#0e0b14', mix(col, '#0e0b14', 0.3), col);
   panelTex(scene, 'slot-empty', 24, 24, '#0a0810', '#1a1424', '#2a2036');
   panelTex(scene, 'tab', 56, 14, PAL.d, PAL.P);

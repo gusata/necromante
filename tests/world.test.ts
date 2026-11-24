@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { autopilot } from '../src/sim/autopilot';
 import { CARDS, computeMods, rollOffer } from '../src/sim/cards';
-import { NECRO } from '../src/sim/defs';
-import { buy, freshMeta, metaMods, migrate, unlockedSchools } from '../src/sim/meta';
+import { ARMY_CAP, NECRO, START_SKELETONS } from '../src/sim/defs';
+import { buy, freshMeta, metaMods, migrate, SAVE_VERSION, unlockedSchools } from '../src/sim/meta';
 import { baseMods } from '../src/sim/mods';
 import { World, type RunSetup } from '../src/sim/world';
 
@@ -27,7 +27,7 @@ describe('World', () => {
 
   it('começa com esqueletos e inicia a onda 1 na Vila', () => {
     const w = new World(setup());
-    expect(w.units.filter((u) => u.kind === 'skeleton')).toHaveLength(2);
+    expect(w.units.filter((u) => u.kind === 'skeleton')).toHaveLength(START_SKELETONS);
     step(w, 2);
     expect(w.wave).toBe(1);
     expect(w.region.name).toBe('A Vila');
@@ -42,7 +42,7 @@ describe('World', () => {
     w.damage(p, 99);
     expect(w.corpses).toHaveLength(1);
     step(w, 1);
-    expect(w.units.filter((u) => u.faction === 'dead')).toHaveLength(3);
+    expect(w.units.filter((u) => u.faction === 'dead')).toHaveLength(START_SKELETONS + 1);
   });
 
   it('não levanta padres', () => {
@@ -52,15 +52,15 @@ describe('World', () => {
     p.y = w.circle.y;
     w.damage(p, 99);
     step(w, 1);
-    expect(w.units.filter((u) => u.faction === 'dead')).toHaveLength(2);
+    expect(w.units.filter((u) => u.faction === 'dead')).toHaveLength(START_SKELETONS);
   });
 
-  it('funde esqueletos num colosso', () => {
+  it('funde esqueletos em colossos (vários por toque na horda)', () => {
     const w = new World(setup());
-    w.spawnDead('skeleton', w.circle.x, w.circle.y);
     expect(w.fuse()).toBe(true);
-    expect(w.units.filter((u) => u.kind === 'giant')).toHaveLength(1);
-    expect(w.armyUsed()).toBe(2);
+    expect(w.units.filter((u) => u.kind === 'giant')).toHaveLength(START_SKELETONS / 3);
+    expect(w.units.filter((u) => u.kind === 'skeleton')).toHaveLength(0);
+    expect(w.armyUsed()).toBe((START_SKELETONS / 3) * 2);
   });
 
   it('explodir fere vivos e gasta os mortos', () => {
@@ -146,7 +146,7 @@ describe('meta', () => {
   it('migra o save v1 (só recorde)', () => {
     const m = migrate({ wave: 7, souls: 30 });
     expect(m.best.wave).toBe(7);
-    expect(m.version).toBe(3);
+    expect(m.version).toBe(SAVE_VERSION);
   });
 
   it('compra construções e aplica os bônus', () => {
@@ -154,7 +154,7 @@ describe('meta', () => {
     m.souls = 100;
     expect(buy(m, 'crypts')).toBe(true);
     expect(m.souls).toBe(75);
-    expect(metaMods(m).armyCap).toBe(11);
+    expect(metaMods(m).armyCap).toBe(ARMY_CAP + 4);
     m.souls = 0;
     expect(buy(m, 'crypts')).toBe(false);
   });

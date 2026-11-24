@@ -1,4 +1,4 @@
-import { ARMY_CAP, CIRCLE_R, CONSUME_MAX, CORPSE_LIFE, EXPLODE_R, FUSE_COUNT, NECRO, START_SKELETONS } from './defs';
+import { ARMY_CAP, BOLT_CHAIN, CIRCLE_R, CONSUME_MAX, CORPSE_LIFE, EXPLODE_R, FUSE_COUNT, NECRO, START_SKELETONS } from './defs';
 import type { DeadKind } from './types';
 
 /**
@@ -74,6 +74,18 @@ export interface Mods {
   /** cada cadáver levanta 2 */
   doubleRaise: boolean;
 
+  // conjuntos de itens
+  /** esqueletos e arqueiros envenenam */
+  boneVenom: boolean;
+  /** mortos de ossos soltam nuvem ao cair */
+  boneDeathCloud: boolean;
+  /** mortos de carne curam 1 por golpe */
+  fleshLeech: boolean;
+  /** carniçais levantados por morto consumido */
+  consumeRaise: number;
+  /** vivos mortos pelo raio levantam em qualquer lugar */
+  boltForce: boolean;
+
   // sinergias (definidas pela contagem de cartas por escola)
   boneRebirth: number;
   boneDominion: boolean;
@@ -122,7 +134,7 @@ export function baseMods(): Mods {
     ratExplode: false,
     circleMiasma: 0,
     circleSlow: 0,
-    boltChain: 0,
+    boltChain: BOLT_CHAIN,
     ghostOnDeath: 0,
     soulMul: 1,
     lifesteal: 0,
@@ -138,6 +150,11 @@ export function baseMods(): Mods {
     necroDrain: 0,
     killHeal: 0,
     doubleRaise: false,
+    boneVenom: false,
+    boneDeathCloud: false,
+    fleshLeech: false,
+    consumeRaise: 0,
+    boltForce: false,
     boneRebirth: 0,
     boneDominion: false,
     fleshInfect: false,

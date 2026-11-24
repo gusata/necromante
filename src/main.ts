@@ -7,6 +7,7 @@ import { CharactersScene } from './scenes/CharactersScene';
 import { GraveyardScene } from './scenes/GraveyardScene';
 import { MenuScene } from './scenes/MenuScene';
 import { OptionsScene } from './scenes/OptionsScene';
+import { RecordsScene } from './scenes/RecordsScene';
 import { RunScene } from './scenes/RunScene';
 
 const game = new Phaser.Game({
@@ -23,7 +24,7 @@ const game = new Phaser.Game({
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   input: { activePointers: 2 },
-  scene: [BootScene, MenuScene, CharactersScene, GraveyardScene, BestiaryScene, OptionsScene, RunScene],
+  scene: [BootScene, MenuScene, CharactersScene, GraveyardScene, BestiaryScene, RecordsScene, OptionsScene, RunScene],
 });
 
 if (DEBUG.fps) {

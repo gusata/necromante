@@ -27,8 +27,9 @@ interface Result {
 }
 
 function play(seed: number, schools: School[], focus?: School, m = meta): Result {
-  const w = new World({ seed, mods: metaMods(m), schools, schoolBonus: schoolBonus(m) });
-  for (let s = 0; s < 60 * 60 * 40 && w.phase !== 'over'; s++) {
+  const w = new World({ seed, mods: metaMods(m), schools, schoolBonus: schoolBonus(m), character: m.character });
+  // para na onda 40: no abismo profundo a horda fica enorme e a simulação demora demais
+  for (let s = 0; s < 60 * 60 * 40 && w.phase !== 'over' && w.wave <= 40; s++) {
     autopilot(w, 1, focus);
     w.update(1 / 60);
     w.events.length = 0;

@@ -10,6 +10,8 @@ export interface Character {
   title: string;
   /** como o personagem muda o jogo, em linhas curtas */
   traits: string[];
+  /** habilidade especial carregada por abates */
+  ritual: { name: string; desc: string };
   /** conta como cartas extras de uma escola */
   school?: Partial<Record<School, number>>;
   /** escolas sempre liberadas para este personagem */
@@ -25,6 +27,7 @@ export const CHARACTERS: Character[] = [
     name: 'O Necromante',
     title: 'equilibrado',
     traits: ['raios rápidos em um alvo', 'nenhuma fraqueza, nenhum truque'],
+    ritual: { name: 'Tempestade de Almas', desc: 'um raio em cada vivo do campo' },
     price: 0,
     unlock: { text: '', check: () => true },
     apply: () => {},
@@ -34,6 +37,7 @@ export const CHARACTERS: Character[] = [
     name: 'A Bruxa da Praga',
     title: 'veneno e paciência',
     traits: ['começa com 1 carta de praga', 'o círculo envenena', 'explodir deixa nuvem tóxica', 'raios 30% mais lentos, -4 vida'],
+    ritual: { name: 'Peste Negra', desc: 'envenena todos os vivos e espalha nuvens' },
     school: { plague: 1 },
     schools: ['plague'],
     price: 120,
@@ -49,12 +53,13 @@ export const CHARACTERS: Character[] = [
     id: 'digger',
     name: 'O Coveiro',
     title: 'quantidade acima de tudo',
-    traits: ['cada cadáver levanta 2 mortos', 'limite do exército -4', 'cadáveres duram +4s'],
+    traits: ['cada cadáver levanta 2 mortos', 'limite do exército -15', 'cadáveres duram +4s'],
+    ritual: { name: 'Cova Coletiva', desc: 'todo cadáver do campo levanta, sem limite' },
     price: 150,
     unlock: { text: 'jogue 3 runs', check: (m) => m.runs >= 3 },
     apply: (m) => {
       m.doubleRaise = true;
-      m.armyCap -= 4;
+      m.armyCap -= 15;
       m.corpseLife += 4;
     },
   },
@@ -63,6 +68,7 @@ export const CHARACTERS: Character[] = [
     name: 'O Ceifador',
     title: 'a foice não escolhe',
     traits: ['a foice acerta todos no círculo', 'golpes mais lentos e pesados', 'círculo maior', 'começa com 1 carta de espírito'],
+    ritual: { name: 'Grande Colheita', desc: 'corte enorme que executa os feridos' },
     school: { spirit: 1 },
     schools: ['spirit'],
     price: 250,
@@ -77,14 +83,15 @@ export const CHARACTERS: Character[] = [
     id: 'vampire',
     name: 'A Vampira',
     title: 'vive do que mata',
-    traits: ['perde 1 vida a cada 8s', 'cada 2 abates cura 1', 'mortos +15% dano e roubam vida', 'consumir cura o dobro', 'começa com 1 carta de sangue'],
+    traits: ['perde 1 vida a cada 8s', 'cada 8 abates cura 1', 'mortos +15% dano e roubam vida', 'consumir cura o dobro', 'começa com 1 carta de sangue'],
+    ritual: { name: 'Banquete', desc: 'drena os vivos em volta, cura e dá frenesi' },
     school: { blood: 1 },
     schools: ['blood'],
     price: 350,
     unlock: { text: 'derrote o comandante', check: (m) => m.bossesBeaten >= 3 },
     apply: (m) => {
       m.necroDrain += 0.12;
-      m.killHeal += 1 / 2;
+      m.killHeal += 1 / 8;
       m.deadDmgMul *= 1.15;
       m.lifesteal += 0.2;
       m.consumeHealMul *= 2;

@@ -47,6 +47,13 @@ export class BootScene extends Phaser.Scene {
         meta.items = { staff_storm: 2, hood_worn: 0, cloak_crimson: 1, ring_bone: 0, ring_iron: 3, amulet_tooth: 0, hood_lich: 0 };
         meta.equipped = { staff: 'staff_storm', hood: 'hood_worn', cloak: 'cloak_crimson', ring1: 'ring_bone', ring2: 'ring_iron', amulet: 'amulet_tooth' };
         meta.characters = ['necro', 'witch', 'digger'];
+        meta.tutorial = ['drag', 'explode', 'consume', 'fuse'];
+        meta.items.staff_pest = 0;
+        meta.items.hood_pest = 1;
+        meta.items.cloak_pact = 0;
+        meta.gems = { ruby1: 4, sapphire2: 1, emerald1: 2, diamond1: 3 };
+        meta.slots = { staff: 2 };
+        if (DEBUG.metaLevel >= 4) meta.heresyMax = 3;
       }
     }
     audio.setSfx(meta.settings.sfx);

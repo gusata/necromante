@@ -21,9 +21,24 @@ export type LivingKind =
   | 'inquisitor'
   | 'witchhunter'
   | 'templar'
-  | 'bishop';
-export type BossKind = 'woodcutter' | 'abbot' | 'commander' | 'archbishop';
-export type DeadKind = 'skeleton' | 'archer' | 'giant' | 'zombie' | 'ghoul' | 'rat' | 'ghost' | 'thrall' | 'champion';
+  | 'bishop'
+  | 'hurler';
+export type BossKind = 'woodcutter' | 'abbot' | 'commander' | 'archbishop' | 'seraph';
+export type DeadKind =
+  | 'skeleton'
+  | 'archer'
+  | 'giant'
+  | 'zombie'
+  | 'ghoul'
+  | 'rat'
+  | 'ghost'
+  | 'thrall'
+  | 'lich'
+  | 'abomination'
+  | 'plaguebearer'
+  | 'banshee'
+  | 'bloodknight'
+  | 'champion';
 export type UnitKind = LivingKind | BossKind | DeadKind;
 
 export type DamageType = 'normal' | 'holy' | 'poison' | 'magic' | 'explode';
@@ -41,9 +56,10 @@ export type Trait =
   | 'banish' // pulso sagrado periódico
   | 'necroHunter' // ignora o exército e vai no necromante
   | 'armorAura' // vivos por perto levam menos dano
-  | 'holyWeapon'; // ataques sagrados: dobro de dano em mortos
+  | 'holyWeapon' // ataques sagrados: dobro de dano em mortos
+  | 'hurler'; // arremessa vivos por cima do exército, no altar
 
-export type AbilityId = 'slam' | 'summon' | 'healAll' | 'nova' | 'charge' | 'beam' | 'healDead';
+export type AbilityId = 'slam' | 'summon' | 'healAll' | 'nova' | 'charge' | 'beam' | 'healDead' | 'throw';
 
 export interface UnitDef {
   faction: Faction;
@@ -118,6 +134,9 @@ export interface Unit {
   elite: boolean;
   /** tipo do último dano recebido */
   lastDtype?: DamageType;
+  /** alvo guardado (-1 = nenhum) e tempo até procurar de novo */
+  tgt: number;
+  tgtT: number;
 }
 
 export interface Corpse {
@@ -172,6 +191,8 @@ export interface Telegraph {
   /** facção atingida */
   hits: Faction;
   dmg: number;
+  /** vivo arremessado (arremessador) */
+  payload?: LivingKind;
 }
 
 export interface Cloud {
@@ -192,7 +213,7 @@ export type GameEvent =
   | { type: 'death'; id: number; kind: UnitKind; x: number; y: number; faction: Faction; facing: 1 | -1; spent: boolean; boss?: BossKind }
   | { type: 'raiseStart'; corpseId: number; x: number; y: number }
   | { type: 'raised'; corpseId: number; unitId: number; x: number; y: number; kind: UnitKind }
-  | { type: 'explode'; x: number; y: number; r: number }
+  | { type: 'explode'; x: number; y: number; r: number; small?: boolean }
   | { type: 'fuse'; x: number; y: number; unitId: number }
   | { type: 'consume'; x: number; y: number }
   | { type: 'heal'; x: number; y: number; r: number; faction: Faction }
@@ -211,7 +232,15 @@ export type GameEvent =
   | { type: 'bossDeath'; boss: BossKind; x: number; y: number }
   | { type: 'waveCleared'; wave: number; souls: number }
   | { type: 'cardOffer' }
+  | { type: 'eventOffer' }
+  | { type: 'eventResult'; good: boolean; text: string }
+  | { type: 'route'; id: string }
   | { type: 'synergy'; school: School; level: 1 | 2 }
   | { type: 'itemDrop'; x: number; y: number; item: string }
+  | { type: 'gemDrop'; x: number; y: number; gem: string }
+  | { type: 'flank'; side: number; y: number }
   | { type: 'scythe'; x: number; y: number; r: number }
+  | { type: 'ritual'; char: string; x: number; y: number; r: number }
+  | { type: 'ritualReady' }
+  | { type: 'wail'; x: number; y: number; r: number }
   | { type: 'gameOver' };

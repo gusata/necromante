@@ -6,7 +6,7 @@ import {
   buyFromMarket,
   characterState,
   equip,
-  forge,
+  forgeSlot,
   freshMeta,
   gainItem,
   metaMods,
@@ -35,13 +35,22 @@ describe('itens', () => {
     expect(schoolBonus(m).bone).toBe(1);
   });
 
-  it('forja gasta almas e sobe o nível', () => {
+  it('a forja melhora o espaço e o bônus passa para o próximo item', () => {
     const m = freshMeta();
     gainItem(m, 'staff_yew');
     m.souls = 1000;
-    expect(forge(m, 'staff_yew')).toBe(true);
-    expect(m.items.staff_yew).toBe(1);
+    const before = metaMods(m).castCdMul;
+    expect(forgeSlot(m, 'staff')).toBe(true);
+    expect(m.slots.staff).toBe(1);
+    expect(m.items.staff_yew).toBe(0);
     expect(m.souls).toBeLessThan(1000);
+    expect(metaMods(m).castCdMul).toBeLessThan(before);
+    // troca o cajado: a forja continua valendo
+    gainItem(m, 'staff_storm');
+    equip(m, 'staff_storm');
+    const forged = metaMods(m).necroDmg;
+    m.slots.staff = 0;
+    expect(metaMods(m).necroDmg).toBeLessThan(forged);
   });
 
   it('mercado vende e retira o item do estoque', () => {

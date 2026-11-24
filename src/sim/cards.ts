@@ -28,7 +28,7 @@ export const SCHOOLS: Record<School, SchoolInfo> = {
     color: '#b5525e',
     mastery: 'Vivos mortos por zumbis e carniçais levantam na hora, em qualquer lugar.',
     dominionName: 'Abominação',
-    dominion: '+2 no limite do exército. Mortos de carne regeneram e devoram vivos fracos.',
+    dominion: '+8 no limite do exército. Mortos de carne regeneram e devoram vivos fracos.',
   },
   plague: {
     id: 'plague',
@@ -50,7 +50,7 @@ export const SCHOOLS: Record<School, SchoolInfo> = {
     id: 'blood',
     name: 'Sangue',
     color: '#e0304a',
-    mastery: 'Mortos +30% vida e roubam vida. O necromante cura 1 a cada 5 abates.',
+    mastery: 'Mortos +30% vida e roubam vida. O necromante cura 1 a cada 20 abates.',
     dominionName: 'Lorde Vampiro',
     dominion: 'Mortos +25% dano. Todo sacrifício dá frenesi: +60% dano e velocidade por 6s.',
   },
@@ -70,6 +70,8 @@ export interface Card {
   max: number;
   /** só aparece se o jogador já tiver uma destas cartas */
   requires?: string[];
+  /** nunca é oferecida: vem de eventos */
+  hidden?: boolean;
   apply: (m: Mods) => void;
 }
 
@@ -95,11 +97,12 @@ export const CARDS: Card[] = [
   }),
   c('bone_archers', 'bone', 'common', 1, 'Arqueiros de Osso', 'Cadáveres podem levantar como arqueiros.', (m) => add(m.raisePool, 'archer', 2)),
   c('bone_marrow', 'bone', 'common', 3, 'Medula Fria', 'Mortos +20% vida.', (m) => (m.deadHpMul *= 1.2)),
-  c('bone_ossuary', 'bone', 'rare', 2, 'Ossuário Portátil', '+2 no limite do exército.', (m) => (m.armyCap += 2)),
+  c('bone_ossuary', 'bone', 'rare', 2, 'Ossuário Portátil', '+8 no limite do exército.', (m) => (m.armyCap += 8)),
   c('bone_colossus', 'bone', 'rare', 2, 'Colosso Faminto', 'Colossos +50% vida e dano.', (m) => (m.giantMul *= 1.5)),
   c('bone_rain', 'bone', 'common', 3, 'Chuva de Ossos', 'Explosões +4 de raio.', (m) => (m.explodeR += 4)),
-  c('bone_ancestor', 'bone', 'rare', 2, 'Esqueleto Ancestral', 'Cada onda começa com +1 esqueleto de graça.', (m) => (m.freeSkeletonsPerWave += 1)),
+  c('bone_ancestor', 'bone', 'rare', 2, 'Esqueleto Ancestral', 'Cada onda começa com +3 esqueletos de graça.', (m) => (m.freeSkeletonsPerWave += 3)),
   c('bone_dance', 'bone', 'common', 2, 'Dança Macabra', 'Mortos +20% velocidade.', (m) => (m.deadSpeedMul *= 1.2)),
+  c('bone_lich', 'bone', 'rare', 1, 'Filactério', 'Cadáveres podem levantar como liches: raios mágicos em área.', (m) => add(m.raisePool, 'lich', 1)),
   // ------------------------------------------------ Carne
   c('flesh_pact', 'flesh', 'common', 1, 'Pacto da Carne', 'Cadáveres podem levantar como zumbis.', (m) => add(m.raisePool, 'zombie', 3)),
   c('flesh_hunger', 'flesh', 'common', 1, 'Fome Insaciável', 'Cadáveres podem levantar como carniçais.', (m) => add(m.raisePool, 'ghoul', 2)),
@@ -112,6 +115,7 @@ export const CARDS: Card[] = [
   c('flesh_feast', 'flesh', 'common', 2, 'Banquete', 'Consumir cura +50%.', (m) => (m.consumeHealMul *= 1.5)),
   c('flesh_quick', 'flesh', 'common', 2, 'Levantar Ligeiro', 'Levantar 35% mais rápido.', (m) => (m.raiseTimeMul *= 0.65)),
   c('flesh_fresh', 'flesh', 'common', 2, 'Cadáveres Frescos', 'Cadáveres duram +5s.', (m) => (m.corpseLife += 5)),
+  c('flesh_abom', 'flesh', 'rare', 1, 'Costura Profana', 'Cadáveres podem levantar como abominações gigantes.', (m) => add(m.raisePool, 'abomination', 1), ['flesh_pact', 'flesh_hunger']),
   // ------------------------------------------------ Praga
   c('plague_nest', 'plague', 'common', 1, 'Ninho de Ratos', 'Cadáveres podem levantar como ratos.', (m) => add(m.raisePool, 'rat', 3)),
   c('plague_bile', 'plague', 'common', 1, 'Bile Tóxica', 'Explosões deixam uma nuvem de veneno.', (m) => (m.explodePoison = true)),
@@ -124,6 +128,7 @@ export const CARDS: Card[] = [
   }),
   c('plague_fever', 'plague', 'common', 1, 'Febre', 'Vivos envenenados andam 35% mais devagar.', (m) => (m.poisonSlow = true)),
   c('plague_contagion', 'plague', 'rare', 1, 'Contágio', 'Quem morre envenenado sempre pode levantar.', (m) => (m.poisonedRaisable = true)),
+  c('plague_bearer', 'plague', 'common', 1, 'Portadores', 'Cadáveres podem levantar como portadores da peste.', (m) => add(m.raisePool, 'plaguebearer', 2)),
   // ------------------------------------------------ Espírito
   c('spirit_veil', 'spirit', 'common', 1, 'Véu', 'Cadáveres podem levantar como fantasmas.', (m) => add(m.raisePool, 'ghost', 3)),
   c('spirit_wail', 'spirit', 'common', 3, 'Lamento', 'Fantasmas +2 dano.', (m) => add(m.kindDmgAdd, 'ghost', 2), ['spirit_veil']),
@@ -132,9 +137,10 @@ export const CARDS: Card[] = [
   c('spirit_wide', 'spirit', 'common', 3, 'Círculo Ampliado', 'Círculo +4 de raio.', (m) => (m.circleR += 4)),
   c('spirit_haunt', 'spirit', 'rare', 2, 'Assombração', 'Mortos que caem têm 45% de chance de virar fantasma.', (m) => (m.ghostOnDeath += 0.45)),
   c('spirit_chains', 'spirit', 'common', 2, 'Grilhões Etéreos', 'Vivos no círculo andam 30% mais devagar.', (m) => (m.circleSlow = 1 - (1 - m.circleSlow) * 0.7)),
-  c('spirit_bound', 'spirit', 'common', 3, 'Alma Vinculada', '+25% almas e +1 no limite do exército.', (m) => {
+  c('spirit_banshee', 'spirit', 'rare', 1, 'Lamento da Banshee', 'Cadáveres podem levantar como banshees que atordoam.', (m) => add(m.raisePool, 'banshee', 1), ['spirit_veil']),
+  c('spirit_bound', 'spirit', 'common', 3, 'Alma Vinculada', '+25% almas e +3 no limite do exército.', (m) => {
     m.soulMul += 0.25;
-    m.armyCap += 1;
+    m.armyCap += 3;
   }),
   // ------------------------------------------------ Sangue
   c('blood_servants', 'blood', 'common', 1, 'Servos de Sangue', 'Cadáveres podem levantar como servos.', (m) => add(m.raisePool, 'thrall', 4)),
@@ -153,16 +159,35 @@ export const CARDS: Card[] = [
     m.frenzyDmg += 0.3;
     m.frenzyTime = Math.max(m.frenzyTime, 5);
   }),
-  c('blood_chalice', 'blood', 'common', 2, 'Cálice', 'Consumir sacrifica até +2 mortos.', (m) => (m.consumeMax += 2)),
+  c('blood_knights', 'blood', 'rare', 1, 'Cavaleiros Rubros', 'Cadáveres podem levantar como cavaleiros que investem.', (m) => add(m.raisePool, 'bloodknight', 1), ['blood_servants']),
+  c('blood_chalice', 'blood', 'common', 2, 'Cálice', 'Consumir sacrifica até +4 mortos.', (m) => (m.consumeMax += 4)),
   // ------------------------------------------------ Neutras
   c('grimoire', null, 'rare', 3, 'Grimório Proibido', 'Raios do necromante +1 dano.', (m) => (m.necroDmg += 1)),
-  c('tomb', null, 'common', 3, 'Lápide Vazia', '+1 no limite do exército.', (m) => (m.armyCap += 1)),
+  c('tomb', null, 'common', 3, 'Lápide Vazia', '+4 no limite do exército.', (m) => (m.armyCap += 4)),
   c('ward', null, 'common', 3, 'Selo de Proteção', 'Necromante +4 vida máxima.', (m) => (m.necroMaxHp += 4)),
   c('hourglass', null, 'legendary', 1, 'Ampulheta Partida', 'Raios 35% mais rápidos e +1 dano.', (m) => {
     m.castCdMul *= 0.65;
     m.necroDmg += 1;
   }),
 ];
+
+// cartas escondidas: efeitos permanentes dados por eventos
+CARDS.push(
+  { id: 'ev_scar', name: 'Cicatriz', desc: '-5 de vida máxima.', school: null, rarity: 'common', max: 99, hidden: true, apply: (m) => (m.necroMaxHp = Math.max(6, m.necroMaxHp - 5)) },
+  {
+    id: 'ev_crypt',
+    name: 'Cripta Aberta',
+    desc: '+10 no limite do exército, cadáveres duram 2s a menos.',
+    school: null,
+    rarity: 'common',
+    max: 99,
+    hidden: true,
+    apply: (m) => {
+      m.armyCap += 10;
+      m.corpseLife = Math.max(2, m.corpseLife - 2);
+    },
+  },
+);
 
 export const CARD_BY_ID: Record<string, Card> = Object.fromEntries(CARDS.map((k) => [k.id, k]));
 
@@ -190,7 +215,7 @@ export function computeMods(base: Mods, cards: string[], bonus: Partial<Record<S
   if (n.flesh >= MASTERY_AT) m.fleshInfect = true;
   if (n.flesh >= DOMINION_AT) {
     m.fleshDominion = true;
-    m.armyCap += 2;
+    m.armyCap += 8;
   }
   if (n.plague >= MASTERY_AT) m.plagueDeathCloud = true;
   if (n.plague >= DOMINION_AT) {
@@ -219,10 +244,15 @@ export function computeMods(base: Mods, cards: string[], bonus: Partial<Record<S
 const RARITY_WEIGHT: Record<Rarity, number> = { common: 10, rare: 4, legendary: 1 };
 
 /** Sorteia `count` cartas diferentes que ainda podem ser escolhidas. */
-export function rollOffer(rand: () => number, owned: string[], schools: School[], count: number, bonus: Partial<Record<School, number>> = {}): string[] {
+export function rollOffer(rand: () => number, owned: string[], schools: School[], count: number, bonus: Partial<Record<School, number>> = {}, rareOnly = false): string[] {
   const have = (id: string) => owned.filter((o) => o === id).length;
   const pool = CARDS.filter(
-    (k) => (k.school === null || schools.includes(k.school)) && have(k.id) < k.max && (!k.requires || k.requires.some((r) => owned.includes(r))),
+    (k) =>
+      !k.hidden &&
+      (!rareOnly || k.rarity !== 'common') &&
+      (k.school === null || schools.includes(k.school)) &&
+      have(k.id) < k.max &&
+      (!k.requires || k.requires.some((r) => owned.includes(r))),
   );
   const counts = schoolCounts(owned, bonus);
   const out: string[] = [];

@@ -7,25 +7,45 @@ import { button, DEPTH, Shaker, transitionIn, transitionTo } from '../fx/juice';
 import { buzz } from '../platform/haptics';
 import { meta, saveMeta } from '../platform/save';
 import { BOSS_DEFS, BOSS_KINDS } from '../sim/defs';
-import { EQUIP_SLOTS, type EquipSlot, ITEM_BY_ID, ITEMS, MAX_ITEM_LEVEL, RARITY_COLOR, RARITY_NAME, SLOT_NAME, SLOT_OF, upgradeCost } from '../sim/items';
+import { GEM_TYPES, GEMS, gemKey, MAX_GEM_RANK, parseGem, RANK_NAME } from '../sim/gems';
+import {
+  EQUIP_SLOTS,
+  effectiveLevel,
+  HOARD_COMPLETE,
+  HOARD_ITEMS,
+  ITEM_BY_ID,
+  ITEMS,
+  MAX_ITEM_LEVEL,
+  MAX_SLOT_LEVEL,
+  RARITY_COLOR,
+  RARITY_NAME,
+  SET_BY_ID,
+  SLOT_NAME,
+  SLOT_OF,
+} from '../sim/items';
 import {
   BUILDINGS,
   buildingLevel,
   buy,
   buyFromMarket,
   equip,
-  forge,
+  forgeSlot,
   MARKET_REFRESH_COST,
   marketPrice,
+  mergeAllGems,
   nextCost,
   refreshMarket,
   rollMarket,
+  slotForgeCost,
+  slotOfItem,
+  socketGem,
   unequip,
+  unsocketGem,
 } from '../sim/meta';
 import type { BossKind } from '../sim/types';
 import { wrap } from './BestiaryScene';
 
-type Tab = 'build' | 'market' | 'arsenal';
+type Tab = 'build' | 'market' | 'arsenal' | 'altar' | 'hoard';
 const hex = (s: string) => parseInt(s.slice(1), 16);
 
 /** Hub de meta-progressão: construções, mercado e arsenal (equipar e forjar). */
@@ -67,13 +87,19 @@ export class GraveyardScene extends Phaser.Scene {
     this.soulsText = pxText(this, 70, 22, `${meta.souls}`, COL.G);
 
     const tabs: [Tab, string][] = [
-      ['build', 'CONSTRUIR'],
+      ['build', 'OBRAS'],
       ['market', 'MERCADO'],
       ['arsenal', 'ARSENAL'],
+      ['altar', 'ALTAR'],
+      ['hoard', 'TESOURO'],
     ];
     tabs.forEach(([id, name], i) => {
-      const img = this.add.image(3 + i * 59, 31, 'tab').setOrigin(0).setInteractive({ useHandCursor: true });
-      const label = pxText(this, 31 + i * 59, 35, name, COL.C).setOrigin(0.5, 0);
+      const img = this.add
+        .image(2 + i * 35.4, 31, 'tab')
+        .setOrigin(0)
+        .setDisplaySize(34, 14)
+        .setInteractive({ useHandCursor: true });
+      const label = pxText(this, 19 + i * 35.4, 35, name, COL.C).setOrigin(0.5, 0);
       img.on('pointerdown', () => {
         if (this.tab === id) return;
         audio.play('click');
@@ -102,7 +128,9 @@ export class GraveyardScene extends Phaser.Scene {
     }
     if (this.tab === 'build') this.renderBuild();
     else if (this.tab === 'market') this.renderMarket();
-    else this.renderArsenal();
+    else if (this.tab === 'arsenal') this.renderArsenal();
+    else if (this.tab === 'altar') this.renderAltar();
+    else this.renderHoard();
     if (animate) {
       for (const o of this.layer) {
         const g = o as unknown as { alpha: number; x: number };
@@ -182,14 +210,14 @@ export class GraveyardScene extends Phaser.Scene {
     this.text(4, y, 'CAMPEÃO', COL.y);
     const opts: (BossKind | null)[] = [null, ...BOSS_KINDS];
     opts.forEach((boss, i) => {
-      const x = 22 + i * 34;
+      const x = 17 + i * 29;
       const owned = boss === null || (meta.champions[boss] ?? 0) > 0;
       const sel = meta.selectedChampion === boss;
-      const frame = this.add2(this.add.image(x, y + 23, sel ? 'slot-rare' : 'slot-empty').setDisplaySize(30, 28));
+      const frame = this.add2(this.add.image(x, y + 23, sel ? 'slot-rare' : 'slot-empty').setDisplaySize(27, 28));
       if (boss) {
         const spr = this.add2(this.add.image(x, y + 36, `${unitKey('champion', boss)}0`).setOrigin(0.5, 1).setScale(0.8));
         if (!owned) spr.setTintFill(0x000000).setAlpha(0.6);
-        if (owned) this.text(x + 9, y + 10, `${meta.champions[boss]}`, COL.y);
+        if (owned) this.text(x + 7, y + 10, `${meta.champions[boss]}`, COL.y);
       } else this.text(x, y + 20, '-', COL.C).setOrigin(0.5, 0);
       frame.setInteractive({ useHandCursor: true }).on('pointerdown', () => {
         if (!owned) {
@@ -268,6 +296,9 @@ export class GraveyardScene extends Phaser.Scene {
         this.add2(this.add.image(x, y, `item-${id}`).setScale(2));
         if (meta.items[id]) this.text(x + 6, y + 5, `${meta.items[id]}`, COL.y);
       } else this.text(x, y - 3, SLOT_NAME[SLOT_OF[slot]].slice(0, 3).toUpperCase(), 0x3a3048).setOrigin(0.5, 0);
+      // forja do espaço: fica no espaço, vale para qualquer item ali
+      const sl = meta.slots[slot] ?? 0;
+      if (sl > 0) this.text(x - 11, y - 12, `+${sl}`, COL.O);
       if (id && id === this.selected) this.highlight(x, y);
       frame.on('pointerdown', () => {
         audio.play('click');
@@ -275,7 +306,7 @@ export class GraveyardScene extends Phaser.Scene {
         this.render(false);
       });
     });
-    this.text(90, 76, 'EQUIPADOS', COL.B).setOrigin(0.5, 0);
+    this.text(90, 76, 'EQUIPADOS  (+N = forja do espaço)', COL.B).setOrigin(0.5, 0);
 
     // inventário
     const owned = ITEMS.filter((i) => i.id in meta.items);
@@ -308,18 +339,23 @@ export class GraveyardScene extends Phaser.Scene {
   private renderDetail(id: string) {
     const it = ITEM_BY_ID[id];
     const lvl = meta.items[id] ?? 0;
-    const y = 222;
-    this.add2(this.add.image(5, y, 'item-card').setOrigin(0).setDisplaySize(170, 64));
+    const slot = slotOfItem(meta, id);
+    const slotLvl = slot ? (meta.slots[slot] ?? 0) : 0;
+    const y = 216;
+    this.add2(this.add.image(5, y, 'item-card').setOrigin(0).setDisplaySize(170, 70));
     this.text(10, y + 4, it.name.toUpperCase(), hex(RARITY_COLOR[it.rarity]));
-    this.text(10, y + 13, `${SLOT_NAME[it.slot].toLowerCase()} ${RARITY_NAME[it.rarity]} - nível ${lvl}/${MAX_ITEM_LEVEL}`, COL.B);
-    this.text(10, y + 23, wrap(it.desc(lvl), 40), COL.c);
-
-    const slot = (Object.entries(meta.equipped) as [EquipSlot, string][]).find(([, v]) => v === id)?.[0];
+    this.text(10, y + 13, `${SLOT_NAME[it.slot].toLowerCase()} ${RARITY_NAME[it.rarity]} - nível ${lvl}/${MAX_ITEM_LEVEL}${slotLvl ? ` +${slotLvl} do espaço` : ''}`, COL.B);
+    this.text(10, y + 23, wrap(it.desc(effectiveLevel(lvl, slotLvl)), 40), COL.c);
+    if (it.set) {
+      const set = SET_BY_ID[it.set];
+      const n = EQUIP_SLOTS.filter((s) => ITEM_BY_ID[meta.equipped[s] ?? '']?.set === it.set).length;
+      this.text(10, y + 41, `conjunto ${set.name.toLowerCase()} ${n}/3`, hex(set.color));
+    } else if (it.hoard) this.text(10, y + 41, `tesouro: ${it.hoard.desc(lvl)}`, COL.O);
     const eqLabel = slot ? 'TIRAR' : 'EQUIPAR';
     const eq = button(
       this,
       48,
-      y + 52,
+      y + 58,
       eqLabel,
       () => {
         if (slot) unequip(meta, slot);
@@ -332,24 +368,138 @@ export class GraveyardScene extends Phaser.Scene {
       },
       { tex: 'btn', down: 'btn-down', color: COL.G },
     );
-    const cost = lvl < MAX_ITEM_LEVEL ? upgradeCost(it, lvl) : null;
+    // a forja melhora o espaço onde o item está, não o item
+    const cost = slot ? slotForgeCost(meta, slot) : null;
+    const label = !slot ? 'EQUIPE P/ FORJAR' : cost === null || slotLvl >= MAX_SLOT_LEVEL ? 'ESPAÇO MÁXIMO' : `FORJAR ${cost}`;
     const fg = button(
       this,
       132,
-      y + 52,
-      cost === null ? 'MÁXIMO' : `FORJAR ${cost}`,
+      y + 58,
+      label,
       () => {
-        if (forge(meta, id)) {
-          this.success(132, y + 50, [COL.O, COL.y, 0xffffff]);
+        if (slot && forgeSlot(meta, slot)) {
+          this.success(132, y + 56, [COL.O, COL.y, 0xffffff]);
           audio.play('slam');
           this.shaker.add(0.35);
-          this.toast(`${it.name.toLowerCase()} agora é nível ${meta.items[id]}`);
+          this.toast(`espaço ${SLOT_NAME[SLOT_OF[slot]].toLowerCase()} agora é +${meta.slots[slot]}`);
           this.render(false);
         } else this.fail(fg.img);
       },
-      { tex: 'btn', down: 'btn-down', color: cost !== null && meta.souls >= cost ? COL.O : COL.B },
+      { tex: 'btn', down: 'btn-down', color: cost !== null && slot && meta.souls >= cost ? COL.O : COL.B },
     );
     this.layer.push(eq.img, eq.label, fg.img, fg.label);
+  }
+
+  // ================================================================ altar (gemas)
+
+  private renderAltar() {
+    this.text(90, 48, 'ALTAR DAS GEMAS', COL.y).setOrigin(0.5, 0);
+    const n = meta.sockets.length;
+    meta.sockets.forEach((key, i) => {
+      const x = 90 + (i - (n - 1) / 2) * 32;
+      const y = 74;
+      const g = key ? parseGem(key) : null;
+      const frame = this.add2(this.add.image(x, y, g ? 'slot-rare' : 'slot-empty').setInteractive({ useHandCursor: true }));
+      if (g) {
+        this.add2(this.add.image(x, y - 1, `gem-${g.type}`).setScale(2));
+        this.text(x + 7, y + 5, RANK_NAME[g.rank], COL.w);
+      }
+      frame.on('pointerdown', () => {
+        if (unsocketGem(meta, i)) {
+          this.success(x, y, [hex(GEMS[g!.type].color)]);
+          this.render(false);
+        } else this.fail(frame);
+      });
+    });
+    const active = meta.sockets.map((k) => (k ? parseGem(k) : null)).filter((g) => g !== null);
+    this.text(90, 92, active.length ? active.map((g) => GEMS[g.type].desc(g.rank)).join('\n') : 'toque numa gema da bolsa para encaixar', active.length ? COL.G : COL.B)
+      .setOrigin(0.5, 0)
+      .setCenterAlign();
+
+    // bolsa: uma linha por tipo, colunas por nível
+    this.text(4, 134, 'BOLSA', COL.C);
+    for (let r = 1; r <= MAX_GEM_RANK; r++) this.text(74 + (r - 1) * 24, 134, RANK_NAME[r], COL.B).setOrigin(0.5, 0);
+    GEM_TYPES.forEach((type, row) => {
+      const y = 152 + row * 20;
+      this.add2(this.add.image(12, y, `gem-${type}`));
+      this.text(20, y - 3, GEMS[type].name.toLowerCase(), hex(GEMS[type].color));
+      for (let r = 1; r <= MAX_GEM_RANK; r++) {
+        const k = gemKey(type, r);
+        const count = meta.gems[k] ?? 0;
+        const x = 74 + (r - 1) * 24;
+        const cell = this.add2(this.add.rectangle(x, y, 20, 16, count ? 0x1f1830 : 0x0c0a11, 0.9).setInteractive({ useHandCursor: true }));
+        if (count) this.text(x, y - 3, `${count}`, count >= 3 && r < MAX_GEM_RANK ? COL.y : COL.c).setOrigin(0.5, 0);
+        cell.on('pointerdown', () => {
+          if (!count) return this.fail(cell);
+          if (!meta.sockets.includes(null)) {
+            this.toast('altar cheio: toque numa gema do altar para tirar');
+            return this.fail(cell);
+          }
+          socketGem(meta, k);
+          this.success(x, y, [hex(GEMS[type].color), 0xffffff]);
+          this.render(false);
+        });
+      }
+    });
+    const merge = button(
+      this,
+      90,
+      262,
+      'FUNDIR 3 EM 1',
+      () => {
+        const n2 = mergeAllGems(meta);
+        if (n2 > 0) {
+          this.success(90, 200, [0xa060d0, COL.y, 0xffffff]);
+          audio.play('fuse');
+          this.toast(`${n2} fusão${n2 > 1 ? 'ões' : ''}`);
+          this.render(false);
+        } else {
+          this.toast('precisa de 3 gemas iguais');
+          this.fail(merge.img);
+        }
+      },
+      { color: COL.c },
+    );
+    this.layer.push(merge.img, merge.label);
+    this.text(90, 278, 'gemas caem de elites e chefes', COL.B).setOrigin(0.5, 0);
+  }
+
+  // ================================================================ tesouro
+
+  private renderHoard() {
+    const hoard = HOARD_ITEMS();
+    const owned = hoard.filter((it) => it.id in meta.items);
+    this.text(90, 48, `TESOURO ${owned.length}/${hoard.length}`, COL.O).setOrigin(0.5, 0);
+    this.text(90, 58, 'bônus valem mesmo guardados', COL.B).setOrigin(0.5, 0);
+    hoard.forEach((it, i) => {
+      const x = 22 + (i % 6) * 27;
+      const y = 82 + Math.floor(i / 6) * 28;
+      const have = it.id in meta.items;
+      const frame = this.add2(this.add.image(x, y, have ? `slot-${it.rarity}` : 'slot-empty').setInteractive({ useHandCursor: true }));
+      const icon = this.add2(this.add.image(x, y, `item-${it.id}`).setScale(2));
+      if (!have) icon.setTintFill(0x07050b).setAlpha(0.7);
+      else if (meta.items[it.id]) this.text(x + 6, y + 5, `${meta.items[it.id]}`, COL.y);
+      if (it.id === this.selected) this.highlight(x, y);
+      frame.on('pointerdown', () => {
+        audio.play('click');
+        this.selected = it.id;
+        this.render(false);
+      });
+    });
+    // bônus somados
+    const lines = owned.map((it) => `- ${it.hoard!.desc(meta.items[it.id])}`);
+    const done = owned.length === hoard.length;
+    this.text(6, 170, lines.length ? lines.slice(0, 7).join('\n') + (lines.length > 7 ? `\n+${lines.length - 7} bônus` : '') : 'nenhuma relíquia ainda', lines.length ? COL.G : COL.B);
+    this.text(90, 244, done ? `completo: ${HOARD_COMPLETE.desc}` : `completo dá: ${HOARD_COMPLETE.desc}`, done ? COL.y : COL.B).setOrigin(0.5, 0);
+    const sel = this.selected ? ITEM_BY_ID[this.selected] : null;
+    if (sel?.hoard) {
+      const have = sel.id in meta.items;
+      const set = sel.set ? SET_BY_ID[sel.set] : null;
+      this.add2(this.add.rectangle(4, 254, 172, 40, 0x0e0b14, 0.95).setOrigin(0));
+      this.text(8, 257, have ? sel.name.toLowerCase() : '??? (não encontrado)', hex(RARITY_COLOR[sel.rarity]));
+      this.text(8, 266, set ? `${set.name.toLowerCase()} 2: ${set.two}` : `tesouro: ${sel.hoard.desc(meta.items[sel.id] ?? 0)}`, COL.c);
+      if (set) this.text(8, 275, wrap(`3: ${set.three}`, 42), COL.c);
+    }
   }
 
   private toast(text: string) {

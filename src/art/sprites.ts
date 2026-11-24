@@ -151,6 +151,33 @@ export const SOUL_ICON = ['..g..', '.gG..', '.gGg.', 'gGGGg', 'gGGGg', '.ggg.'];
 export const SKULL_ICON = ['.www.', 'wwwww', 'wkwkw', '.www.', '.w.w.'];
 export const HEART_ICON = ['.R.R.', 'RRRRR', 'RRRRR', '.RRR.', '..R..'];
 export const PAUSE_ICON = ['kk.kk', 'cc.cc', 'cc.cc', 'cc.cc', 'kk.kk'];
+/** gema: g = cor, L = brilho, C = sombra */
+export const GEM_ICON = ['..kkk..', '.kLgLk.', 'kLggggk', 'kgggggk', '.kgCgk.', '..kCk..', '...k...'];
+export const RITUAL_ICON = [
+  '...kkkkk...',
+  '..kgGGGgk..',
+  '.kgGwwwGgk.',
+  'kgGwwwwwGgk',
+  'kgGwkwkwGgk',
+  'kgGwwwwwGgk',
+  'kgGGwkwGGgk',
+  '.kgGwwwGgk.',
+  '..kgGGGgk..',
+  '...kkkkk...',
+];
+export const HAND_ICON = [
+  '...kk.....',
+  '..kwwk....',
+  '..kwwk....',
+  '..kwwkkkk.',
+  '.kkwwwbwbk',
+  'kwkwwwwwwk',
+  'kwwwwwwwwk',
+  '.kwwwwwwbk',
+  '..kwwwwbk.',
+  '...kbbbk..',
+  '...kkkkk..',
+];
 export const LOCK_ICON = ['.kkk.', 'k...k', 'kkkkk', 'kyyyk', 'kykyk', 'kkkkk'];
 
 /** Ícones das escolas (7x7), desenhados com a letra 's' = cor da escola. */

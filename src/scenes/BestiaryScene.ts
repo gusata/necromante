@@ -33,7 +33,7 @@ export class BestiaryScene extends Phaser.Scene {
       const col = i % 4;
       const row = Math.floor(i / 4);
       const x = 24 + col * 44;
-      const y = 50 + row * 42;
+      const y = 46 + row * 38;
       const kills = meta.kills[k] ?? 0;
       const m = medal(kills);
       const tile = this.add.image(x, y, 'tile').setInteractive({ useHandCursor: true });

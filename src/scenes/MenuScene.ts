@@ -5,8 +5,9 @@ import { CHAR_GLOW } from '../art/sprites';
 import { COL } from '../art/palette';
 import { pxText } from '../art/text';
 import { button, DEPTH, transitionIn, transitionTo } from '../fx/juice';
-import { meta } from '../platform/save';
+import { meta, savedRun } from '../platform/save';
 import { buildingLevel } from '../sim/meta';
+import { todayKey } from '../sim/progress';
 import { Darkness, Scenery } from './scenery';
 
 export class MenuScene extends Phaser.Scene {
@@ -62,18 +63,27 @@ export class MenuScene extends Phaser.Scene {
     this.tweens.add({ targets: title, y: 24, duration: 1800, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
     pxText(this, cx, 42, 'os mortos lutam por você', COL.b).setOrigin(0.5).setDepth(DEPTH.hud);
 
-    this.add.image(cx - 22, 164, 'icon-soul').setDepth(DEPTH.hud);
-    pxText(this, cx - 16, 162, `${meta.souls} almas`, COL.G).setDepth(DEPTH.hud);
+    this.add.image(cx - 22, 165, 'icon-soul').setDepth(DEPTH.hud);
+    pxText(this, cx - 16, 163, `${meta.souls} almas`, COL.G).setDepth(DEPTH.hud);
     if (meta.best.wave > 0) pxText(this, cx, 174, `recorde: onda ${meta.best.wave}`, COL.y).setOrigin(0.5).setDepth(DEPTH.hud);
 
-    const items: [string, () => void, number][] = [
-      ['JOGAR', () => transitionTo(this, 'Characters'), COL.G],
+    const today = todayKey();
+    const dailyDone = meta.daily.date === today && meta.daily.tries > 0;
+    const items: [string, () => void, number][] = [];
+    if (savedRun)
+      items.push([`CONTINUAR ONDA ${Math.max(1, (savedRun.snap.state.wave as number) ?? 1)}`, () => transitionTo(this, 'Run', { resume: true }), COL.y]);
+    items.push(
+      [savedRun ? 'NOVA RUN' : 'JOGAR', () => transitionTo(this, 'Characters'), COL.G],
+      [dailyDone ? `DIÁRIO: ONDA ${meta.daily.best}` : 'DESAFIO DIÁRIO', () => transitionTo(this, 'Run', { daily: true }), dailyDone ? COL.C : COL.y],
       ['CEMITÉRIO', () => transitionTo(this, 'Graveyard'), COL.c],
       ['BESTIÁRIO', () => transitionTo(this, 'Bestiary'), COL.c],
+      ['REGISTROS', () => transitionTo(this, 'Records'), COL.c],
       ['OPÇÕES', () => transitionTo(this, 'Options'), COL.c],
-    ];
+    );
+    const top = 182;
+    const gap = items.length > 6 ? 19 : 21;
     items.forEach(([label, fn, color], i) => {
-      const b = button(this, cx, 196 + i * 22, label, fn, { color });
+      const b = button(this, cx, top + 9 + i * gap, label, fn, { color });
       // entram em sequência
       b.img.setAlpha(0);
       b.label.setAlpha(0);
@@ -83,8 +93,8 @@ export class MenuScene extends Phaser.Scene {
       this.tweens.add({ targets: [b.img, b.label], x: '+=20', delay: 200 + i * 80, duration: 300, ease: 'Back.easeOut' });
     });
 
-    if (meta.runs === 0) {
-      const hint = pxText(this, cx, 290, 'toque em jogar para começar', COL.B).setOrigin(0.5).setDepth(DEPTH.hud);
+    if (meta.runs === 0 && !savedRun) {
+      const hint = pxText(this, cx, 314, 'toque em jogar para começar', COL.B).setOrigin(0.5).setDepth(DEPTH.hud);
       this.tweens.add({ targets: hint, alpha: 0.3, yoyo: true, repeat: -1, duration: 700 });
     }
     this.input.keyboard?.once('keydown-ENTER', () => transitionTo(this, 'Characters'));
