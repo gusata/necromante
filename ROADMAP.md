@@ -150,12 +150,32 @@ Formas geométricas apenas. Nenhuma arte até aqui.
 - [x] 5 necromantes jogáveis com mecânicas próprias, liberados por conquistas e comprados com almas
 - [x] Balanceamento por personagem no simulador
 
+### Fase 6.6: Horda e profundidade
+
+- [x] **Modo horda:** inimigos em bandos (orçamento 7x), vivos comuns com 1–3 de vida, exército de 60+, raios em cadeia, ritmo 35% mais rápido, cartas nas ondas pares, botão 2x
+- [x] Grade espacial (busca de alvo, áreas e separação) e alvo com memória de 0,2s
+- [x] Ritual por personagem, 5 mortos novos (um por escola), chefe secreto (Serafim)
+- [x] Heresia (10 níveis), encruzilhada entre regiões, 8 eventos entre ondas
+- [x] Registros: estatísticas, histórico e 20 conquistas
+
+### Fase 6.7: Ideias do King Dies Rich
+
+- [x] Tesouro (bônus permanente de lendários e conjuntos), 3 conjuntos que cruzam escolas, gemas no altar, forja por espaço
+- [x] Bandos pelas laterais e o Arremessador
+- [x] Mira por toque direto (opção)
+- [x] Árvore da Necrópole no lugar das construções ([docs/ARVORE.md](docs/ARVORE.md))
+- [x] Interface nova: barra de ícones, tela inicial com o necromante, tema quente, tesouro em nichos, HUD com selo da região e vida em números
+- [x] Mortos com borda de aliado, cor forte por região, números grandes (x10), efeitos de Domínio
+- [x] Checkpoint: começar a run na região do último chefe vencido
+- [x] Sprites maiores: humanoides e esqueletos em 16×22, necromante ampliado 2x
+- [ ] Objetos por região que o círculo ativa (baú do saqueador, relicários, estandarte, velas)
+
 ### Fase 7: Polimento mobile (2–3 semanas)
 
-- [ ] Orçamento de performance: **60 fps com 300 unidades** num Android intermediário
-- [ ] Pausar e salvar ao minimizar (`@capacitor/app`), retomar a run no meio
+- [ ] Orçamento de performance: **60 fps com 300 unidades** num Android intermediário (grade espacial, pool de sprites e tetos de efeitos feitos; ~48 fps com a CPU 4x mais lenta no navegador, falta medir num aparelho)
+- [x] Pausar e salvar ao minimizar (`visibilitychange`, sem plugin), retomar a run no meio
 - [ ] Safe areas (notch), tela cheia, orientação travada
-- [ ] Tutorial curto dentro da primeira run, sem tela de texto
+- [x] Tutorial curto dentro da primeira run, sem tela de texto
 - [ ] Localização PT-BR + EN desde o começo (textos fora do código)
 - [ ] Ícone, splash screen, tamanho do APK/AAB
 
@@ -174,7 +194,7 @@ Formas geométricas apenas. Nenhuma arte até aqui.
 
 - Ranking semanal com seed fixa (todo mundo joga a mesma run), validado no servidor
 - Novas escolas e regiões como atualizações
-- Desafios diários com modificadores
+- [x] Desafios diários com modificadores (seed do dia + 2 modificadores do abismo)
 - Steam (empacotar com Electron ou Tauri)
 
 ## Decisões em aberto

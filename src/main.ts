@@ -1,12 +1,13 @@
 import Phaser from 'phaser';
 import { audio } from './audio/audio';
 import { DEBUG } from './debug';
+import { installTelemetry } from './platform/telemetry';
 import { BestiaryScene } from './scenes/BestiaryScene';
 import { BootScene } from './scenes/BootScene';
-import { CharactersScene } from './scenes/CharactersScene';
 import { GraveyardScene } from './scenes/GraveyardScene';
 import { MenuScene } from './scenes/MenuScene';
 import { OptionsScene } from './scenes/OptionsScene';
+import { RecordsScene } from './scenes/RecordsScene';
 import { RunScene } from './scenes/RunScene';
 
 const game = new Phaser.Game({
@@ -23,8 +24,10 @@ const game = new Phaser.Game({
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
   input: { activePointers: 2 },
-  scene: [BootScene, MenuScene, CharactersScene, GraveyardScene, BestiaryScene, OptionsScene, RunScene],
+  scene: [BootScene, MenuScene, GraveyardScene, BestiaryScene, RecordsScene, OptionsScene, RunScene],
 });
+
+installTelemetry(() => game.scene.getScenes(true).map((s) => s.scene.key));
 
 if (DEBUG.fps) {
   const el = document.createElement('div');

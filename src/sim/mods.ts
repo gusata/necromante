@@ -1,9 +1,9 @@
-import { ARMY_CAP, CIRCLE_R, CONSUME_MAX, CORPSE_LIFE, EXPLODE_R, FUSE_COUNT, NECRO, START_SKELETONS } from './defs';
+import { ARMY_CAP, BOLT_CHAIN, CIRCLE_R, CONSUME_MAX, CORPSE_LIFE, EXPLODE_R, FUSE_COUNT, NECRO, START_SKELETONS } from './defs';
 import type { DeadKind } from './types';
 
 /**
  * Todos os modificadores de uma run. Começa em baseMods(), recebe a meta-progressão
- * (cemitério) e depois as cartas escolhidas e as sinergias de escola.
+ * (cemitério) e depois os efeitos de evento e as sinergias de escola.
  */
 export interface Mods {
   necroDmg: number;
@@ -54,8 +54,6 @@ export interface Mods {
   frenzyDmg: number;
   frenzyTime: number;
 
-  cardChoices: number;
-  rerolls: number;
   championMul: number;
 
   // itens lendários e personagens
@@ -74,7 +72,45 @@ export interface Mods {
   /** cada cadáver levanta 2 */
   doubleRaise: boolean;
 
-  // sinergias (definidas pela contagem de cartas por escola)
+  // conjuntos de itens
+  /** esqueletos e arqueiros envenenam */
+  boneVenom: boolean;
+  /** mortos de ossos soltam nuvem ao cair */
+  boneDeathCloud: boolean;
+  /** mortos de carne curam 1 por golpe */
+  fleshLeech: boolean;
+  /** carniçais levantados por morto consumido */
+  consumeRaise: number;
+  /** vivos mortos pelo raio levantam em qualquer lugar */
+  boltForce: boolean;
+
+  // árvore da necrópole
+  doubleRaiseChance: number;
+  /** esqueletos grátis no começo de cada região */
+  regionSkeletons: number;
+  /** chance de um morto levantado nascer elite */
+  eliteRaise: number;
+  /** redução do dano sagrado nos mortos */
+  holyResist: number;
+  /** multiplicador de abates para carregar o ritual */
+  ritualMul: number;
+  ritualKeep: number;
+  /** volta uma vez por run */
+  revive: boolean;
+  routeChoices: number;
+  eventChance: number;
+  /** sorte de raridade nos itens que caem */
+  itemLuck: number;
+  /** chefes derrubam item raro ou melhor */
+  bossRareLoot: boolean;
+  /** multiplicador da chance de relíquia */
+  relicLuck: number;
+  merchantDiscount: number;
+  merchantExtra: number;
+  eliteLootBonus: number;
+  gemMul: number;
+
+  // sinergias (definidas pela contagem de itens por escola)
   boneRebirth: number;
   boneDominion: boolean;
   fleshInfect: boolean;
@@ -122,14 +158,12 @@ export function baseMods(): Mods {
     ratExplode: false,
     circleMiasma: 0,
     circleSlow: 0,
-    boltChain: 0,
+    boltChain: BOLT_CHAIN,
     ghostOnDeath: 0,
     soulMul: 1,
     lifesteal: 0,
     frenzyDmg: 0,
     frenzyTime: 0,
-    cardChoices: 3,
-    rerolls: 0,
     championMul: 1,
     boltOvercap: false,
     lichDecay: false,
@@ -138,6 +172,27 @@ export function baseMods(): Mods {
     necroDrain: 0,
     killHeal: 0,
     doubleRaise: false,
+    boneVenom: false,
+    boneDeathCloud: false,
+    fleshLeech: false,
+    consumeRaise: 0,
+    boltForce: false,
+    doubleRaiseChance: 0,
+    regionSkeletons: 0,
+    eliteRaise: 0,
+    holyResist: 0,
+    ritualMul: 1,
+    ritualKeep: 0,
+    revive: false,
+    routeChoices: 2,
+    eventChance: 1,
+    itemLuck: 0,
+    bossRareLoot: false,
+    relicLuck: 1,
+    merchantDiscount: 0,
+    merchantExtra: 0,
+    eliteLootBonus: 0,
+    gemMul: 1,
     boneRebirth: 0,
     boneDominion: false,
     fleshInfect: false,

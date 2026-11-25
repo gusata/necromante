@@ -1,11 +1,12 @@
 import Phaser from 'phaser';
 import { SCHOOLS } from '../sim/cards';
 import { CHARACTERS } from '../sim/characters';
+import { GEMS } from '../sim/gems';
 import { ITEMS } from '../sim/items';
 import { FIELD, LIVING_KINDS } from '../sim/defs';
 import { RNG } from '../sim/rng';
 import { BOSS_SPECS, HUMANOIDS, humanoidFrames, mix, undeadColors } from './humanoid';
-import { PAL } from './palette';
+import { PAL, UI } from './palette';
 import * as S from './sprites';
 
 type Ctx = CanvasRenderingContext2D;
@@ -98,6 +99,8 @@ export function unitKey(kind: string, boss?: string): string {
 function unitTextures(scene: Phaser.Scene) {
   const frames3 = (key: string, frames: string[][], colors?: Colors) =>
     [0, 1, 2].forEach((i) => spriteTex(scene, `${key}${i}`, frames[Math.min(i, frames.length - 1)], colors));
+  // fantasmas ampliados 2x (20x22), da altura dos humanoides
+  const big = (key: string, frames: string[][], colors: Colors) => [0, 1, 2].forEach((i) => drawGrid(scene, `${key}${i}`, upscale(frames[Math.min(i, frames.length - 1)], withPal(colors))));
 
   // vivos humanoides + cadáveres com as mesmas cores
   for (const kind of LIVING_KINDS) {
@@ -116,10 +119,13 @@ function unitTextures(scene: Phaser.Scene) {
   // mortos
   frames3('skel', S.SKEL);
   frames3('archer', S.SKEL_ARCHER);
-  S.SKEL.forEach((f, i) => drawGrid(scene, `giant${i}`, upscale(f)));
-  for (const k of ['zombie', 'ghoul', 'thrall']) frames3(k, humanoidFrames(HUMANOIDS[k]));
+  S.GIANT_BASE.forEach((f, i) => drawGrid(scene, `giant${i}`, upscale(f)));
+  for (const k of ['zombie', 'ghoul', 'thrall', 'lich', 'plaguebearer', 'bloodknight']) frames3(k, humanoidFrames(HUMANOIDS[k]));
+  // abominação: um zumbi ampliado, como o colosso
+  humanoidFrames(HUMANOIDS.abomination).forEach((f, i) => drawGrid(scene, `abomination${i}`, upscale(f, withPal(HUMANOIDS.abomination.colors))));
+  big('banshee', S.GHOST, { G: '#f4eefc', g: '#a08cc8', k: PAL.k });
   frames3('rat', S.RAT, { b: '#5e6151', B: '#3f4237', G: '#c8ff8a' });
-  frames3('ghost', S.GHOST, { G: '#bfe9ff', g: '#6fa8c8' });
+  big('ghost', S.GHOST, { G: '#bfe9ff', g: '#6fa8c8' });
 
   // chefes e campeões
   for (const [boss, spec] of Object.entries(BOSS_SPECS)) {
@@ -134,19 +140,62 @@ function unitTextures(scene: Phaser.Scene) {
     const cast = c.id === 'necro' ? S.NECRO_CAST : S.charSprite(c.id, true);
     const colors = S.CHAR_COLORS[c.id];
     const key = charKey(c.id);
-    spriteTex(scene, `${key}0`, base, colors);
-    spriteTex(scene, `${key}1`, ['................', ...base.slice(0, 10), ...base.slice(11)], colors);
-    spriteTex(scene, `${key}-cast`, cast, colors);
+    // o necromante é desenhado em 16x19 e ampliado 2x: maior que os bichos, como protagonista
+    const pal = withPal(colors ?? {});
+    drawGrid(scene, `${key}0`, upscale(base, pal));
+    drawGrid(scene, `${key}1`, upscale(['................', ...base.slice(0, 10), ...base.slice(11)], pal));
+    drawGrid(scene, `${key}-cast`, upscale(cast, pal));
     scene.anims.create({ key: `${key}-idle`, frames: [{ key: `${key}0` }, { key: `${key}1` }], frameRate: 1.5, repeat: -1 });
   }
 
   const walk = (key: string, rate = 6) =>
     scene.anims.create({ key: `${key}-walk`, frames: [{ key: `${key}0` }, { key: `${key}1` }], frameRate: rate, repeat: -1 });
-  for (const k of [...LIVING_KINDS, 'skel', 'archer', 'giant', 'zombie', 'ghoul', 'thrall', 'rat', 'ghost']) walk(k, k === 'rat' || k === 'hound' ? 10 : 6);
+  for (const k of [
+    ...LIVING_KINDS,
+    'skel',
+    'archer',
+    'giant',
+    'zombie',
+    'ghoul',
+    'thrall',
+    'rat',
+    'ghost',
+    'lich',
+    'abomination',
+    'plaguebearer',
+    'banshee',
+    'bloodknight',
+  ])
+    walk(k, k === 'rat' || k === 'hound' ? 10 : k === 'abomination' ? 4 : 6);
   for (const b of Object.keys(BOSS_SPECS)) {
     walk(b, 4);
     walk(`champ-${b}`, 4);
   }
+  // borda verde-alma em todos os mortos (inclusive campeões)
+  for (const k of [...DEAD_KEYS, ...Object.keys(BOSS_SPECS).map((b) => `champ-${b}`)]) for (let i = 0; i < 3; i++) addRim(scene, `${k}${i}`, ALLY_RIM);
+}
+
+/** Cor da borda dos mortos: aliados se destacam dos vivos no meio da horda. */
+export const ALLY_RIM = '#2f9a5c';
+const DEAD_KEYS = ['skel', 'archer', 'giant', 'zombie', 'ghoul', 'thrall', 'rat', 'ghost', 'lich', 'abomination', 'plaguebearer', 'banshee', 'bloodknight'];
+
+/** Pinta uma borda de 1px por fora do sprite (pixels vazios encostados no desenho). */
+function addRim(scene: Phaser.Scene, key: string, color: string) {
+  if (!scene.textures.exists(key)) return;
+  const tex = scene.textures.get(key) as Phaser.Textures.CanvasTexture;
+  if (!tex.getContext) return;
+  const ctx = tex.getContext();
+  const { width: w, height: h } = tex;
+  const img = ctx.getImageData(0, 0, w, h);
+  const a = (x: number, y: number) => (x < 0 || y < 0 || x >= w || y >= h ? 0 : img.data[(y * w + x) * 4 + 3]);
+  ctx.fillStyle = color;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (a(x, y) > 0) continue;
+      if (a(x - 1, y) > 0 || a(x + 1, y) > 0 || a(x, y - 1) > 0 || a(x, y + 1) > 0) ctx.fillRect(x, y, 1, 1);
+    }
+  }
+  tex.refresh();
 }
 
 /** As cores do humanoide + a paleta global (para o upscale ler armas e contornos). */
@@ -163,11 +212,20 @@ interface GroundStyle {
   kind: 'dirt' | 'tiles' | 'cobble' | 'marble';
 }
 
+/** Cada região tem uma cor forte: terra quente, pedra esverdeada, aço azulado, mármore roxo. */
 export const GROUND_STYLES: GroundStyle[] = [
-  { base: '#110e14', a: '#18141c', b: '#211b26', c: '#2e2735', accent: '#141a12', kind: 'dirt' },
-  { base: '#121118', a: '#1a1820', b: '#24212c', c: '#302c3a', accent: '#13180f', kind: 'tiles' },
-  { base: '#100f13', a: '#1b1a20', b: '#26242c', c: '#35323c', accent: '#2a1214', kind: 'cobble' },
-  { base: '#0e0c12', a: '#17131d', b: '#201a27', c: '#2c2434', accent: '#3a0c18', kind: 'marble' },
+  { base: '#2a1a12', a: '#352217', b: '#412a1c', c: '#553825', accent: '#26301a', kind: 'dirt' },
+  { base: '#12262a', a: '#183035', b: '#1f3b40', c: '#2a4c52', accent: '#2c3a1e', kind: 'tiles' },
+  { base: '#161c2c', a: '#1d2538', b: '#253046', c: '#334058', accent: '#4a1a1e', kind: 'cobble' },
+  { base: '#24142c', a: '#2e1a38', b: '#3a2246', c: '#4c2e5a', accent: '#6a1830', kind: 'marble' },
+];
+/** cor e força da escuridão por região (índice 4 = abismo) */
+export const REGION_DARK: { color: number; amount: number }[] = [
+  { color: 0x140904, amount: 0.4 },
+  { color: 0x031210, amount: 0.42 },
+  { color: 0x040814, amount: 0.42 },
+  { color: 0x10040f, amount: 0.38 },
+  { color: 0x1e0306, amount: 0.5 },
 ];
 
 function groundTex(scene: Phaser.Scene, key: string, st: GroundStyle, seed: number) {
@@ -326,38 +384,76 @@ function glowTex(scene: Phaser.Scene, key: string, size: number) {
 }
 
 /** Painel com borda chanfrada. */
-export function panelTex(scene: Phaser.Scene, key: string, w: number, h: number, fill: string, light: string, border = PAL.k) {
+/**
+ * Painel com moldura: borda escura, moldura colorida de 1px, miolo e brilho em cima.
+ * Cantos arredondados em 1px. É a base de todos os botões e painéis da interface.
+ */
+export function panelTex(scene: Phaser.Scene, key: string, w: number, h: number, fill: string, frame: string, border: string = UI.dark) {
   const { tex, ctx } = canvas(scene, key, w, h);
   ctx.fillStyle = border;
   ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = fill;
+  ctx.fillStyle = frame;
   ctx.fillRect(1, 1, w - 2, h - 2);
-  ctx.fillStyle = light;
-  ctx.fillRect(1, 1, w - 2, 1);
-  ctx.fillStyle = mix(fill, '#000000', 0.4);
-  ctx.fillRect(1, h - 2, w - 2, 1);
+  ctx.fillStyle = fill;
+  ctx.fillRect(2, 2, w - 4, h - 4);
+  ctx.fillStyle = mix(fill, '#ffffff', 0.1);
+  ctx.fillRect(2, 2, w - 4, 1);
+  ctx.fillStyle = mix(fill, '#000000', 0.35);
+  ctx.fillRect(2, h - 3, w - 4, 1);
+  // cantos arredondados
   for (const [x, y] of [
     [0, 0],
     [w - 1, 0],
     [0, h - 1],
     [w - 1, h - 1],
-  ]) ctx.clearRect(x, y, 1, 1);
+  ])
+    ctx.clearRect(x, y, 1, 1);
+  ctx.fillStyle = border;
+  for (const [x, y] of [
+    [1, 1],
+    [w - 2, 1],
+    [1, h - 2],
+    [w - 2, h - 2],
+  ])
+    ctx.fillRect(x, y, 1, 1);
   tex.refresh();
 }
 
 function hudTex(scene: Phaser.Scene) {
   const { tex, ctx } = canvas(scene, 'hudbar', FIELD.w, 24);
-  ctx.fillStyle = '#0a0810';
+  ctx.fillStyle = UI.bg;
   ctx.fillRect(0, 0, FIELD.w, 24);
-  ctx.fillStyle = PAL.P;
+  ctx.fillStyle = UI.edge;
   ctx.fillRect(0, 0, FIELD.w, 1);
-  ctx.fillStyle = PAL.k;
+  ctx.fillStyle = UI.dark;
   ctx.fillRect(0, 1, FIELD.w, 1);
   tex.refresh();
 
-  const top = canvas(scene, 'topbar', FIELD.w, 11);
-  for (let y = 0; y < 11; y++) for (let x = 0; x < FIELD.w; x++) if (y < 9 || (x + y) % 2 === 0) px(top.ctx, x, y, '#07050b', y < 9 ? 0.85 : 0.6);
+  // topo: só uma sombra que some, o texto flutua por cima do campo (como no King Dies Rich)
+  const top = canvas(scene, 'topbar', FIELD.w, 40);
+  for (let y = 0; y < 40; y++) {
+    top.ctx.globalAlpha = 0.92 * Math.min(1, 1.6 * (1 - y / 40)) ** 1.4;
+    top.ctx.fillStyle = UI.dark;
+    top.ctx.fillRect(0, y, FIELD.w, 1);
+  }
+  top.ctx.globalAlpha = 1;
   top.tex.refresh();
+
+  // botões redondos de ação (ícone só, como o espaço de poção)
+  const round = (key: string, fill: string, frame: string) => {
+    const r = canvas(scene, key, 22, 22);
+    for (let y = 0; y < 22; y++) {
+      for (let x = 0; x < 22; x++) {
+        const d = Math.hypot(x + 0.5 - 11, y + 0.5 - 11);
+        if (d > 11) continue;
+        px(r.ctx, x, y, d > 10 ? UI.dark : d > 8.6 ? frame : y < 9 ? fill : UI.panel, 1);
+      }
+    }
+    r.tex.refresh();
+  };
+  round('act-round', UI.panel2, UI.edge2);
+  round('act-round-ready', '#1e3a26', '#5fd08a');
+  round('act-round-down', '#3a2a1c', UI.gold);
 
   // vinheta vermelha de vida baixa
   const v = canvas(scene, 'vignette', FIELD.w, 320);
@@ -370,31 +466,38 @@ function hudTex(scene: Phaser.Scene) {
   v.tex.refresh();
 }
 
+/** Fonte 3x5: 'px' tem sombra preta (texto claro em fundo escuro); 'px-flat' não tem (texto escuro em botão claro). */
 function fontTex(scene: Phaser.Scene) {
   const chars = S.FONT_CHARS;
-  const { tex, ctx } = canvas(scene, 'font', chars.length * 4, 6);
-  [...chars].forEach((ch, i) => {
-    const g = S.FONT[ch];
-    if (!g) return;
-    for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++) if (g[y][x] === '#') px(ctx, i * 4 + x + 1, y + 1, '#000000');
-    for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++) if (g[y][x] === '#') px(ctx, i * 4 + x, y, '#ffffff');
-  });
-  tex.refresh();
-  scene.cache.bitmapFont.add(
-    'px',
-    Phaser.GameObjects.RetroFont.Parse(scene, {
-      image: 'font',
-      width: 4,
-      height: 6,
-      chars,
-      charsPerRow: chars.length,
-      'spacing.x': 0,
-      'spacing.y': 0,
-      'offset.x': 0,
-      'offset.y': 0,
-      lineSpacing: 2,
-    }),
-  );
+  for (const [key, shadow] of [
+    ['px', true],
+    ['px-flat', false],
+  ] as const) {
+    const img = `font-${key}`;
+    const { tex, ctx } = canvas(scene, img, chars.length * 4, 6);
+    [...chars].forEach((ch, i) => {
+      const g = S.FONT[ch];
+      if (!g) return;
+      if (shadow) for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++) if (g[y][x] === '#') px(ctx, i * 4 + x + 1, y + 1, '#000000');
+      for (let y = 0; y < 5; y++) for (let x = 0; x < 3; x++) if (g[y][x] === '#') px(ctx, i * 4 + x, y, '#ffffff');
+    });
+    tex.refresh();
+    scene.cache.bitmapFont.add(
+      key,
+      Phaser.GameObjects.RetroFont.Parse(scene, {
+        image: img,
+        width: 4,
+        height: 6,
+        chars,
+        charsPerRow: chars.length,
+        'spacing.x': 0,
+        'spacing.y': 0,
+        'offset.x': 0,
+        'offset.y': 0,
+        lineSpacing: 2,
+      }),
+    );
+  }
 }
 
 function propTextures(scene: Phaser.Scene) {
@@ -423,6 +526,13 @@ function iconTextures(scene: Phaser.Scene) {
   spriteTex(scene, 'icon-heart', S.HEART_ICON);
   spriteTex(scene, 'icon-pause', S.PAUSE_ICON);
   spriteTex(scene, 'icon-lock', S.LOCK_ICON);
+  spriteTex(scene, 'icon-hand', S.HAND_ICON);
+  spriteTex(scene, 'icon-ritual', S.RITUAL_ICON);
+  spriteTex(scene, 'icon-explode', S.EXPLODE_ICON);
+  for (const [id, rows] of Object.entries(S.NAV_ICONS)) spriteTex(scene, `nav-${id}`, rows, { L: '#c8ffd8', C: '#1f5a3a' });
+  spriteTex(scene, 'icon-fuse', S.FUSE_ICON);
+  spriteTex(scene, 'icon-consume', S.CONSUME_ICON);
+  for (const g of Object.values(GEMS)) spriteTex(scene, `gem-${g.type}`, S.GEM_ICON, { g: g.color, L: mix(g.color, '#ffffff', 0.5), C: mix(g.color, '#000000', 0.4) });
   for (const [id, info] of Object.entries(SCHOOLS)) spriteTex(scene, `school-${id}`, S.SCHOOL_ICONS[id], { s: info.color, k: PAL.k });
   spriteTex(scene, 'school-neutral', S.SCHOOL_ICONS.neutral, { s: '#c9a23a', k: PAL.k });
   for (const [id, rows] of Object.entries(S.BUILDING_ICONS)) spriteTex(scene, id, rows);
@@ -451,26 +561,41 @@ function itemTextures(scene: Phaser.Scene) {
     });
   }
   // moldura de raridade para ícones
-  const rar = { common: '#6b6452', magic: '#6fa8c8', rare: '#e0b040', legendary: '#ff7a3a' } as const;
-  for (const [r, col] of Object.entries(rar)) panelTex(scene, `slot-${r}`, 24, 24, '#0e0b14', mix(col, '#0e0b14', 0.3), col);
-  panelTex(scene, 'slot-empty', 24, 24, '#0a0810', '#1a1424', '#2a2036');
-  panelTex(scene, 'tab', 56, 14, PAL.d, PAL.P);
-  panelTex(scene, 'tab-on', 56, 14, '#132a1e', PAL.g, PAL.g);
-  panelTex(scene, 'item-card', 170, 44, '#0e0b14', '#2a2036');
+  const rar = { common: '#6b6452', magic: '#6fa8c8', rare: '#e0b040', legendary: '#ff7a3a', set: '#4ee08a' } as const;
+  for (const [r, col] of Object.entries(rar)) panelTex(scene, `slot-${r}`, 24, 24, UI.panel, col);
+  panelTex(scene, 'slot-empty', 24, 24, '#16110d', '#2a2018');
+  panelTex(scene, 'tab', 56, 14, UI.panel, UI.edge);
+  panelTex(scene, 'tab-on', 56, 14, '#3a2a14', UI.gold);
+  panelTex(scene, 'item-card', 170, 44, UI.panel, UI.edge);
 }
 
 function uiTextures(scene: Phaser.Scene) {
-  panelTex(scene, 'btn', 56, 16, PAL.d, PAL.P);
-  panelTex(scene, 'btn-down', 56, 16, PAL.p, PAL.g);
-  panelTex(scene, 'btn-ready', 56, 16, '#132a1e', PAL.g);
-  panelTex(scene, 'btn-wide', 120, 18, PAL.d, PAL.P);
-  panelTex(scene, 'btn-wide-down', 120, 18, PAL.p, PAL.g);
-  panelTex(scene, 'panel', 168, 40, '#0e0b14', PAL.P);
-  panelTex(scene, 'row', 172, 27, '#0e0b14', '#2a2036');
-  panelTex(scene, 'row-flash', 172, 27, '#1f3a2a', PAL.G);
-  panelTex(scene, 'tile', 40, 40, '#0e0b14', '#2a2036');
-  panelTex(scene, 'small-btn', 30, 14, PAL.d, PAL.P);
-  panelTex(scene, 'small-btn-down', 30, 14, PAL.p, PAL.g);
+  panelTex(scene, 'btn', 56, 16, UI.panel2, UI.edge2);
+  panelTex(scene, 'btn-down', 56, 16, '#3a2a1c', UI.gold);
+  panelTex(scene, 'btn-ready', 56, 16, '#1e3a26', '#5fd08a');
+  panelTex(scene, 'btn-wide', 120, 18, UI.panel2, UI.edge2);
+  panelTex(scene, 'btn-wide-down', 120, 18, '#3a2a1c', UI.gold);
+  // botão principal: dourado, texto escuro
+  panelTex(scene, 'btn-gold', 120, 20, '#d9a63a', UI.goldLight, '#3a2408');
+  panelTex(scene, 'btn-gold-down', 120, 20, '#b0822a', UI.gold, '#3a2408');
+  panelTex(scene, 'panel', 168, 40, UI.panel, UI.edge);
+  // faixa da escolha de cerco e botão vermelho de fechar
+  panelTex(scene, 'sel-row', 168, 22, '#2a1f17', UI.gold);
+  panelTex(scene, 'btn-red', 120, 20, '#a8403a', '#d0705a', '#3a0c08');
+  panelTex(scene, 'btn-red-down', 120, 20, '#88302a', '#b0503a', '#3a0c08');
+  panelTex(scene, 'row', 172, 27, UI.panel, UI.edge);
+  panelTex(scene, 'row-flash', 172, 27, '#203a26', '#7fe0a0');
+  panelTex(scene, 'tile', 40, 40, UI.panel, UI.edge);
+  panelTex(scene, 'small-btn', 30, 14, UI.panel2, UI.edge2);
+  panelTex(scene, 'small-btn-down', 30, 14, '#3a2a1c', UI.gold);
+  panelTex(scene, 'hud-banner', 26, 12, '#6a1820', UI.gold);
+  panelTex(scene, 'btn-half', 86, 18, UI.panel2, UI.edge2);
+  panelTex(scene, 'btn-half-down', 86, 18, '#3a2a1c', UI.gold);
+  panelTex(scene, 'nav', 20, 20, UI.panel, UI.edge);
+  panelTex(scene, 'nav-on', 20, 20, '#3a2a14', UI.gold);
+  panelTex(scene, 'act', 42, 18, UI.panel2, UI.edge2);
+  panelTex(scene, 'act-ready', 42, 18, '#1e3a26', '#5fd08a');
+  panelTex(scene, 'act-down', 42, 18, '#3a2a1c', UI.gold);
   // cartas: uma moldura por escola e raridade
   const rar = { common: PAL.B, rare: '#6fa8c8', legendary: '#f6cf6a' } as const;
   for (const s of [...Object.keys(SCHOOLS), 'neutral']) {
@@ -484,11 +609,11 @@ function uiTextures(scene: Phaser.Scene) {
       ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = rc;
       ctx.fillRect(1, 1, w - 2, h - 2);
-      ctx.fillStyle = '#100c16';
+      ctx.fillStyle = UI.panel;
       ctx.fillRect(2, 2, w - 4, h - 4);
-      ctx.fillStyle = mix(color, '#100c16', 0.75);
+      ctx.fillStyle = mix(color, UI.panel, 0.72);
       ctx.fillRect(2, 2, 30, h - 4);
-      ctx.fillStyle = mix(color, '#100c16', 0.4);
+      ctx.fillStyle = mix(color, UI.panel, 0.4);
       ctx.fillRect(32, 2, 1, h - 4);
       for (const [x, y] of [
         [0, 0],

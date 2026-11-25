@@ -5,3 +5,6 @@ dist/
 android/app/build/
 android/.gradle/
 android/local.properties
+
+# APKs gerados para os testadores
+apk/

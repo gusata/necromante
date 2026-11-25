@@ -102,7 +102,7 @@ export class Scenery {
 export class Darkness {
   private rt: Phaser.GameObjects.RenderTexture;
   private stamp: Phaser.GameObjects.Image;
-  color = 0x050309;
+  color = 0x0b0806;
 
   constructor(
     scene: Phaser.Scene,

@@ -48,28 +48,65 @@ export const NECRO_CAST = [
   '.kkkkkkkkkkkkkk.',
 ];
 
-const SKEL_TOP = [
-  '....kkkk....',
-  '...kwwwwk...',
-  '...kgkwgk...',
-  '...kwwwwk...',
-  '....kbkbk...',
-  '....kkkk....',
-  '...kbwwbk...',
-  '..kbkwwkbk..',
-  '..kk.kwk.kk.',
-  '....kwwk....',
+// esqueleto 16x22: crânio com mandíbula e olhos de alma, costelas, espada enferrujada
+const SKEL_HEAD = [
+  '................',
+  '.....kkkkkk.....',
+  '....kwwwwwwk....',
+  '...kwwwwwwwbk...',
+  '...kwkkwwkkbk...',
+  '...kwkGwwkGbk...',
+  '...kwwwkkwwbk...',
+  '....kbwwwwbk....',
+  '....kwkwkwkk....',
+  '.....kkkkkk.....',
 ];
-export const SKEL = [
-  [...SKEL_TOP, '...kbk.kbk..', '...kk..kk...'],
-  [...SKEL_TOP, '....kbkbk...', '....kk.kk...'],
-  // ataque: braço à frente
-  [...SKEL_TOP.slice(0, 7), '..kbkwwkbbk.', '..kk.kwk..kk', '....kwwk....', '...kbk.kbk..', '...kk..kk...'],
+const SKEL_TORSO = [
+  '......kbbk......',
+  '...kkwwwwwwkk...',
+  '..kwkwkbbkwkwk..',
+  '..kwkkwbbwkkwk..',
+  '..kwkwkbbkwkwk..',
+  '..kwk.kbbk.kwk..',
+  '..kbk.kwwk.kbk..',
+  '......kwwk......',
+];
+const SKEL_LEGS = [
+  ['.....kwkkwk.....', '....kwk..kwk....', '....kbk..kbk....', '....kkk..kkk....'],
+  ['......kwwk......', '......kwwk......', '......kbbk......', '......kkkk......'],
+];
+/** espada na mão direita: lâmina m, guarda y, cabo N */
+const SWORD = { 7: 'w', 8: 'm', 9: 'm', 10: 'm', 11: 'm', 12: 'm', 13: 'm' } as Record<number, string>;
+function withSword(rows: string[], dx: number, dy: number): string[] {
+  const out = rows.map((r) => r.split(''));
+  const put = (y: number, x: number, c: string) => {
+    if (y >= 0 && y < out.length && x >= 0 && x < 16) out[y][x] = c;
+  };
+  for (const [r, c] of Object.entries(SWORD)) put(Number(r) + dy, 14 + dx, c);
+  put(14 + dy, 13 + dx, 'y');
+  put(14 + dy, 14 + dx, 'M');
+  put(14 + dy, 15 + dx, 'y');
+  put(15 + dy, 14 + dx, 'N');
+  return out.map((r) => r.join(''));
+}
+const SKEL_BASE = [
+  [...SKEL_HEAD, ...SKEL_TORSO, ...SKEL_LEGS[0]],
+  [...SKEL_HEAD, ...SKEL_TORSO, ...SKEL_LEGS[1]],
+];
+export const SKEL = [withSword(SKEL_BASE[0], 0, 0), withSword(SKEL_BASE[1], 0, 0), withSword(SKEL_BASE[0], 1, -3)];
+
+const BOW = ['.............Nk.', '..............N.', '..............N.', '..............N.', '..............N.', '..............N.', '..............N.', '..............N.', '.............Nk.'];
+const withBow = (rows: string[]) => rows.map((r, i) => (i >= 8 && i <= 16 ? overlay(r, BOW[i - 8]) : r));
+export const SKEL_ARCHER = [withBow(SKEL_BASE[0]), withBow(SKEL_BASE[1]), withBow(SKEL_BASE[0])];
+
+/** esqueleto compacto 12x14: base do colosso (ampliado 2x = 24x28) */
+const GIANT_TOP = ['....kkkk....', '...kwwwwk...', '...kgkwgk...', '...kwwwwk...', '....kbkbk...', '....kkkk....', '...kbwwbk...', '..kbkwwkbk..', '..kk.kwk.kk.', '....kwwk....'];
+export const GIANT_BASE = [
+  [...GIANT_TOP, '...kbk.kbk..', '...kk..kk...'],
+  [...GIANT_TOP, '....kbkbk...', '....kk.kk...'],
+  [...GIANT_TOP.slice(0, 7), '..kbkwwkbbk.', '..kk.kwk..kk', '....kwwk....', '...kbk.kbk..', '...kk..kk...'],
 ];
 
-const BOW = ['..........Nk', '...........N', '...........N', '...........N', '...........N', '...........N', '..........Nk'];
-const withBow = (rows: string[]) => rows.map((r, i) => (i >= 4 && i <= 10 ? overlay(r, BOW[i - 4]) : r));
-export const SKEL_ARCHER = SKEL.map(withBow);
 
 export function overlay(base: string, top: string): string {
   let out = '';
@@ -93,9 +130,9 @@ export const HOUND = [
 ];
 
 /** Cadáver genérico: recebe as cores do humanoide (H cabeça, A/a corpo, f pele). */
-export const CORPSE = ['..kkk.......', '.kHHHkkkkkk.', '.kfefAAAAAAk', '.kkkkaaaaaak', 'rr.rkkkkkkkr'];
+export const CORPSE = ['..kkkk..........', '.kHHHHkkkkkkkk..', '.kfeffkAAAAAAAk.', '.kffffkaaaaaaak.', '.kkkkkkkLLkkLLk.', 'rr.rr.kkkkkkkkkr'];
 export const CORPSE_HOUND = ['............', '...kkkkkk...', '.kkNNNNNNkk.', 'kONNnNNnNNk.', '.rkkkkkkkkr.'];
-export const BONE_PILE = ['............', '....kkk.....', '..kkwbwkk...', '.kwbkwwbwk..', '..kkkkkkkk..'];
+export const BONE_PILE = ['................', '.....kkkk.......', '....kwwwwk..kk..', '..kkwkgwkkkwbk..', '.kwbkwwwbwkwwk..', '..kkkkkkkkkkkk..'];
 
 export const SPLAT = ['..r.....', '.rRr..r.', 'rRRRrr..', '.rRRRr.r', '..r.r...'];
 export const SCORCH = ['..kxk...', '.kxzxk..', 'kxzozxk.', '.kxzxkx.', '..kk.k..'];
@@ -151,6 +188,51 @@ export const SOUL_ICON = ['..g..', '.gG..', '.gGg.', 'gGGGg', 'gGGGg', '.ggg.'];
 export const SKULL_ICON = ['.www.', 'wwwww', 'wkwkw', '.www.', '.w.w.'];
 export const HEART_ICON = ['.R.R.', 'RRRRR', 'RRRRR', '.RRR.', '..R..'];
 export const PAUSE_ICON = ['kk.kk', 'cc.cc', 'cc.cc', 'cc.cc', 'kk.kk'];
+/** Ícones da barra de navegação (11x11). */
+export const NAV_ICONS: Record<string, string[]> = {
+  home: ['.....k.....', '....kpk....', '...kpPpk...', '..kpPPPpk..', '.kpPPPPPpk.', 'kkkkkkkkkkk', '.kNNNNNNNk.', '.kNkkNkkNk.', '.kNkGNkkNk.', '.kNkkNkkNk.', '.kkkkkkkkk.'],
+  market: ['...........', '.kkkkkkkkk.', 'kRwRwRwRwRk', 'kRwRwRwRwRk', '.kkkkkkkkk.', '.kN.....Nk.', '.kN.yOy.Nk.', '.kNkkkkkNk.', '.kNNNNNNNk.', '.kNkkkkkNk.', '.kk.....kk.'],
+  arsenal: ['.........kk', '........kmk', '.......kmk.', '......kmk..', '.....kmk...', '.k..kmk....', '.kykmk.....', '..kyk......', '.kNkyk.....', 'kNk..k.....', 'kk.........'],
+  tree: ['....kkk....', '...kgGgk...', '..kgGgGgk..', '.kgGgGgGgk.', '..kgGgGgk..', '...kgNgk...', '.....N.....', '....kNk....', '..kkNNNkk..', '.kNk.N.kNk.', '.kk..k..kk.'],
+  altar: ['...........', '....kkk....', '...kLgLk...', '..kLgggLk..', '..kgggggk..', '...kgCgk...', '....kCk....', '.kkkkkkkkk.', '.kZZZZZZZk.', '.kzzzzzzzk.', '.kkkkkkkkk.'],
+  hoard: ['...........', '..kkkkkkk..', '.kyyyyyyyk.', 'kyyOyyyOyyk', 'kkkkkkkkkkk', 'kNyNNkNNyNk', 'kNNNkykNNNk', 'kNyNNkNNyNk', 'kNNNNNNNNNk', 'kkkkkkkkkkk', '...........'],
+  bestiary: ['...........', '...kkkkk...', '..kwwwwwk..', '.kwwwwwwwk.', '.kwkkwkkwk.', '.kwkRwkRwk.', '.kwwwkwwwk.', '..kwwwwwk..', '..kwkwkwk..', '...kkkkk...', '...........'],
+  records: ['.kkk...kkk.', '.kyk...kyk.', '.kyykkkyyk.', '..kyyyyyk..', '..kyyOyyk..', '...kyyyk...', '....kyk....', '....kyk....', '...kkykk...', '..kyyyyyk..', '..kkkkkkk..'],
+  options: ['....kkk....', '.k.kmmmk.k.', 'kmkkmmmkkmk', '.kmmmmmmmk.', 'kkmmkkkmmkk', 'kmmmk.kmmmk', 'kkmmkkkmmkk', '.kmmmmmmmk.', 'kmkkmmmkkmk', '.k.kmmmk.k.', '....kkk....'],
+};
+
+// ícones dos botões de ação
+export const EXPLODE_ICON = ['..o.o..', '.oOyOo.', 'oOyyyOo', '.Oyyyo.', 'oOyyyOo', '.oOOOo.', '..o.o..'];
+export const FUSE_ICON = ['w.....w', '.w...w.', '..kwk..', '.kwwwk.', '.kwkwk.', '.kwwwk.', '..k.k..'];
+export const CONSUME_ICON = ['.RR.RR.', 'RrRRRRR', 'RRRRRRR', 'RRRRRRR', '.RRRRR.', '..RRR..', '...R...'];
+
+/** gema: g = cor, L = brilho, C = sombra */
+export const GEM_ICON = ['..kkk..', '.kLgLk.', 'kLggggk', 'kgggggk', '.kgCgk.', '..kCk..', '...k...'];
+export const RITUAL_ICON = [
+  '...kkkkk...',
+  '..kgGGGgk..',
+  '.kgGwwwGgk.',
+  'kgGwwwwwGgk',
+  'kgGwkwkwGgk',
+  'kgGwwwwwGgk',
+  'kgGGwkwGGgk',
+  '.kgGwwwGgk.',
+  '..kgGGGgk..',
+  '...kkkkk...',
+];
+export const HAND_ICON = [
+  '...kk.....',
+  '..kwwk....',
+  '..kwwk....',
+  '..kwwkkkk.',
+  '.kkwwwbwbk',
+  'kwkwwwwwwk',
+  'kwwwwwwwwk',
+  '.kwwwwwwbk',
+  '..kwwwwbk.',
+  '...kbbbk..',
+  '...kkkkk..',
+];
 export const LOCK_ICON = ['.kkk.', 'k...k', 'kkkkk', 'kyyyk', 'kykyk', 'kkkkk'];
 
 /** Ícones das escolas (7x7), desenhados com a letra 's' = cor da escola. */
@@ -172,6 +254,7 @@ export const BUILDING_ICONS: Record<string, string[]> = {
   'b-bell': ['.....k.....', '....kyk....', '...kyyyk...', '..kyyyyyk..', '..kyyyyyk..', '..kyyyyyk..', '.kyyyyyyyk.', '.kkkkkkkkk.', '.....k.....', '....kOk....', '.....k.....'],
   'b-grave': ['.......kk..', '......kmMk.', '.....kmMk..', '....kNk....', '...kNk.....', '..kNk......', '.kNk.......', 'kNk........', 'kk..kkkkk..', '...kxxxxxk.', '..kxxxxxxxk'],
   'b-reliquary': ['...........', '...kkkkk...', '..kyyyyyk..', '.kyyOyOyyk.', '.kkkkkkkkk.', '.kNyNNNyNk.', '.kNNNyNNNk.', '.kNyNNNyNk.', '.kkkkkkkkk.', '...........', '...........'],
+  necropolis: ['..........k..........', '.........kgk.........', '.........kZk.........', '........kZzZk........', '.k.k...kZzzzZk...k.k.', '.kkk..kZzzzzzZk..kkk.', '.kZk.kZZZZZZZZZk.kZk.', '.kZk.kzzzzzzzzzk.kZk.', '.kZkkkzzzkkkzzzkkkZk.', '.kZzzzzzkgggkzzzzzZk.', '.kZzkgkzkgggkzkgkzZk.', '.kZzkgkzkgggkzkgkzZk.', '.kZzzzzzkgggkzzzzzZk.', 'kkkkkkkkkkkkkkkkkkkkk'],
   'b-hall': ['...........', '.k..k..k...', '.yk.y.ky...', '.yyyyyyy...', '.yOyyyOy...', '.yyyyyyy...', '.kkkkkkk...', '...........', '...........', '...........', '...........'],
 };
 
@@ -241,6 +324,12 @@ export const ITEM_ICONS: Record<string, string[]> = {
   cloak: ['..kk.kk..', '.kcLkLck.', 'kccccccck', 'kcLccccck', 'kccccccck', 'kcccCccck', 'kccCCcCck', 'kCCkCkCCk', 'kk.k.k.kk'],
   amulet: ['kk.....kk', '.k.....k.', '..k...k..', '...k.k...', '...kkk...', '..kLcck..', '..kcCck..', '..kccck..', '...kkk...'],
   ring: ['...kyk...', '..kyLyk..', '..kkykk..', '.kc...ck.', 'kc.....ck', 'kc.....ck', 'kc.....ck', '.kc...ck.', '..kccck..'],
+  staff_skull: ['....kkk..', '...kcLck.', '...kdcdk.', '...kcLck.', '....kNk..', '...kNk...', '..kNk....', '.kNk.....', 'kk.......'],
+  staff_orb: ['.....kkk.', '....kyLyk', '....kyyyk', '.....kkk.', '....kNk..', '...kNk...', '..kNk....', '.kNk.....', 'kk.......'],
+  hood_mask: ['..kkkkk..', '.kcLccck.', 'kcykcykck', 'kccccccck', '.kccccLLk', '..kcccCck', '...kcCCk.', '....kCk..', '.....k...'],
+  cloak_shroud: ['...kkk...', '..kcLck..', '.kcdddck.', '.kcdddck.', 'kccdddcck', 'kccccccck', 'kcLccccck', 'kccccccck', 'k.k.k.k.k'],
+  amulet_fang: ['kk.....kk', '.k.....k.', '..kkkkk..', '..kLcck..', '...kcck..', '...kcCk..', '....kck..', '....kk...', '.........'],
+  ring_gem: ['...kkk...', '..kyLyk..', '..kyyyk..', '.kckkkck.', 'kc.....ck', 'kc.....ck', 'kc.....ck', '.kc...ck.', '..kccck..'],
 };
 
 // ------------------------------------------------------------ necromantes jogáveis

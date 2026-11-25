@@ -26,15 +26,28 @@ Definida em `src/art/palette.ts`, uma letra por cor. As principais:
 
 Cores de humanoides (roupas, cabelo) ficam no mapa de cada spec em `src/art/humanoid.ts`.
 
+### Interface
+
+Tema quente, definido em `UI` (`src/art/palette.ts`): fundo `#14100c`, painéis `#1f1712` com moldura `#4a3524`, ouro `#e0b040`. Texto principal creme (`u`, `#f2e3c6`), secundário (`v`, `#a89078`) e ouro claro (`U`, `#f0c050`). Todo painel e botão sai de `panelTex` (borda escura, moldura de 1px, brilho em cima, cantos arredondados). O botão principal é dourado (`btn-gold`) e usa a fonte sem sombra (`px-flat`) com texto marrom-escuro.
+
+### Aliados e regiões
+
+- Todo morto ganha uma borda de 1px em `#2f9a5c` (`ALLY_RIM`), aplicada depois de gerar as texturas.
+- O chão (`GROUND_STYLES`) e a escuridão (`REGION_DARK`) de cada região têm uma cor dominante.
+
 ## Tamanhos
 
 | Tipo | Tamanho | Como |
 |---|---|---|
-| humanoides (vivos, zumbis, servos) | 12×14 | gerador por camadas (`humanoid.ts`) |
-| esqueleto, fantasma | 10–12×12 | desenho à mão (`sprites.ts`) |
+| humanoides (vivos, zumbis, servos, liches...) | 16×22 | gerador por camadas (`humanoid.ts`): cabeça nas linhas 0–8 (olhos na 5), tronco 9–16, pernas 17–21, arma na coluna 13 |
+| esqueleto e arqueiro | 16×22 | desenho à mão (`sprites.ts`) |
+| fantasma e banshee | 20×22 | desenho à mão 10×11 ampliado 2x |
 | rato, cão | 8×5, 12×8 | desenho à mão |
-| necromante | 16×19 | desenho à mão, 3 quadros |
-| chefes e colosso | 24×28 | humanoide ampliado 2x com refinamento (`upscale`) |
+| necromante e personagens | 32×38 | desenho à mão 16×19 ampliado 2x: maior que os bichos, como protagonista |
+| colosso | 24×28 | esqueleto compacto 12×14 ampliado 2x |
+| chefes, campeões e abominação | 32×44 | humanoide 16×22 ampliado 2x com refinamento (`upscale`) |
+
+Na simulação, o raio de colisão das unidades é multiplicado por `SIZE_SCALE` (1,3) e raios e flechas miram em `BODY_MID` (10px acima dos pés), para casar com o tamanho dos sprites.
 | ícones | 5×5 a 11×11 | desenho à mão |
 
 ## Contorno e luz

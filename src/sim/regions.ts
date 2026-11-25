@@ -25,24 +25,24 @@ export const REGIONS: Region[] = [
     name: 'O Mosteiro',
     subtitle: 'orações não salvam ninguém',
     boss: 'abbot',
-    pool: { monk: [5, 1], peasant: [2, 1], priest: [2, 1], nun: [3, 2], ringer: [2, 3], flagellant: [3, 3], hunter: [1, 1] },
-    budget: (l) => 26 + l * 7,
+    pool: { monk: [5, 1], peasant: [3, 1], priest: [1, 1], nun: [3, 2], ringer: [2, 3], flagellant: [3, 3], hunter: [1, 1], hurler: [1, 4] },
+    budget: (l) => 20 + l * 8,
     escort: ['monk', 'monk', 'priest', 'nun'],
   },
   {
     name: 'A Fortaleza',
     subtitle: 'muralhas, aço e disciplina',
     boss: 'commander',
-    pool: { soldier: [5, 1], militia: [2, 1], crossbow: [3, 1], shield: [3, 2], halberd: [3, 3], knight: [2, 4], ringer: [1, 1] },
-    budget: (l) => 40 + l * 8,
+    pool: { soldier: [5, 1], militia: [2, 1], crossbow: [3, 1], shield: [3, 2], halberd: [3, 3], knight: [2, 4], ringer: [1, 1], hurler: [2, 2] },
+    budget: (l) => 34 + l * 9,
     escort: ['soldier', 'soldier', 'shield', 'crossbow', 'knight'],
   },
   {
     name: 'A Catedral',
     subtitle: 'a luz final',
     boss: 'archbishop',
-    pool: { templar: [3, 1], paladin: [3, 1], soldier: [2, 1], inquisitor: [3, 2], witchhunter: [2, 2], bishop: [2, 3], crossbow: [2, 1], flagellant: [2, 1] },
-    budget: (l) => 72 + l * 11,
+    pool: { templar: [3, 1], paladin: [3, 2], soldier: [3, 1], inquisitor: [3, 2], witchhunter: [2, 3], bishop: [2, 3], crossbow: [2, 1], flagellant: [2, 1], hurler: [2, 2] },
+    budget: (l) => 46 + l * 15,
     escort: ['paladin', 'templar', 'inquisitor', 'bishop', 'witchhunter'],
   },
 ];
@@ -58,9 +58,9 @@ export const ENDLESS_MODS: EndlessMod[] = [
   { id: 'fervor', name: 'Fervor', desc: 'Vivos 15% mais rápidos.' },
   { id: 'iron', name: 'Ferro', desc: 'Vivos +25% vida.' },
   { id: 'horde', name: 'Horda', desc: 'Ondas 25% maiores.' },
-  { id: 'zeal', name: 'Zelo', desc: 'Vivos +1 dano.' },
+  { id: 'zeal', name: 'Zelo', desc: 'Vivos +10 dano.' },
   { id: 'dawn', name: 'Aurora', desc: 'Cadáveres duram metade.' },
-  { id: 'faith', name: 'Fé', desc: 'Vivos curam 1 vida a cada 4s.' },
+  { id: 'faith', name: 'Fé', desc: 'Vivos curam 10 de vida a cada 4s.' },
 ];
 
 export const circleName = (n: number) => `Círculo ${['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'][n - 1] ?? n}`;

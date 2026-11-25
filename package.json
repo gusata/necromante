@@ -1,7 +1,7 @@
 {
   "name": "necromante",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -17,8 +17,10 @@
   "dependencies": {
     "@capacitor/android": "^8.6.2",
     "@capacitor/core": "^8.6.2",
+    "@capacitor/filesystem": "^8.1.5",
     "@capacitor/haptics": "^8.0.2",
     "@capacitor/preferences": "^8.0.1",
+    "@capacitor/share": "^8.0.3",
     "phaser": "^3.90.0"
   },
   "devDependencies": {

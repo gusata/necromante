@@ -60,12 +60,32 @@ export function flash(scene: Phaser.Scene, color: number, alpha = 0.6, duration 
   scene.tweens.add({ targets: r, alpha: 0, duration, onComplete: () => r.destroy() });
 }
 
+let floating = 0;
+/** teto de números flutuantes ao mesmo tempo (os grandes sempre passam) */
+const MAX_FLOATING = 16;
+
 /** Número/texto flutuante que sobe e some. */
 export function floatText(scene: Phaser.Scene, x: number, y: number, text: string, color: number, big = false) {
-  const t = pxText(scene, Math.round(x), Math.round(y), text, color).setOrigin(0.5).setDepth(DEPTH.overlay + 1);
+  if (!big && floating >= MAX_FLOATING) return;
+  floating++;
+  const t = pxText(scene, Math.round(x), Math.round(y), text, color)
+    .setOrigin(0.5)
+    .setDepth(DEPTH.overlay + 1);
   if (big) t.setScale(2);
   scene.tweens.add({ targets: t, y: y - (big ? 16 : 10), duration: 500, ease: 'Cubic.easeOut' });
-  scene.tweens.add({ targets: t, alpha: 0, delay: 350, duration: 250, onComplete: () => t.destroy() });
+  scene.tweens.add({
+    targets: t,
+    alpha: 0,
+    delay: 350,
+    duration: 250,
+    onComplete: () => {
+      floating--;
+      t.destroy();
+    },
+  });
+  t.once('destroy', () => {
+    if (t.alpha > 0) floating = Math.max(0, floating - 1);
+  });
 }
 
 // ------------------------------------------------------------ transição com dither
@@ -183,7 +203,9 @@ export function button(
   const down = opts.down ?? 'btn-wide-down';
   const depth = opts.depth ?? DEPTH.hud;
   const img = scene.add.image(x, y, tex).setDepth(depth).setInteractive({ useHandCursor: true });
-  const label = pxText(scene, x, y - 2, text, opts.color ?? COL.c).setOrigin(0.5, 0).setDepth(depth + 1);
+  // botão dourado: texto escuro sem sombra, para ler bem no fundo claro
+  const gold = tex.startsWith('btn-gold');
+  const label = pxText(scene, x, y - 2, text, gold ? 0x3a1c04 : (opts.color ?? COL.u), gold).setOrigin(0.5, 0).setDepth(depth + 1);
   let enabled = true;
   img.on('pointerdown', () => {
     if (!enabled) {

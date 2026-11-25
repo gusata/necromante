@@ -10,7 +10,8 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "resolveJsonModule": true
   },
   "include": ["src", "tests", "vite.config.ts", "capacitor.config.ts"]
 }
