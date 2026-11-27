@@ -1,0 +1,147 @@
+{
+ "frames": [
+  {
+   "filename": "arrow",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 3
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 3
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 3
+   },
+   "duration": 100
+  },
+  {
+   "filename": "boltp",
+   "frame": {
+    "x": 6,
+    "y": 0,
+    "w": 6,
+    "h": 3
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 6,
+    "h": 3
+   },
+   "sourceSize": {
+    "w": 6,
+    "h": 3
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bonearrow",
+   "frame": {
+    "x": 13,
+    "y": 0,
+    "w": 5,
+    "h": 3
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 3
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 3
+   },
+   "duration": 100
+  },
+  {
+   "filename": "splat",
+   "frame": {
+    "x": 19,
+    "y": 0,
+    "w": 8,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "scorch",
+   "frame": {
+    "x": 28,
+    "y": 0,
+    "w": 8,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-bones",
+   "frame": {
+    "x": 37,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "desenhado \u00e0 m\u00e3o em texto (hand_art.py, estilo PixelSpec do codeart2d)",
+  "image": "pequenos.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 53,
+   "h": 6
+  },
+  "scale": "1",
+  "frameTags": []
+ }
+}

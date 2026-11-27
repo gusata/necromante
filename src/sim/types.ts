@@ -59,6 +59,9 @@ export type Trait =
   | 'holyWeapon' // ataques sagrados: dobro de dano em mortos
   | 'hurler'; // arremessa vivos por cima do exército, no altar
 
+/** afixo de elite: muda como aquele vivo luta */
+export type EliteAffix = 'swift' | 'armored' | 'martyr' | 'zealot';
+
 export type AbilityId = 'slam' | 'summon' | 'healAll' | 'nova' | 'charge' | 'beam' | 'healDead' | 'throw';
 
 export interface UnitDef {
@@ -123,6 +126,8 @@ export interface Unit {
   poisonDps: number;
   poisonTick: number;
   stunT: number;
+  /** lentidão do raio (básico de espírito) */
+  chillT?: number;
   chargeT: number;
   chargeCd: number;
   chargeVx: number;
@@ -132,6 +137,9 @@ export interface Unit {
   age: number;
   /** inimigo de elite: mais forte, pode derrubar itens */
   elite: boolean;
+  affix?: EliteAffix;
+  /** ignora o exército e corre para o altar */
+  rush?: boolean;
   /** tipo do último dano recebido */
   lastDtype?: DamageType;
   /** alvo guardado (-1 = nenhum) e tempo até procurar de novo */
@@ -207,12 +215,14 @@ export interface Cloud {
 
 export type GameEvent =
   | { type: 'bolt'; x1: number; y1: number; x2: number; y2: number }
-  | { type: 'hit'; id: number; x: number; y: number; faction: Faction; dmg: number; dtype: DamageType; big: boolean }
+  | { type: 'hit'; id: number; x: number; y: number; faction: Faction; dmg: number; dtype: DamageType; big: boolean; crit?: boolean }
   | { type: 'swing'; id: number; tx: number; ty: number }
   | { type: 'shoot'; id: number }
   | { type: 'death'; id: number; kind: UnitKind; x: number; y: number; faction: Faction; facing: 1 | -1; spent: boolean; boss?: BossKind }
   | { type: 'raiseStart'; corpseId: number; x: number; y: number }
-  | { type: 'raised'; corpseId: number; unitId: number; x: number; y: number; kind: UnitKind }
+  | { type: 'raised'; corpseId: number; unitId: number; x: number; y: number; kind: UnitKind; how?: 'infect' | 'bones' | 'ghost' | 'reassemble' }
+  /** efeitos de escola e de item que antes não apareciam na tela */
+  | { type: 'schoolFx'; fx: 'rebirth' | 'leech' | 'chill' | 'bonusSouls' | 'shield' | 'feast'; x: number; y: number }
   | { type: 'explode'; x: number; y: number; r: number; small?: boolean }
   | { type: 'fuse'; x: number; y: number; unitId: number }
   | { type: 'consume'; x: number; y: number }
@@ -227,7 +237,7 @@ export type GameEvent =
   | { type: 'summon'; x: number; y: number }
   | { type: 'cloud'; x: number; y: number; r: number }
   | { type: 'regionStart'; region: number }
-  | { type: 'waveStart'; wave: number; local: number; boss: boolean }
+  | { type: 'waveStart'; wave: number; local: number; boss: boolean; theme?: string }
   | { type: 'bossSpawn'; id: number; boss: BossKind }
   | { type: 'bossDeath'; boss: BossKind; x: number; y: number }
   | { type: 'waveCleared'; wave: number; souls: number }
@@ -235,10 +245,10 @@ export type GameEvent =
   | { type: 'eventOffer' }
   | { type: 'eventResult'; good: boolean; text: string }
   | { type: 'route'; id: string }
-  | { type: 'synergy'; school: School; level: 1 | 2 }
+  | { type: 'synergy'; school: School; level: 1 | 2 | 3 }
   | { type: 'itemDrop'; x: number; y: number; item: string }
   | { type: 'gemDrop'; x: number; y: number; gem: string }
-  | { type: 'flank'; side: number; y: number }
+  | { type: 'flank'; side: number; y: number; raid?: boolean }
   | { type: 'scythe'; x: number; y: number; r: number }
   | { type: 'ritual'; char: string; x: number; y: number; r: number }
   | { type: 'ritualReady' }

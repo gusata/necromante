@@ -1,0 +1,238 @@
+{
+ "frames": [
+  {
+   "filename": "icon-consume",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-explode",
+   "frame": {
+    "x": 8,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-fuse",
+   "frame": {
+    "x": 16,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-hand",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 10,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 10,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 10,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-heart",
+   "frame": {
+    "x": 35,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-lock",
+   "frame": {
+    "x": 41,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-pause",
+   "frame": {
+    "x": 47,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-ritual",
+   "frame": {
+    "x": 53,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 10
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-skull",
+   "frame": {
+    "x": 65,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-soul",
+   "frame": {
+    "x": 71,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 6
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "install_pack.py (arte desenhada \u00e0 m\u00e3o)",
+  "version": "1",
+  "image": "hud.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 76,
+   "h": 11
+  },
+  "scale": "1",
+  "frameTags": [],
+  "layers": [],
+  "slices": []
+ }
+}

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 2,
+  "provider": "openai",
+  "kind": "image",
+  "route": "codex-cli",
+  "requestedModel": "codex-image_gen",
+  "options": {
+    "tool": "image_gen"
+  },
+  "promptSha256": "f1d07198774b5f91c8a8d4612259d1cc90f20ca0e342bda56e7f4d4f2edb5fa8",
+  "references": [
+    {
+      "sha256": "1459ecfa8db65d3184a5c4390c11dcf2cb753980017bfc9cd8b9017fe6f293cd",
+      "bytes": 7621
+    },
+    {
+      "sha256": "4122bf9415d9e8bc8e390b2771e360d18e918a50e908c96be924a5b6fea7d794",
+      "bytes": 3528
+    }
+  ],
+  "fingerprint": "0297db212873e1cc90ae304f34fbc34cf29aa31f07ebb7ffdd3ffc58317d4721",
+  "estimate": {
+    "usd": 0.0,
+    "currency": "USD",
+    "pricesVersion": "2026-10-06",
+    "items": [],
+    "basis": "subscription quota call: no per-call USD price; counted by call caps"
+  },
+  "consent": {
+    "provider": "openai",
+    "model": "codex-image_gen",
+    "calls": 1,
+    "estimateUsd": 0.0,
+    "route": "codex-cli",
+    "quota": true,
+    "account": "the user's own Codex sign-in (ChatGPT)",
+    "note": "uses the subscription quota of that sign-in, never API credit"
+  },
+  "artSource": "host_image",
+  "execution": "execute",
+  "status": "failed",
+  "outputDir": "../../art-work/take1",
+  "receipt": {
+    "startedAt": "2026-11-25T12:43:52.249Z",
+    "submittedAt": "2026-11-25T12:43:52.263Z",
+    "completedAt": "2026-11-25T12:44:06.970Z",
+    "wallMs": 14722,
+    "providerMs": 14681,
+    "attempt": 1,
+    "purpose": "route_media image",
+    "toolVersion": "cli_media/0.6.0",
+    "outcomeCode": "TOOL_UNAVAILABLE"
+  },
+  "ledger": {
+    "projectDir": "../..",
+    "reservationId": "883ac47d702f46aca1a9851469837e80",
+    "status": "failed"
+  },
+  "cliRun": {
+    "tool": "codex",
+    "runId": "524d52d95efd4b6cab3ca2e2f1021704",
+    "cwd": "<tmp>/forge-cli-524d52d95efd-b99db559",
+    "startedAt": "2026-11-25T12:43:52.249Z",
+    "version": "0.166.0",
+    "versionText": "codex-cli 0.166.0",
+    "recipe": "codex-exec-imagegen/1",
+    "home": "CODEX_HOME",
+    "verifiedBefore": false,
+    "threadId": "01a212bb-e23c-79c0-95b9-0f865f4d7b1d"
+  },
+  "error": {
+    "code": "TOOL_UNAVAILABLE",
+    "message": "the CLI does not offer its native image tool to this sign-in"
+  },
+  "errorType": "CliMediaError"
+}

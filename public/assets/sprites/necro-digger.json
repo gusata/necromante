@@ -1,0 +1,81 @@
+{
+ "frames": [
+  {
+   "filename": "char-digger0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 38
+   },
+   "duration": 600
+  },
+  {
+   "filename": "char-digger1",
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 32,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 38
+   },
+   "duration": 600
+  },
+  {
+   "filename": "char-digger2",
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 32,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 32,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 32,
+    "h": 38
+   },
+   "duration": 600
+  }
+ ],
+ "meta": {
+  "app": "codeart2d pixel_finish (code-drawn, no image model)",
+  "image": "necro-digger.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 96,
+   "h": 38
+  },
+  "scale": "1",
+  "frameTags": []
+ }
+}

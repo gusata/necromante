@@ -18,7 +18,7 @@ export const REGIONS: Region[] = [
     subtitle: 'os vivos pegam forcados',
     boss: 'woodcutter',
     pool: { peasant: [6, 1], hound: [3, 1], torch: [3, 2], militia: [3, 3], hunter: [2, 3] },
-    budget: (l) => 6 + l * 4,
+    budget: (l) => 20 + l * 9,
     escort: ['peasant', 'peasant', 'hound', 'torch'],
   },
   {
@@ -26,7 +26,7 @@ export const REGIONS: Region[] = [
     subtitle: 'orações não salvam ninguém',
     boss: 'abbot',
     pool: { monk: [5, 1], peasant: [3, 1], priest: [1, 1], nun: [3, 2], ringer: [2, 3], flagellant: [3, 3], hunter: [1, 1], hurler: [1, 4] },
-    budget: (l) => 20 + l * 8,
+    budget: (l) => 52 + l * 14,
     escort: ['monk', 'monk', 'priest', 'nun'],
   },
   {
@@ -34,7 +34,7 @@ export const REGIONS: Region[] = [
     subtitle: 'muralhas, aço e disciplina',
     boss: 'commander',
     pool: { soldier: [5, 1], militia: [2, 1], crossbow: [3, 1], shield: [3, 2], halberd: [3, 3], knight: [2, 4], ringer: [1, 1], hurler: [2, 2] },
-    budget: (l) => 34 + l * 9,
+    budget: (l) => 36 + l * 12,
     escort: ['soldier', 'soldier', 'shield', 'crossbow', 'knight'],
   },
   {

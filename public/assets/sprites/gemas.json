@@ -1,0 +1,678 @@
+{
+ "frames": [
+  {
+   "filename": "gem-amethyst-1",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-2",
+   "frame": {
+    "x": 8,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-3",
+   "frame": {
+    "x": 16,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-4",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5",
+   "frame": {
+    "x": 32,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst",
+   "frame": {
+    "x": 40,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-1",
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-2",
+   "frame": {
+    "x": 56,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-3",
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-4",
+   "frame": {
+    "x": 72,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5",
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond",
+   "frame": {
+    "x": 88,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-1",
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-2",
+   "frame": {
+    "x": 104,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-3",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-4",
+   "frame": {
+    "x": 120,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5",
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald",
+   "frame": {
+    "x": 136,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-1",
+   "frame": {
+    "x": 144,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-2",
+   "frame": {
+    "x": 152,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-3",
+   "frame": {
+    "x": 160,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-4",
+   "frame": {
+    "x": 168,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5",
+   "frame": {
+    "x": 176,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby",
+   "frame": {
+    "x": 184,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-1",
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-2",
+   "frame": {
+    "x": 200,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-3",
+   "frame": {
+    "x": 208,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-4",
+   "frame": {
+    "x": 216,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5",
+   "frame": {
+    "x": 224,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire",
+   "frame": {
+    "x": 232,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "install_pack.py (arte desenhada \u00e0 m\u00e3o)",
+  "version": "1",
+  "image": "gemas.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 239,
+   "h": 7
+  },
+  "scale": "1",
+  "frameTags": [],
+  "layers": [],
+  "slices": []
+ }
+}

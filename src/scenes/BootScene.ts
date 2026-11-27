@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 import { audio } from '../audio/audio';
 import { applySheets, queueManifest, queueSheets } from '../art/aseprite';
-import { generateArt } from '../art/generate';
+import { createFxAnims, queueFx, queueFxManifest } from '../art/fx';
+import { generateArt, rebuildBadges } from '../art/generate';
+import { applyUiKit, queueUiKit, queueUiKitJson } from '../art/uikit';
 import { DEBUG } from '../debug';
 import { loadMeta, meta } from '../platform/save';
 import { fillTree } from '../sim/tree';
@@ -15,14 +17,24 @@ export class BootScene extends Phaser.Scene {
     // o manifesto é opcional: sem ele, toda a arte é a gerada no código
     this.load.on('loaderror', (file: Phaser.Loader.File) => console.info(`[boot] sem ${file.key}`));
     queueManifest(this);
+    queueFxManifest(this);
+    queueUiKitJson(this);
   }
 
   /** Carrega as spritesheets do Aseprite listadas no manifesto. */
   private loadSheets(): Promise<string[]> {
     const entries = queueSheets(this);
-    if (!entries.length) return Promise.resolve([]);
+    const fx = queueFx(this);
+    const ui = queueUiKit(this);
+    if (!entries.length && !fx && !ui) return Promise.resolve([]);
     return new Promise((resolve) => {
-      this.load.once('complete', () => resolve(applySheets(this, entries)));
+      this.load.once('complete', () => {
+        const fxMade = createFxAnims(this);
+        if (fxMade.length) console.info(`[fx] ${fxMade.length} efeitos: ${fxMade.join(', ')}`);
+        // o kit de interface vem por último: redesenha painéis e botões por cima da arte gerada
+        const sheets = applySheets(this, entries);
+        resolve([...sheets, ...applyUiKit(this, new Set(sheets))]);
+      });
       this.load.start();
     });
   }
@@ -31,6 +43,7 @@ export class BootScene extends Phaser.Scene {
     const t0 = performance.now();
     generateArt(this);
     const replaced = await this.loadSheets();
+    rebuildBadges(this, replaced);
     if (replaced.length) console.info(`[aseprite] ${replaced.length} texturas substituídas: ${replaced.join(', ')}`);
     (window as unknown as { __aseprite: string[] }).__aseprite = replaced;
     (window as unknown as { __bootMs: number }).__bootMs = Math.round(performance.now() - t0);
@@ -41,6 +54,7 @@ export class BootScene extends Phaser.Scene {
       meta.bossesBeaten = Math.min(4, DEBUG.metaLevel);
       if (DEBUG.metaLevel > 0) {
         meta.champions = { woodcutter: 2, abbot: 1, commander: 1, archbishop: 1 };
+        meta.levels = [Math.min(4, DEBUG.metaLevel), ...(DEBUG.metaLevel >= 4 ? [4, 4, 1] : [])];
         meta.selectedChampion = 'woodcutter';
         meta.souls = 9999;
         meta.kills = { peasant: 160, hound: 60, torch: 20, militia: 12, monk: 30, priest: 8 };
@@ -48,6 +62,7 @@ export class BootScene extends Phaser.Scene {
         meta.equipped = { staff: 'staff_storm', hood: 'hood_worn', cloak: 'cloak_crimson', ring1: 'ring_bone', ring2: 'ring_iron', amulet: 'amulet_tooth' };
         meta.characters = ['necro', 'witch', 'digger'];
         meta.tutorial = ['drag', 'explode', 'consume', 'fuse'];
+        meta.runs = Math.max(meta.runs, 3 * DEBUG.metaLevel);
         meta.items.staff_pest = 0;
         meta.items.hood_pest = 1;
         meta.items.cloak_pact = 0;

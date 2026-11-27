@@ -1,0 +1,216 @@
+{
+ "frames": [
+  {
+   "filename": "b-altar",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-bell",
+   "frame": {
+    "x": 12,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-crypt",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-grave",
+   "frame": {
+    "x": 36,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-hall",
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-library",
+   "frame": {
+    "x": 60,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-ossuary",
+   "frame": {
+    "x": 72,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-reliquary",
+   "frame": {
+    "x": 84,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "necropolis",
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "sourceSize": {
+    "w": 21,
+    "h": 14
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "install_pack.py (arte desenhada \u00e0 m\u00e3o)",
+  "version": "1",
+  "image": "arvore.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 117,
+   "h": 14
+  },
+  "scale": "1",
+  "frameTags": [],
+  "layers": [],
+  "slices": []
+ }
+}

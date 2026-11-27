@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CHARACTERS } from '../src/sim/characters';
-import { ITEMS, rollItem } from '../src/sim/items';
+import { ITEM_BY_ID, ITEMS, rollItem } from '../src/sim/items';
 import {
   buyCharacter,
   buyFromMarket,
@@ -135,5 +135,44 @@ describe('personagens', () => {
     expect(a.hp).toBeLessThan(a.maxHp);
     expect(b.hp).toBeLessThan(b.maxHp);
     expect(w.events.some((e) => e.type === 'scythe')).toBe(true);
+  });
+});
+
+describe('raridades e itens novos', () => {
+  const lcg = (seed: number) => () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
+  it('todo espaço tem pelo menos 18 itens e toda raridade aparece', () => {
+    for (const slot of ['staff', 'hood', 'cloak', 'amulet', 'ring'] as const) expect(ITEMS.filter((i) => i.slot === slot).length).toBeGreaterThanOrEqual(18);
+    for (const r of ['common', 'magic', 'rare', 'epic', 'legendary', 'set'] as const) expect(ITEMS.some((i) => i.rarity === r)).toBe(true);
+    expect(new Set(ITEMS.map((i) => i.id)).size).toBe(ITEMS.length);
+  });
+
+  it('épicos caem raramente sem sorte e sempre com minRarity épico', () => {
+    const r = lcg(7);
+    let epic = 0;
+    for (let k = 0; k < 4000; k++) if (ITEM_BY_ID[rollItem(r, 0)].rarity === 'epic') epic++;
+    expect(epic).toBeGreaterThan(0);
+    expect(epic / 4000).toBeLessThan(0.03);
+    for (let k = 0; k < 100; k++) expect(ITEM_BY_ID[rollItem(r, 0, 'epic')].rarity).toBe('epic');
+    for (let k = 0; k < 300; k++) expect(['magic', 'rare', 'epic', 'set']).toContain(ITEM_BY_ID[rollItem(r, 0.5, 'magic')].rarity);
+  });
+
+  it('épicos cobram um preço: o Manto do Desertor faz o necromante levar mais dano', () => {
+    const m = freshMeta();
+    gainItem(m, 'cloak_deserter');
+    const mods = metaMods(m);
+    expect(mods.necroDmgTakenMul).toBeCloseTo(1.25);
+    expect(mods.armyCap).toBeGreaterThan(metaMods(freshMeta()).armyCap);
+  });
+
+  it('Moeda do Barqueiro: cada morto gasto dá almas', () => {
+    const m = freshMeta();
+    gainItem(m, 'amulet_coin');
+    const w = new World({ seed: 4, mods: metaMods(m), schools: ['bone'], schoolBonus: schoolBonus(m) });
+    for (let i = 0; i < 600 && !w.canExplode(); i++) w.update(1 / 60);
+    expect(w.canExplode()).toBe(true);
+    const before = w.souls;
+    expect(w.explode()).toBe(true);
+    expect(w.souls).toBeGreaterThan(before);
   });
 });

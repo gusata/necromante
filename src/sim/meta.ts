@@ -1,5 +1,7 @@
+import { seenFromProgress } from './unlocks';
 import { CHARACTER_BY_ID, CHARACTERS, type CharacterId } from './characters';
 import { applyGems, BASE_SOCKETS, mergeGems } from './gems';
+import { MAX_HERESY } from './heresy';
 import {
   EQUIP_SLOTS,
   type EquipSlot,
@@ -21,7 +23,7 @@ import type { HistoryEntry, LifetimeStats } from './progress';
 import { applyTree, extraMarket, extraSlotLevel, extraSockets, forgeDiscount, refreshDiscount } from './tree';
 import type { BossKind, School, UnitKind } from './types';
 
-export const SAVE_VERSION = 5;
+export const SAVE_VERSION = 7;
 export const MARKET_SIZE = 4;
 export const MARKET_REFRESH_COST = 250;
 
@@ -63,10 +65,12 @@ export interface MetaState {
   characters: CharacterId[];
   /** passos do tutorial já mostrados */
   tutorial: string[];
-  /** heresia escolhida para a próxima run */
+  /** nível da Descida escolhido para a próxima run (0 = nível I) */
   heresy: number;
-  /** maior heresia liberada (0 = ainda não venceu a Catedral) */
+  /** maior nível liberado (0 = só o nível I) */
   heresyMax: number;
+  /** nível -> chefes vencidos em sequência naquele nível (0..4) */
+  levels: number[];
   /** checkpoint escolhido: região onde a próxima run começa */
   startRegion: number;
   history: HistoryEntry[];
@@ -83,6 +87,8 @@ export interface MetaState {
   sockets: (string | null)[];
   /** árvore da necrópole: nó -> nível */
   tree: Record<string, number>;
+  /** telas da meta já visitadas (a apresentação de cada uma aparece uma vez) */
+  seenPages: string[];
 }
 
 const freshStats = (): LifetimeStats => ({ kills: 0, raised: 0, exploded: 0, rituals: 0, bossKills: 0, victories: 0, time: 0, bestKills: 0, bestArmy: 0 });
@@ -110,6 +116,7 @@ export function freshMeta(): MetaState {
     tutorial: [],
     heresy: 0,
     heresyMax: 0,
+    levels: [0],
     startRegion: 0,
     history: [],
     stats: freshStats(),
@@ -120,6 +127,7 @@ export function freshMeta(): MetaState {
     gems: {},
     sockets: Array.from({ length: BASE_SOCKETS }, () => null),
     tree: {},
+    seenPages: [],
   };
 }
 
@@ -147,7 +155,16 @@ export function migrate(raw: unknown): MetaState {
     if ((r.buildings?.hall ?? 0) > 0) r.tree = { ...(r.tree ?? {}), salao: 1 };
     r.buildings = {};
   }
-  return {
+  // v6: a heresia (0..10) virou níveis da Descida (0..5), com progresso por nível
+  if (r.version < 6 || !r.levels) {
+    const oldMax = r.heresyMax ?? 0;
+    const max = r.version < 6 ? Math.min(MAX_HERESY, Math.ceil(oldMax / 2)) : Math.min(MAX_HERESY, oldMax);
+    r.heresyMax = max;
+    if (r.version < 6) r.heresy = Math.min(max, Math.ceil((r.heresy ?? 0) / 2));
+    // níveis abaixo do máximo já foram vencidos; o nível I guarda o progresso antigo
+    r.levels = Array.from({ length: max + 1 }, (_, l) => (l < max ? 4 : l === 0 ? (r.bossesBeaten ?? 0) : 0));
+  }
+  const out: MetaState = {
     ...base,
     ...r,
     version: SAVE_VERSION,
@@ -169,9 +186,14 @@ export function migrate(raw: unknown): MetaState {
     gems: { ...(r.gems ?? {}) },
     sockets: r.sockets ? [...r.sockets] : base.sockets,
     tree: { ...(r.tree ?? {}) },
+    levels: [...(r.levels ?? [0])],
     // quem já jogava antes do tutorial existir não precisa dele
     tutorial: r.tutorial ? [...r.tutorial] : (r.runs ?? 0) > 0 ? [...TUTORIAL_STEPS] : [],
+    seenPages: [...(r.seenPages ?? [])],
   };
+  // v7: as telas abrem aos poucos; quem já jogava não precisa das apresentações
+  if (!r.seenPages) out.seenPages = seenFromProgress(out);
+  return out;
 }
 
 export interface Building {
@@ -283,10 +305,13 @@ export function buy(meta: MetaState, id: string): boolean {
   return true;
 }
 
-/** Escolas liberadas: Ossos e Carne no início, uma nova a cada chefe derrotado, mais as do personagem. */
-/** Checkpoint: maior região onde dá para começar (a do último chefe vencido em sequência). */
-export const maxStartRegion = (meta: MetaState) => Math.min(3, meta.bossesBeaten);
+/** Checkpoint: maior região onde dá para começar naquele nível (a do último chefe vencido em sequência). */
+export const maxStartRegion = (meta: MetaState, level = meta.heresy) => Math.min(3, meta.levels[level] ?? 0);
 
+/** Um nível abre quando a Catedral do nível anterior cai. */
+export const levelUnlocked = (meta: MetaState, level: number) => level <= meta.heresyMax;
+
+/** Escolas liberadas: Ossos e Carne no início, uma nova a cada chefe derrotado, mais as do personagem. */
 export function unlockedSchools(meta: MetaState): School[] {
   const order: School[] = ['bone', 'flesh', 'plague', 'spirit', 'blood'];
   const own = CHARACTER_BY_ID[meta.character]?.schools ?? [];
@@ -472,6 +497,23 @@ export function buyCharacter(meta: MetaState, id: CharacterId): boolean {
 }
 
 export const ALL_CHARACTERS = CHARACTERS;
+
+// ------------------------------------------------------------ campeões
+
+/** Abates do chefe (somando todas as runs) para cada rank do campeão: rank 1 = liberado. */
+export const CHAMPION_KILLS = [3, 6, 10, 15, 21] as const;
+
+export function championRankFor(kills: number): number {
+  let rank = 0;
+  for (const need of CHAMPION_KILLS) if (kills >= need) rank++;
+  return rank;
+}
+
+/** Quantos abates faltam para o próximo rank (null = rank máximo). */
+export function championNext(kills: number): { rank: number; need: number } | null {
+  const rank = championRankFor(kills);
+  return rank >= CHAMPION_KILLS.length ? null : { rank: rank + 1, need: CHAMPION_KILLS[rank] };
+}
 
 export const MEDALS = [10, 50, 150] as const;
 export const medal = (kills: number): 0 | 1 | 2 | 3 => (kills >= MEDALS[2] ? 3 : kills >= MEDALS[1] ? 2 : kills >= MEDALS[0] ? 1 : 0);

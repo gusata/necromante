@@ -1,0 +1,3362 @@
+{
+ "frames": [
+  {
+   "filename": "icon-soul#0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-soul#1",
+   "frame": {
+    "x": 6,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-soul#2",
+   "frame": {
+    "x": 12,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-soul#3",
+   "frame": {
+    "x": 18,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-heart#0",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-heart#1",
+   "frame": {
+    "x": 30,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-heart#2",
+   "frame": {
+    "x": 36,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-heart#3",
+   "frame": {
+    "x": 42,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 5
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 5
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-explode#0",
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-explode#1",
+   "frame": {
+    "x": 56,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-explode#2",
+   "frame": {
+    "x": 64,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-explode#3",
+   "frame": {
+    "x": 72,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-ritual#0",
+   "frame": {
+    "x": 80,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 10
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-ritual#1",
+   "frame": {
+    "x": 92,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 10
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-ritual#2",
+   "frame": {
+    "x": 104,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 10
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-ritual#3",
+   "frame": {
+    "x": 116,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 10
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 10
+   },
+   "duration": 100
+  },
+  {
+   "filename": "act-round-ready#0",
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "act-round-ready#1",
+   "frame": {
+    "x": 151,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "act-round-ready#2",
+   "frame": {
+    "x": 174,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "act-round-ready#3",
+   "frame": {
+    "x": 197,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 22,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 22,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-hand#0",
+   "frame": {
+    "x": 220,
+    "y": 0,
+    "w": 10,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 10,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 10,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "icon-hand#1",
+   "frame": {
+    "x": 231,
+    "y": 0,
+    "w": 10,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 10,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 10,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-altar#0",
+   "frame": {
+    "x": 242,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-altar#1",
+   "frame": {
+    "x": 254,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby#0",
+   "frame": {
+    "x": 266,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby#1",
+   "frame": {
+    "x": 274,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby#2",
+   "frame": {
+    "x": 282,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby#3",
+   "frame": {
+    "x": 290,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby#4",
+   "frame": {
+    "x": 298,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire#0",
+   "frame": {
+    "x": 306,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire#1",
+   "frame": {
+    "x": 314,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire#2",
+   "frame": {
+    "x": 322,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire#3",
+   "frame": {
+    "x": 330,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire#4",
+   "frame": {
+    "x": 338,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald#0",
+   "frame": {
+    "x": 346,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald#1",
+   "frame": {
+    "x": 354,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald#2",
+   "frame": {
+    "x": 362,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald#3",
+   "frame": {
+    "x": 370,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald#4",
+   "frame": {
+    "x": 378,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst#0",
+   "frame": {
+    "x": 386,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst#1",
+   "frame": {
+    "x": 394,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst#2",
+   "frame": {
+    "x": 402,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst#3",
+   "frame": {
+    "x": 410,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst#4",
+   "frame": {
+    "x": 418,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond#0",
+   "frame": {
+    "x": 426,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond#1",
+   "frame": {
+    "x": 434,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond#2",
+   "frame": {
+    "x": 442,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond#3",
+   "frame": {
+    "x": 450,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond#4",
+   "frame": {
+    "x": 458,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-4#0",
+   "frame": {
+    "x": 466,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-4#1",
+   "frame": {
+    "x": 474,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-4#2",
+   "frame": {
+    "x": 482,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-4#3",
+   "frame": {
+    "x": 490,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-4#4",
+   "frame": {
+    "x": 498,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#0",
+   "frame": {
+    "x": 506,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#1",
+   "frame": {
+    "x": 514,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#2",
+   "frame": {
+    "x": 522,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#3",
+   "frame": {
+    "x": 530,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#4",
+   "frame": {
+    "x": 538,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#5",
+   "frame": {
+    "x": 546,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#6",
+   "frame": {
+    "x": 554,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-ruby-5#7",
+   "frame": {
+    "x": 562,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-4#0",
+   "frame": {
+    "x": 570,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-4#1",
+   "frame": {
+    "x": 578,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-4#2",
+   "frame": {
+    "x": 586,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-4#3",
+   "frame": {
+    "x": 594,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-4#4",
+   "frame": {
+    "x": 602,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#0",
+   "frame": {
+    "x": 610,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#1",
+   "frame": {
+    "x": 618,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#2",
+   "frame": {
+    "x": 626,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#3",
+   "frame": {
+    "x": 634,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#4",
+   "frame": {
+    "x": 642,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#5",
+   "frame": {
+    "x": 650,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#6",
+   "frame": {
+    "x": 658,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-sapphire-5#7",
+   "frame": {
+    "x": 666,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-4#0",
+   "frame": {
+    "x": 674,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-4#1",
+   "frame": {
+    "x": 682,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-4#2",
+   "frame": {
+    "x": 690,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-4#3",
+   "frame": {
+    "x": 698,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-4#4",
+   "frame": {
+    "x": 706,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#0",
+   "frame": {
+    "x": 714,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#1",
+   "frame": {
+    "x": 722,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#2",
+   "frame": {
+    "x": 730,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#3",
+   "frame": {
+    "x": 738,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#4",
+   "frame": {
+    "x": 746,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#5",
+   "frame": {
+    "x": 754,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#6",
+   "frame": {
+    "x": 762,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-emerald-5#7",
+   "frame": {
+    "x": 770,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-4#0",
+   "frame": {
+    "x": 778,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-4#1",
+   "frame": {
+    "x": 786,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-4#2",
+   "frame": {
+    "x": 794,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-4#3",
+   "frame": {
+    "x": 802,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-4#4",
+   "frame": {
+    "x": 810,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#0",
+   "frame": {
+    "x": 818,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#1",
+   "frame": {
+    "x": 826,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#2",
+   "frame": {
+    "x": 834,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#3",
+   "frame": {
+    "x": 842,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#4",
+   "frame": {
+    "x": 850,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#5",
+   "frame": {
+    "x": 858,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#6",
+   "frame": {
+    "x": 866,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-amethyst-5#7",
+   "frame": {
+    "x": 874,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-4#0",
+   "frame": {
+    "x": 882,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-4#1",
+   "frame": {
+    "x": 890,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-4#2",
+   "frame": {
+    "x": 898,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-4#3",
+   "frame": {
+    "x": 906,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-4#4",
+   "frame": {
+    "x": 914,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#0",
+   "frame": {
+    "x": 922,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#1",
+   "frame": {
+    "x": 930,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#2",
+   "frame": {
+    "x": 938,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#3",
+   "frame": {
+    "x": 946,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#4",
+   "frame": {
+    "x": 954,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#5",
+   "frame": {
+    "x": 962,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#6",
+   "frame": {
+    "x": 970,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "gem-diamond-5#7",
+   "frame": {
+    "x": 978,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "necropolis#0",
+   "frame": {
+    "x": 986,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "sourceSize": {
+    "w": 21,
+    "h": 14
+   },
+   "duration": 100
+  },
+  {
+   "filename": "necropolis#1",
+   "frame": {
+    "x": 1008,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "sourceSize": {
+    "w": 21,
+    "h": 14
+   },
+   "duration": 100
+  },
+  {
+   "filename": "necropolis#2",
+   "frame": {
+    "x": 1030,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "sourceSize": {
+    "w": 21,
+    "h": 14
+   },
+   "duration": 100
+  },
+  {
+   "filename": "necropolis#3",
+   "frame": {
+    "x": 1052,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 21,
+    "h": 14
+   },
+   "sourceSize": {
+    "w": 21,
+    "h": 14
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-altar#0",
+   "frame": {
+    "x": 1074,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-altar#1",
+   "frame": {
+    "x": 1086,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-bell#0",
+   "frame": {
+    "x": 1098,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-bell#1",
+   "frame": {
+    "x": 1110,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-bell#2",
+   "frame": {
+    "x": 1122,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-bell#3",
+   "frame": {
+    "x": 1134,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-reliquary#0",
+   "frame": {
+    "x": 1146,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-reliquary#1",
+   "frame": {
+    "x": 1158,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-reliquary#2",
+   "frame": {
+    "x": 1170,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "b-reliquary#3",
+   "frame": {
+    "x": 1182,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-necropole_viva#0",
+   "frame": {
+    "x": 1194,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-necropole_viva#1",
+   "frame": {
+    "x": 1206,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-necropole_viva#2",
+   "frame": {
+    "x": 1218,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-necropole_viva#3",
+   "frame": {
+    "x": 1230,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-trono_ossos#0",
+   "frame": {
+    "x": 1242,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-trono_ossos#1",
+   "frame": {
+    "x": 1254,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-trono_ossos#2",
+   "frame": {
+    "x": 1266,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-trono_ossos#3",
+   "frame": {
+    "x": 1278,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-grimorio#0",
+   "frame": {
+    "x": 1290,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-grimorio#1",
+   "frame": {
+    "x": 1302,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-grimorio#2",
+   "frame": {
+    "x": 1314,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-grimorio#3",
+   "frame": {
+    "x": 1326,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-imortal#0",
+   "frame": {
+    "x": 1338,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-imortal#1",
+   "frame": {
+    "x": 1350,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-imortal#2",
+   "frame": {
+    "x": 1362,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-imortal#3",
+   "frame": {
+    "x": 1374,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-sino_mortos#0",
+   "frame": {
+    "x": 1386,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-sino_mortos#1",
+   "frame": {
+    "x": 1398,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-sino_mortos#2",
+   "frame": {
+    "x": 1410,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-sino_mortos#3",
+   "frame": {
+    "x": 1422,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-tesouro_reis#0",
+   "frame": {
+    "x": 1434,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-tesouro_reis#1",
+   "frame": {
+    "x": 1446,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-tesouro_reis#2",
+   "frame": {
+    "x": 1458,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "node-tesouro_reis#3",
+   "frame": {
+    "x": 1470,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "install_pack.py (arte desenhada \u00e0 m\u00e3o)",
+  "version": "1",
+  "image": "icones-anim.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1481,
+   "h": 22
+  },
+  "scale": "1",
+  "frameTags": [],
+  "layers": [],
+  "slices": []
+ }
+}

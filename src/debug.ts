@@ -8,6 +8,7 @@
  *   ?fps          mostra o contador de quadros por segundo
  *   ?tab=market   aba inicial do cemitério (build, market, arsenal)
  *   ?char=reaper  joga com um personagem (necro, witch, digger, reaper, vampire)
+ *   ?apo=bone     a run começa com 6 pontos na escola (apoteose), para testar
  */
 const q = new URLSearchParams(typeof location !== 'undefined' ? location.search : '');
 export const DEBUG = {
@@ -19,4 +20,5 @@ export const DEBUG = {
   fps: q.has('fps'),
   tab: q.get('tab'),
   char: q.get('char'),
+  apo: q.get('apo'),
 };

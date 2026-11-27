@@ -1,0 +1,2174 @@
+{
+ "frames": [
+  {
+   "filename": "item-staff_yew",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_worn",
+   "frame": {
+    "x": 19,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_wool",
+   "frame": {
+    "x": 38,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_tooth",
+   "frame": {
+    "x": 57,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_iron",
+   "frame": {
+    "x": 76,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_tomb",
+   "frame": {
+    "x": 95,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_digger",
+   "frame": {
+    "x": 114,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_reliquary",
+   "frame": {
+    "x": 133,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_grimoire",
+   "frame": {
+    "x": 152,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_tibia",
+   "frame": {
+    "x": 171,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_skull",
+   "frame": {
+    "x": 190,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_bone",
+   "frame": {
+    "x": 209,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_quiver",
+   "frame": {
+    "x": 228,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_bone",
+   "frame": {
+    "x": 247,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_ossuary",
+   "frame": {
+    "x": 266,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_lich",
+   "frame": {
+    "x": 285,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_ancestor",
+   "frame": {
+    "x": 304,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_flesh",
+   "frame": {
+    "x": 323,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_feast",
+   "frame": {
+    "x": 342,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_flesh",
+   "frame": {
+    "x": 361,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_maggot",
+   "frame": {
+    "x": 380,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_ghoul",
+   "frame": {
+    "x": 399,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_hide",
+   "frame": {
+    "x": 418,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_stitch",
+   "frame": {
+    "x": 437,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_plague",
+   "frame": {
+    "x": 456,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_fever",
+   "frame": {
+    "x": 475,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_rot",
+   "frame": {
+    "x": 494,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_rats",
+   "frame": {
+    "x": 513,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_bile",
+   "frame": {
+    "x": 532,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_plague",
+   "frame": {
+    "x": 551,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_spores",
+   "frame": {
+    "x": 570,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_censer",
+   "frame": {
+    "x": 589,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_chains",
+   "frame": {
+    "x": 608,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_spirit",
+   "frame": {
+    "x": 627,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_seer",
+   "frame": {
+    "x": 646,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_veil",
+   "frame": {
+    "x": 665,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_storm",
+   "frame": {
+    "x": 684,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_shroud",
+   "frame": {
+    "x": 703,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_banshee",
+   "frame": {
+    "x": 722,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_thirst",
+   "frame": {
+    "x": 741,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_dagger",
+   "frame": {
+    "x": 760,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_blood",
+   "frame": {
+    "x": 779,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_chalice",
+   "frame": {
+    "x": 798,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_crimson",
+   "frame": {
+    "x": 817,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_fury",
+   "frame": {
+    "x": 836,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_crimson",
+   "frame": {
+    "x": 855,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_hunger",
+   "frame": {
+    "x": 874,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_harvest",
+   "frame": {
+    "x": 893,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_lich",
+   "frame": {
+    "x": 912,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_rosary",
+   "frame": {
+    "x": 931,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_reaper",
+   "frame": {
+    "x": 950,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_banner",
+   "frame": {
+    "x": 969,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_abyss",
+   "frame": {
+    "x": 988,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_eye",
+   "frame": {
+    "x": 1007,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_pest",
+   "frame": {
+    "x": 1026,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_pest",
+   "frame": {
+    "x": 1045,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_pest",
+   "frame": {
+    "x": 1064,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_pact",
+   "frame": {
+    "x": 1083,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_pact",
+   "frame": {
+    "x": 1102,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_pact",
+   "frame": {
+    "x": 1121,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_choir",
+   "frame": {
+    "x": 1140,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_choir",
+   "frame": {
+    "x": 1159,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_choir",
+   "frame": {
+    "x": 1178,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_digger",
+   "frame": {
+    "x": 1197,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_pilgrim",
+   "frame": {
+    "x": 1216,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_looter",
+   "frame": {
+    "x": 1235,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_miser",
+   "frame": {
+    "x": 1254,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_deserter",
+   "frame": {
+    "x": 1273,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_coin",
+   "frame": {
+    "x": 1292,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_bones",
+   "frame": {
+    "x": 1311,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_vertebrae",
+   "frame": {
+    "x": 1330,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_general",
+   "frame": {
+    "x": 1349,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_ossuary",
+   "frame": {
+    "x": 1368,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_thousand",
+   "frame": {
+    "x": 1387,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_rawhide",
+   "frame": {
+    "x": 1406,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_sinew",
+   "frame": {
+    "x": 1425,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_tooth",
+   "frame": {
+    "x": 1444,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_butcher",
+   "frame": {
+    "x": 1463,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_glutton",
+   "frame": {
+    "x": 1482,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_slaughter",
+   "frame": {
+    "x": 1501,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_rag",
+   "frame": {
+    "x": 1520,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_fever",
+   "frame": {
+    "x": 1539,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_flies",
+   "frame": {
+    "x": 1558,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_contagion",
+   "frame": {
+    "x": 1577,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_hourglass",
+   "frame": {
+    "x": 1596,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_grey",
+   "frame": {
+    "x": 1615,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_medium",
+   "frame": {
+    "x": 1634,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_mist",
+   "frame": {
+    "x": 1653,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_lantern",
+   "frame": {
+    "x": 1672,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_echo",
+   "frame": {
+    "x": 1691,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_wanderer",
+   "frame": {
+    "x": 1710,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_soaked",
+   "frame": {
+    "x": 1729,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_penitent",
+   "frame": {
+    "x": 1748,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-hood_headsman",
+   "frame": {
+    "x": 1767,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-staff_rite",
+   "frame": {
+    "x": 1786,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-cloak_martyr",
+   "frame": {
+    "x": 1805,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-ring_headsman",
+   "frame": {
+    "x": 1824,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  },
+  {
+   "filename": "item-amulet_bloodvial",
+   "frame": {
+    "x": 1843,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 18,
+    "h": 18
+   },
+   "sourceSize": {
+    "w": 18,
+    "h": 18
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "install_pack.py (arte desenhada \u00e0 m\u00e3o)",
+  "version": "1",
+  "image": "itens.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1861,
+   "h": 18
+  },
+  "scale": "1",
+  "frameTags": [],
+  "layers": [],
+  "slices": []
+ }
+}

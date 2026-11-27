@@ -1,3 +1,1250 @@
 {
-  "sprites": []
+  "sprites": [
+    {
+      "key": "skel",
+      "file": "esqueleto-v2"
+    },
+    {
+      "key": "archer",
+      "file": "arqueiro"
+    },
+    {
+      "key": "giant",
+      "file": "colosso"
+    },
+    {
+      "file": "itens",
+      "frames": {
+        "item-staff_yew": 0,
+        "item-hood_worn": 1,
+        "item-cloak_wool": 2,
+        "item-amulet_tooth": 3,
+        "item-ring_iron": 4,
+        "item-ring_tomb": 5,
+        "item-amulet_digger": 6,
+        "item-amulet_reliquary": 7,
+        "item-staff_grimoire": 8,
+        "item-ring_tibia": 9,
+        "item-hood_skull": 10,
+        "item-staff_bone": 11,
+        "item-amulet_quiver": 12,
+        "item-ring_bone": 13,
+        "item-cloak_ossuary": 14,
+        "item-staff_lich": 15,
+        "item-amulet_ancestor": 16,
+        "item-ring_flesh": 17,
+        "item-amulet_feast": 18,
+        "item-cloak_flesh": 19,
+        "item-hood_maggot": 20,
+        "item-amulet_ghoul": 21,
+        "item-ring_hide": 22,
+        "item-staff_stitch": 23,
+        "item-ring_plague": 24,
+        "item-ring_fever": 25,
+        "item-staff_rot": 26,
+        "item-amulet_rats": 27,
+        "item-cloak_bile": 28,
+        "item-hood_plague": 29,
+        "item-ring_spores": 30,
+        "item-staff_censer": 31,
+        "item-ring_chains": 32,
+        "item-ring_spirit": 33,
+        "item-hood_seer": 34,
+        "item-amulet_veil": 35,
+        "item-staff_storm": 36,
+        "item-cloak_shroud": 37,
+        "item-hood_banshee": 38,
+        "item-staff_thirst": 39,
+        "item-amulet_dagger": 40,
+        "item-ring_blood": 41,
+        "item-amulet_chalice": 42,
+        "item-cloak_crimson": 43,
+        "item-ring_fury": 44,
+        "item-hood_crimson": 45,
+        "item-amulet_hunger": 46,
+        "item-staff_harvest": 47,
+        "item-hood_lich": 48,
+        "item-ring_rosary": 49,
+        "item-cloak_reaper": 50,
+        "item-staff_banner": 51,
+        "item-ring_abyss": 52,
+        "item-hood_eye": 53,
+        "item-staff_pest": 54,
+        "item-hood_pest": 55,
+        "item-ring_pest": 56,
+        "item-cloak_pact": 57,
+        "item-amulet_pact": 58,
+        "item-ring_pact": 59,
+        "item-staff_choir": 60,
+        "item-hood_choir": 61,
+        "item-cloak_choir": 62,
+        "item-cloak_digger": 63,
+        "item-staff_pilgrim": 64,
+        "item-cloak_looter": 65,
+        "item-ring_miser": 66,
+        "item-cloak_deserter": 67,
+        "item-amulet_coin": 68,
+        "item-cloak_bones": 69,
+        "item-amulet_vertebrae": 70,
+        "item-hood_general": 71,
+        "item-staff_ossuary": 72,
+        "item-cloak_thousand": 73,
+        "item-hood_rawhide": 74,
+        "item-staff_sinew": 75,
+        "item-ring_tooth": 76,
+        "item-hood_butcher": 77,
+        "item-hood_glutton": 78,
+        "item-cloak_slaughter": 79,
+        "item-cloak_rag": 80,
+        "item-hood_fever": 81,
+        "item-cloak_flies": 82,
+        "item-ring_contagion": 83,
+        "item-amulet_hourglass": 84,
+        "item-cloak_grey": 85,
+        "item-staff_medium": 86,
+        "item-cloak_mist": 87,
+        "item-amulet_lantern": 88,
+        "item-staff_echo": 89,
+        "item-hood_wanderer": 90,
+        "item-cloak_soaked": 91,
+        "item-hood_penitent": 92,
+        "item-hood_headsman": 93,
+        "item-staff_rite": 94,
+        "item-cloak_martyr": 95,
+        "item-ring_headsman": 96,
+        "item-amulet_bloodvial": 97
+      }
+    },
+    {
+      "file": "itens-anim",
+      "anims": {
+        "item-amulet_hunger": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-staff_harvest": {
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-hood_lich": {
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-ring_rosary": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-cloak_reaper": {
+          "frames": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-staff_banner": {
+          "frames": [
+            20,
+            21,
+            22,
+            23
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-ring_abyss": {
+          "frames": [
+            24,
+            25,
+            26,
+            27
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-hood_eye": {
+          "frames": [
+            28,
+            29,
+            30,
+            31
+          ],
+          "ms": [
+            260,
+            140,
+            200,
+            140
+          ],
+          "loop": true
+        },
+        "item-staff_pest": {
+          "frames": [
+            32,
+            33,
+            34,
+            35
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-hood_pest": {
+          "frames": [
+            36,
+            37,
+            38,
+            39
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-ring_pest": {
+          "frames": [
+            40,
+            41,
+            42,
+            43
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-cloak_pact": {
+          "frames": [
+            44,
+            45,
+            46,
+            47
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-amulet_pact": {
+          "frames": [
+            48,
+            49,
+            50,
+            51
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-ring_pact": {
+          "frames": [
+            52,
+            53,
+            54,
+            55
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-staff_choir": {
+          "frames": [
+            56,
+            57,
+            58,
+            59
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-hood_choir": {
+          "frames": [
+            60,
+            61,
+            62,
+            63
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "item-cloak_choir": {
+          "frames": [
+            64,
+            65,
+            66,
+            67
+          ],
+          "ms": [
+            180,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        }
+      }
+    },
+    {
+      "file": "molduras",
+      "frames": {
+        "slot-common": 0,
+        "slot-empty": 1,
+        "slot-epic": 2,
+        "slot-legendary": 3,
+        "slot-magic": 4,
+        "slot-rare": 5,
+        "slot-set": 6
+      }
+    },
+    {
+      "file": "necro-necro",
+      "frames": {
+        "necro0": 0,
+        "necro1": 1,
+        "necro-cast": 2
+      }
+    },
+    {
+      "file": "necro-witch",
+      "frames": {
+        "char-witch0": 0,
+        "char-witch1": 1,
+        "char-witch-cast": 2
+      }
+    },
+    {
+      "file": "necro-digger",
+      "frames": {
+        "char-digger0": 0,
+        "char-digger1": 1,
+        "char-digger-cast": 2
+      }
+    },
+    {
+      "file": "necro-reaper",
+      "frames": {
+        "char-reaper0": 0,
+        "char-reaper1": 1,
+        "char-reaper-cast": 2
+      }
+    },
+    {
+      "file": "necro-vampire",
+      "frames": {
+        "char-vampire0": 0,
+        "char-vampire1": 1,
+        "char-vampire-cast": 2
+      }
+    },
+    {
+      "file": "cenario",
+      "frames": {
+        "tomb": 0,
+        "tomb2": 1,
+        "cross": 2,
+        "tree": 3,
+        "fence": 4,
+        "pillar": 5,
+        "wall": 6,
+        "barrel": 7,
+        "pew": 8,
+        "bones": 9,
+        "candle0": 10,
+        "candle1": 11,
+        "brazier0": 12,
+        "brazier1": 13,
+        "banner0": 14,
+        "banner1": 15,
+        "candelabra0": 16,
+        "candelabra1": 17
+      }
+    },
+    {
+      "file": "pequenos",
+      "frames": {
+        "arrow": 0,
+        "boltp": 1,
+        "bonearrow": 2,
+        "splat": 3,
+        "scorch": 4,
+        "corpse-bones": 5
+      }
+    },
+    {
+      "file": "bichos",
+      "frames": {
+        "rat0": 0,
+        "rat1": 1,
+        "rat2": 2,
+        "hound0": 3,
+        "hound1": 4,
+        "hound2": 5,
+        "ghost0": 6,
+        "ghost1": 7,
+        "ghost2": 8,
+        "banshee0": 9,
+        "banshee1": 10,
+        "banshee2": 11
+      }
+    },
+    {
+      "file": "vivos",
+      "frames": {
+        "peasant0": 0,
+        "peasant1": 1,
+        "peasant2": 2,
+        "corpse-peasant": 3,
+        "torch0": 4,
+        "torch1": 5,
+        "torch2": 6,
+        "corpse-torch": 7,
+        "militia0": 8,
+        "militia1": 9,
+        "militia2": 10,
+        "corpse-militia": 11,
+        "hunter0": 12,
+        "hunter1": 13,
+        "hunter2": 14,
+        "corpse-hunter": 15,
+        "monk0": 16,
+        "monk1": 17,
+        "monk2": 18,
+        "corpse-monk": 19,
+        "priest0": 20,
+        "priest1": 21,
+        "priest2": 22,
+        "corpse-priest": 23,
+        "nun0": 24,
+        "nun1": 25,
+        "nun2": 26,
+        "corpse-nun": 27,
+        "ringer0": 28,
+        "ringer1": 29,
+        "ringer2": 30,
+        "corpse-ringer": 31,
+        "flagellant0": 32,
+        "flagellant1": 33,
+        "flagellant2": 34,
+        "corpse-flagellant": 35,
+        "soldier0": 36,
+        "soldier1": 37,
+        "soldier2": 38,
+        "corpse-soldier": 39,
+        "crossbow0": 40,
+        "crossbow1": 41,
+        "crossbow2": 42,
+        "corpse-crossbow": 43,
+        "shield0": 44,
+        "shield1": 45,
+        "shield2": 46,
+        "corpse-shield": 47,
+        "knight0": 48,
+        "knight1": 49,
+        "knight2": 50,
+        "corpse-knight": 51,
+        "halberd0": 52,
+        "halberd1": 53,
+        "halberd2": 54,
+        "corpse-halberd": 55,
+        "paladin0": 56,
+        "paladin1": 57,
+        "paladin2": 58,
+        "corpse-paladin": 59,
+        "inquisitor0": 60,
+        "inquisitor1": 61,
+        "inquisitor2": 62,
+        "corpse-inquisitor": 63,
+        "witchhunter0": 64,
+        "witchhunter1": 65,
+        "witchhunter2": 66,
+        "corpse-witchhunter": 67,
+        "templar0": 68,
+        "templar1": 69,
+        "templar2": 70,
+        "corpse-templar": 71,
+        "bishop0": 72,
+        "bishop1": 73,
+        "bishop2": 74,
+        "corpse-bishop": 75,
+        "hurler0": 76,
+        "hurler1": 77,
+        "hurler2": 78,
+        "corpse-hurler": 79
+      }
+    },
+    {
+      "file": "hud",
+      "frames": {
+        "icon-consume": 0,
+        "icon-explode": 1,
+        "icon-fuse": 2,
+        "icon-hand": 3,
+        "icon-heart": 4,
+        "icon-lock": 5,
+        "icon-pause": 6,
+        "icon-ritual": 7,
+        "icon-skull": 8,
+        "icon-soul": 9
+      }
+    },
+    {
+      "file": "nav",
+      "frames": {
+        "nav-altar": 0,
+        "nav-arsenal": 1,
+        "nav-bestiary": 2,
+        "nav-hoard": 3,
+        "nav-home": 4,
+        "nav-market": 5,
+        "nav-options": 6,
+        "nav-records": 7,
+        "nav-tree": 8
+      }
+    },
+    {
+      "file": "arvore",
+      "frames": {
+        "b-altar": 0,
+        "b-bell": 1,
+        "b-crypt": 2,
+        "b-grave": 3,
+        "b-hall": 4,
+        "b-library": 5,
+        "b-ossuary": 6,
+        "b-reliquary": 7,
+        "necropolis": 8
+      }
+    },
+    {
+      "file": "escolas",
+      "frames": {
+        "school-blood": 0,
+        "school-bone": 1,
+        "school-flesh": 2,
+        "school-neutral": 3,
+        "school-plague": 4,
+        "school-spirit": 5
+      }
+    },
+    {
+      "file": "gemas",
+      "frames": {
+        "gem-amethyst-1": 0,
+        "gem-amethyst-2": 1,
+        "gem-amethyst-3": 2,
+        "gem-amethyst-4": 3,
+        "gem-amethyst-5": 4,
+        "gem-amethyst": 5,
+        "gem-diamond-1": 6,
+        "gem-diamond-2": 7,
+        "gem-diamond-3": 8,
+        "gem-diamond-4": 9,
+        "gem-diamond-5": 10,
+        "gem-diamond": 11,
+        "gem-emerald-1": 12,
+        "gem-emerald-2": 13,
+        "gem-emerald-3": 14,
+        "gem-emerald-4": 15,
+        "gem-emerald-5": 16,
+        "gem-emerald": 17,
+        "gem-ruby-1": 18,
+        "gem-ruby-2": 19,
+        "gem-ruby-3": 20,
+        "gem-ruby-4": 21,
+        "gem-ruby-5": 22,
+        "gem-ruby": 23,
+        "gem-sapphire-1": 24,
+        "gem-sapphire-2": 25,
+        "gem-sapphire-3": 26,
+        "gem-sapphire-4": 27,
+        "gem-sapphire-5": 28,
+        "gem-sapphire": 29
+      }
+    },
+    {
+      "file": "botoes",
+      "frames": {
+        "act-round-down": 0,
+        "act-round-ready": 1,
+        "act-round": 2
+      }
+    },
+    {
+      "file": "nos",
+      "frames": {
+        "node-augurio": 0,
+        "node-badalo": 1,
+        "node-banquete": 2,
+        "node-bigorna": 3,
+        "node-carne_volatil": 4,
+        "node-catacumbas": 5,
+        "node-circulo": 6,
+        "node-colosso": 7,
+        "node-contrabando": 8,
+        "node-coracao": 9,
+        "node-covas_gemeas": 10,
+        "node-covas_rasas": 11,
+        "node-dizimo": 12,
+        "node-eco": 13,
+        "node-encaixe": 14,
+        "node-estilhacos": 15,
+        "node-faro": 16,
+        "node-furia": 17,
+        "node-grimorio": 18,
+        "node-imortal": 19,
+        "node-lapidario": 20,
+        "node-leitura": 21,
+        "node-liturgia": 22,
+        "node-mapa": 23,
+        "node-marcha": 24,
+        "node-martir": 25,
+        "node-medula": 26,
+        "node-mercado_negro": 27,
+        "node-mortos_elite": 28,
+        "node-necropole_viva": 29,
+        "node-nichos": 30,
+        "node-osso_profano": 31,
+        "node-ossos_afiados": 32,
+        "node-pacto_antigo": 33,
+        "node-palavras": 34,
+        "node-placas": 35,
+        "node-repique": 36,
+        "node-restos": 37,
+        "node-rito_duplo": 38,
+        "node-rito_ligeiro": 39,
+        "node-salao": 40,
+        "node-sangue_velho": 41,
+        "node-sino_mortos": 42,
+        "node-sino_prata": 43,
+        "node-terra_fria": 44,
+        "node-tesouro_reis": 45,
+        "node-trono_ossos": 46,
+        "node-vigilia": 47
+      }
+    },
+    {
+      "file": "icones-anim",
+      "anims": {
+        "icon-soul": {
+          "frames": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "ms": [
+            140,
+            140,
+            140,
+            140
+          ],
+          "loop": true
+        },
+        "icon-heart": {
+          "frames": [
+            4,
+            5,
+            6,
+            7
+          ],
+          "ms": [
+            600,
+            90,
+            110,
+            90
+          ],
+          "loop": true
+        },
+        "icon-explode": {
+          "frames": [
+            8,
+            9,
+            10,
+            11
+          ],
+          "ms": [
+            400,
+            120,
+            90,
+            90
+          ],
+          "loop": true
+        },
+        "icon-ritual": {
+          "frames": [
+            12,
+            13,
+            14,
+            15
+          ],
+          "ms": [
+            260,
+            140,
+            180,
+            140
+          ],
+          "loop": true
+        },
+        "act-round-ready": {
+          "frames": [
+            16,
+            17,
+            18,
+            19
+          ],
+          "ms": [
+            160,
+            120,
+            120,
+            120
+          ],
+          "loop": true
+        },
+        "icon-hand": {
+          "frames": [
+            20,
+            21
+          ],
+          "ms": [
+            450,
+            250
+          ],
+          "loop": true
+        },
+        "nav-altar": {
+          "frames": [
+            22,
+            23
+          ],
+          "ms": [
+            220,
+            180
+          ],
+          "loop": true
+        },
+        "gem-ruby": {
+          "frames": [
+            24,
+            25,
+            26,
+            27,
+            28
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-sapphire": {
+          "frames": [
+            29,
+            30,
+            31,
+            32,
+            33
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-emerald": {
+          "frames": [
+            34,
+            35,
+            36,
+            37,
+            38
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-amethyst": {
+          "frames": [
+            39,
+            40,
+            41,
+            42,
+            43
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-diamond": {
+          "frames": [
+            44,
+            45,
+            46,
+            47,
+            48
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-ruby-4": {
+          "frames": [
+            49,
+            50,
+            51,
+            52,
+            53
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-ruby-5": {
+          "frames": [
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61
+          ],
+          "ms": [
+            300,
+            200,
+            300,
+            200,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-sapphire-4": {
+          "frames": [
+            62,
+            63,
+            64,
+            65,
+            66
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-sapphire-5": {
+          "frames": [
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73,
+            74
+          ],
+          "ms": [
+            300,
+            200,
+            300,
+            200,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-emerald-4": {
+          "frames": [
+            75,
+            76,
+            77,
+            78,
+            79
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-emerald-5": {
+          "frames": [
+            80,
+            81,
+            82,
+            83,
+            84,
+            85,
+            86,
+            87
+          ],
+          "ms": [
+            300,
+            200,
+            300,
+            200,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-amethyst-4": {
+          "frames": [
+            88,
+            89,
+            90,
+            91,
+            92
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-amethyst-5": {
+          "frames": [
+            93,
+            94,
+            95,
+            96,
+            97,
+            98,
+            99,
+            100
+          ],
+          "ms": [
+            300,
+            200,
+            300,
+            200,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-diamond-4": {
+          "frames": [
+            101,
+            102,
+            103,
+            104,
+            105
+          ],
+          "ms": [
+            1400,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "gem-diamond-5": {
+          "frames": [
+            106,
+            107,
+            108,
+            109,
+            110,
+            111,
+            112,
+            113
+          ],
+          "ms": [
+            300,
+            200,
+            300,
+            200,
+            60,
+            60,
+            60,
+            60
+          ],
+          "loop": true
+        },
+        "necropolis": {
+          "frames": [
+            114,
+            115,
+            116,
+            117
+          ],
+          "ms": [
+            220,
+            220,
+            220,
+            220
+          ],
+          "loop": true
+        },
+        "b-altar": {
+          "frames": [
+            118,
+            119
+          ],
+          "ms": [
+            220,
+            180
+          ],
+          "loop": true
+        },
+        "b-bell": {
+          "frames": [
+            120,
+            121,
+            122,
+            123
+          ],
+          "ms": [
+            300,
+            160,
+            160,
+            160
+          ],
+          "loop": true
+        },
+        "b-reliquary": {
+          "frames": [
+            124,
+            125,
+            126,
+            127
+          ],
+          "ms": [
+            220,
+            160,
+            220,
+            160
+          ],
+          "loop": true
+        },
+        "node-necropole_viva": {
+          "frames": [
+            128,
+            129,
+            130,
+            131
+          ],
+          "ms": [
+            260,
+            160,
+            200,
+            160
+          ],
+          "loop": true
+        },
+        "node-trono_ossos": {
+          "frames": [
+            132,
+            133,
+            134,
+            135
+          ],
+          "ms": [
+            400,
+            120,
+            160,
+            120
+          ],
+          "loop": true
+        },
+        "node-grimorio": {
+          "frames": [
+            136,
+            137,
+            138,
+            139
+          ],
+          "ms": [
+            260,
+            180,
+            260,
+            180
+          ],
+          "loop": true
+        },
+        "node-imortal": {
+          "frames": [
+            140,
+            141,
+            142,
+            143
+          ],
+          "ms": [
+            500,
+            110,
+            140,
+            110
+          ],
+          "loop": true
+        },
+        "node-sino_mortos": {
+          "frames": [
+            144,
+            145,
+            146,
+            147
+          ],
+          "ms": [
+            300,
+            150,
+            300,
+            150
+          ],
+          "loop": true
+        },
+        "node-tesouro_reis": {
+          "frames": [
+            148,
+            149,
+            150,
+            151
+          ],
+          "ms": [
+            500,
+            110,
+            110,
+            200
+          ],
+          "loop": true
+        }
+      }
+    }
+  ]
 }

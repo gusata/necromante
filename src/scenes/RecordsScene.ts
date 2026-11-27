@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { levelRoman } from '../sim/heresy';
 import { audio } from '../audio/audio';
 import { charKey } from '../art/generate';
 import { COL } from '../art/palette';
@@ -11,6 +12,9 @@ import { CHARACTER_BY_ID, type CharacterId } from '../sim/characters';
 import { ACHIEVEMENTS } from '../sim/progress';
 import { wrap } from './BestiaryScene';
 import { navBar } from './nav';
+import { GROW, screenTop, VIEW_H } from '../fx/view';
+import { GROUND_TOP } from '../art/generate';
+
 
 type Tab = 'stats' | 'history' | 'achievements';
 
@@ -37,8 +41,8 @@ export class RecordsScene extends Phaser.Scene {
     this.layer = [];
     this.tabs = [];
     this.scroll = 0;
-    this.add.image(0, 0, 'ground3').setOrigin(0).setTint(0xb08870);
-    this.add.rectangle(0, 0, 180, 320, 0x0b0806, 0.78).setOrigin(0);
+    this.add.image(0, -GROUND_TOP, 'ground3').setOrigin(0).setTint(0xb08870);
+    this.add.rectangle(0, screenTop(this.scene.key), 180, VIEW_H, 0x0b0806, 0.78).setOrigin(0);
     navBar(this, 'records');
 
     const tabs: [Tab, string][] = [
@@ -65,12 +69,12 @@ export class RecordsScene extends Phaser.Scene {
 
     // rolar a lista de conquistas arrastando
     let lastY = 0;
-    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => (lastY = p.y));
+    this.input.on('pointerdown', (p: Phaser.Input.Pointer) => (lastY = p.worldY));
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
       if (!p.isDown || this.tab !== 'achievements') return;
-      const dy = p.y - lastY;
-      lastY = p.y;
-      const max = Math.max(0, ACHIEVEMENTS.length * 25 - 250);
+      const dy = p.worldY - lastY;
+      lastY = p.worldY;
+      const max = Math.max(0, ACHIEVEMENTS.length * 25 - 250 - GROW);
       const next = Math.max(0, Math.min(max, this.scroll - dy));
       if (Math.abs(next - this.scroll) >= 1) {
         this.scroll = next;
@@ -120,17 +124,17 @@ export class RecordsScene extends Phaser.Scene {
       ['chefes derrotados', `${s.bossKills}`],
       ['almas no total', `${meta.totalSouls}`],
       ['tempo jogado', duration(s.time)],
-      ['heresia máxima', meta.heresyMax ? `${meta.heresyMax}` : '-'],
+      ['maior nível da descida', levelRoman(meta.heresyMax)],
       ['conquistas', `${meta.achievements.length}/${ACHIEVEMENTS.length}`],
     ];
     rows.forEach(([k, v], i) => {
       const y = 56 + i * 17;
-      this.add2(this.add.rectangle(4, y - 3, 172, 14, i % 2 ? 0x1f1712 : 0x14100c, 0.8).setOrigin(0));
-      this.text(8, y, k, COL.v);
+      this.add2(this.add.image(4, y - 3, i % 2 ? 'ledger-alt' : 'ledger').setOrigin(0));
+      this.text(10, y, k, COL.v);
       this.text(172, y, v, COL.G).setOrigin(1, 0);
     });
     const d = meta.daily;
-    if (d.date) this.text(90, 290, `diário ${d.date}: melhor onda ${d.best} (${d.tries} tentativa${d.tries === 1 ? '' : 's'})`, COL.y).setOrigin(0.5, 0);
+    if (d.date) this.text(90, 290 + GROW, `diário ${d.date}: melhor onda ${d.best} (${d.tries} tentativa${d.tries === 1 ? '' : 's'})`, COL.y).setOrigin(0.5, 0);
   }
 
   private renderHistory() {
@@ -140,7 +144,7 @@ export class RecordsScene extends Phaser.Scene {
     }
     meta.history.slice(0, 10).forEach((h, i) => {
       const y = 52 + i * 25;
-      this.add2(this.add.image(4, y, 'row').setOrigin(0).setDisplaySize(172, 24));
+      this.add2(this.add.nineslice(4, y, 'row', undefined, 172, 24, 5, 5, 5, 5).setOrigin(0));
       const key = charKey(h.char);
       if (this.textures.exists(`${key}0`))
         this.add2(
@@ -150,7 +154,7 @@ export class RecordsScene extends Phaser.Scene {
             .setScale(0.375),
         );
       const name = CHARACTER_BY_ID[h.char as CharacterId]?.name.replace(/^(O|A) /, '').toLowerCase() ?? h.char;
-      const tag = h.daily ? ' diário' : h.heresy ? ` h${h.heresy}` : '';
+      const tag = h.daily ? ' diário' : h.heresy ? ` ${levelRoman(h.heresy)}` : '';
       this.text(26, y + 3, `onda ${h.wave} ${h.where.split(' - ')[0]}`, h.quit ? COL.v : COL.u);
       this.text(172, y + 3, `${name}${tag}`, h.daily ? COL.y : h.heresy ? COL.R : COL.v).setOrigin(1, 0);
       const school = h.school ? SCHOOLS[h.school] : null;
@@ -163,13 +167,12 @@ export class RecordsScene extends Phaser.Scene {
     const top = 52;
     ACHIEVEMENTS.forEach((a, i) => {
       const y = top + i * 25 - this.scroll;
-      if (y < top - 4 || y > 252) return;
+      if (y < top - 4 || y > 252 + GROW) return;
       const got = meta.achievements.includes(a.id);
       this.add2(
         this.add
-          .image(4, y, got ? 'row-flash' : 'row')
+          .nineslice(4, y, got ? 'row-flash' : 'row', undefined, 172, 24, 5, 5, 5, 5)
           .setOrigin(0)
-          .setDisplaySize(172, 24)
           .setAlpha(got ? 1 : 0.6),
       );
       this.add2(this.add.image(13, y + 12, got ? 'icon-soul' : 'icon-skull').setAlpha(got ? 1 : 0.35));
@@ -179,10 +182,10 @@ export class RecordsScene extends Phaser.Scene {
     });
     this.add2(
       this.add
-        .rectangle(0, 280, 180, 18, 0x0b0806, 1)
+        .rectangle(0, 280 + GROW, 180, 18, 0x0b0806, 1)
         .setOrigin(0)
         .setDepth(DEPTH.hud - 1),
     );
-    this.text(90, 284, 'arraste para rolar', COL.B).setOrigin(0.5, 0);
+    this.text(90, 284 + GROW, 'arraste para rolar', COL.B).setOrigin(0.5, 0);
   }
 }

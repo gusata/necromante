@@ -1,0 +1,343 @@
+{
+  "ui-panel": {
+    "width": 12,
+    "height": 12,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 3,
+      "right": 3,
+      "bottom": 3
+    },
+    "nota": "quase preto quente · borda 1px · canto cortado"
+  },
+  "ui-btn": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 4,
+      "right": 3,
+      "bottom": 4
+    },
+    "nota": "lábio de 2px embaixo"
+  },
+  "ui-btn-down": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 4,
+      "right": 3,
+      "bottom": 4
+    },
+    "nota": "desce 2px: desloque o texto +2px em y"
+  },
+  "ui-btn-main": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 4,
+      "right": 3,
+      "bottom": 4
+    },
+    "nota": "INICIAR · chapado, 1px de luz em cima"
+  },
+  "ui-btn-main-down": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 4,
+      "right": 3,
+      "bottom": 4
+    },
+    "nota": "mantém a luz de 1px, sem lábio"
+  },
+  "ui-btn-close": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 4,
+      "right": 3,
+      "bottom": 4
+    },
+    "nota": "use com ui-glyph-x por cima"
+  },
+  "ui-btn-close-down": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 4,
+      "right": 3,
+      "bottom": 4
+    },
+    "nota": ""
+  },
+  "ui-glyph-x": {
+    "width": 6,
+    "height": 6,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
+    },
+    "nota": "6x6 · não estica"
+  },
+  "ui-btn-ready": {
+    "width": 18,
+    "height": 18,
+    "frames": 4,
+    "durationsMs": [
+      300,
+      160,
+      240,
+      160
+    ],
+    "slice": {
+      "left": 4,
+      "top": 5,
+      "right": 4,
+      "bottom": 5
+    },
+    "nota": "loop · brilho verde pulsando"
+  },
+  "ui-nav": {
+    "width": 20,
+    "height": 20,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 4,
+      "top": 4,
+      "right": 4,
+      "bottom": 4
+    },
+    "nota": "20x20 · normal"
+  },
+  "ui-nav-sel": {
+    "width": 20,
+    "height": 20,
+    "frames": 4,
+    "durationsMs": [
+      400,
+      150,
+      200,
+      150
+    ],
+    "slice": {
+      "left": 4,
+      "top": 4,
+      "right": 4,
+      "bottom": 4
+    },
+    "nota": "20x20 · selecionado · loop dourado"
+  },
+  "ui-card-comum": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 3,
+      "right": 3,
+      "bottom": 3
+    },
+    "nota": "cartão de item · comum"
+  },
+  "ui-card-magico": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 3,
+      "right": 3,
+      "bottom": 3
+    },
+    "nota": "cartão de item · magico"
+  },
+  "ui-card-raro": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 3,
+      "right": 3,
+      "bottom": 3
+    },
+    "nota": "cartão de item · raro"
+  },
+  "ui-card-lendario": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 3,
+      "right": 3,
+      "bottom": 3
+    },
+    "nota": "cartão de item · lendario"
+  },
+  "ui-card-conjunto": {
+    "width": 16,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 3,
+      "top": 3,
+      "right": 3,
+      "bottom": 3
+    },
+    "nota": "cartão de item · conjunto"
+  },
+  "ui-row": {
+    "width": 16,
+    "height": 10,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 1,
+      "top": 1,
+      "right": 1,
+      "bottom": 1
+    },
+    "nota": "linha de lista · empilhe sem espaço · separador embaixo"
+  },
+  "ui-row-sel": {
+    "width": 16,
+    "height": 10,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 2,
+      "top": 1,
+      "right": 1,
+      "bottom": 1
+    },
+    "nota": "linha selecionada · marca dourada à esquerda"
+  },
+  "ui-hp-frame": {
+    "width": 16,
+    "height": 8,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 2,
+      "top": 2,
+      "right": 2,
+      "bottom": 2
+    },
+    "nota": "área interna começa em (2,2) e tem 4px de altura"
+  },
+  "ui-hp-fill": {
+    "width": 1,
+    "height": 4,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
+    },
+    "nota": "1x4 · estica na horizontal"
+  },
+  "ui-hp-fill-low": {
+    "width": 1,
+    "height": 4,
+    "frames": 2,
+    "durationsMs": [
+      220,
+      220
+    ],
+    "slice": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
+    },
+    "nota": "vida baixa · pisca"
+  },
+  "ui-hp-ghost": {
+    "width": 1,
+    "height": 4,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
+    },
+    "nota": "rastro de dano atrás do preenchimento"
+  },
+  "ui-siege": {
+    "width": 24,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 4,
+      "top": 4,
+      "right": 4,
+      "bottom": 4
+    },
+    "nota": "faixa do cerco (tela inicial)"
+  },
+  "ui-siege-hover": {
+    "width": 24,
+    "height": 16,
+    "frames": 1,
+    "durationsMs": null,
+    "slice": {
+      "left": 4,
+      "top": 4,
+      "right": 4,
+      "bottom": 4
+    },
+    "nota": "faixa do cerco · passando o mouse / aberta"
+  },
+  "ui-chevron": {
+    "width": 7,
+    "height": 5,
+    "frames": 2,
+    "durationsMs": [
+      500,
+      300
+    ],
+    "slice": {
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
+    },
+    "nota": "7x5 · loop · balança 1px"
+  }
+}

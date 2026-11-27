@@ -6,7 +6,7 @@ export const FIELD = { w: 180, h: 296 } as const;
 export const NECRO = {
   x: 90,
   y: 274,
-  hp: 20,
+  hp: 18,
   dmg: 1,
   castCd: 0.3,
   radius: 12,
@@ -86,7 +86,7 @@ export const LIVING_DEFS: Record<LivingKind, UnitDef> = {
   torch: living({ name: 'Tocheiro', desc: 'Queima os cadáveres por onde passa. Mate antes que ele chegue aos corpos.', hp: 2, dmg: 1, speed: 12, range: 6, atkCd: 1.0, radius: 4, threat: 2, traits: ['burnCorpses'] }),
   militia: living({ name: 'Miliciano', desc: 'Lança de ferro e um capacete emprestado.', hp: 3, dmg: 1, speed: 10, range: 8, atkCd: 0.9, radius: 4, threat: 2 }),
   hunter: living({ name: 'Caçador', desc: 'Atira flechas de longe nos seus mortos.', hp: 2, dmg: 1, speed: 10, range: 48, atkCd: 1.6, radius: 4, threat: 2, projectile: 90 }),
-  hound: living({ name: 'Cão de Caça', desc: 'Rápido e faminto. Chega antes de todos.', hp: 1, dmg: 1, speed: 26, range: 5, atkCd: 0.6, radius: 3, threat: 1 }),
+  hound: living({ name: 'Cão de Caça', desc: 'Rápido e faminto. Fura a linha e morde o altar.', hp: 2, dmg: 1, speed: 26, range: 5, atkCd: 0.6, radius: 3, threat: 1 }),
   // ---- O Mosteiro
   monk: living({ name: 'Monge', desc: 'Punhos treinados em anos de silêncio.', hp: 3, dmg: 1, speed: 14, range: 6, atkCd: 0.7, radius: 4, threat: 2 }),
   priest: living({ name: 'Padre', desc: 'Cura os vivos em volta. Solo sagrado: não pode ser levantado.', hp: 3, dmg: 1, speed: 8, range: 6, atkCd: 1.4, radius: 4, threat: 4, raisable: false, traits: ['healer'] }),
@@ -94,8 +94,8 @@ export const LIVING_DEFS: Record<LivingKind, UnitDef> = {
   ringer: living({ name: 'Sineiro', desc: 'O sino apressa os vivos em volta.', hp: 3, dmg: 1, speed: 9, range: 6, atkCd: 1.2, radius: 4, threat: 3, traits: ['speedAura'] }),
   flagellant: living({ name: 'Flagelante', desc: 'Explode em luz sagrada ao morrer.', hp: 3, dmg: 2, speed: 13, range: 6, atkCd: 1.0, radius: 4, threat: 3, traits: ['holyBurst'] }),
   // ---- A Fortaleza
-  soldier: living({ name: 'Soldado', desc: 'Espada, cota de malha e ordens claras.', hp: 5, dmg: 2, speed: 9, range: 7, atkCd: 1.2, radius: 5, threat: 3 }),
-  crossbow: living({ name: 'Besteiro', desc: 'Virotes pesados de muito longe.', hp: 3, dmg: 3, speed: 8, range: 70, atkCd: 2.4, radius: 4, threat: 4, projectile: 130 }),
+  soldier: living({ name: 'Soldado', desc: 'Espada, cota de malha e ordens claras.', hp: 4, dmg: 2, speed: 9, range: 7, atkCd: 1.2, radius: 5, threat: 3 }),
+  crossbow: living({ name: 'Besteiro', desc: 'Virotes pesados de muito longe.', hp: 3, dmg: 2, speed: 8, range: 70, atkCd: 2.4, radius: 4, threat: 4, projectile: 130 }),
   shield: living({ name: 'Escudeiro', desc: 'O escudo bloqueia metade dos raios do necromante.', hp: 8, dmg: 1, speed: 7, range: 7, atkCd: 1.3, radius: 5, threat: 4, traits: ['shieldBlock'] }),
   knight: living({ name: 'Cavaleiro', desc: 'Investe com tudo quando o alvo está perto.', hp: 10, dmg: 3, speed: 9, range: 8, atkCd: 1.3, radius: 5, threat: 6, traits: ['charge'] }),
   halberd: living({ name: 'Alabardeiro', desc: 'A alabarda acerta vários mortos de uma vez.', hp: 6, dmg: 2, speed: 8, range: 10, atkCd: 1.5, radius: 5, threat: 4, traits: ['cleave'] }),
@@ -112,20 +112,20 @@ export const BOSS_DEFS: Record<BossKind, UnitDef> = {
   woodcutter: living({
     name: 'O Lenhador',
     desc: 'Chefe da Vila. O machado parte o chão em volta.',
-    hp: 110, dmg: 4, speed: 7, range: 12, atkCd: 1.6, radius: 9, threat: 30, raisable: false, boss: true,
+    hp: 260, dmg: 5, speed: 7, range: 12, atkCd: 1.6, radius: 9, threat: 30, raisable: false, boss: true,
     traits: ['cleave'],
     abilities: [{ id: 'slam', cd: 5 }, { id: 'summon', cd: 9 }],
   }),
   abbot: living({
     name: 'O Abade',
     desc: 'Chefe do Mosteiro. Cura seus fiéis e pulsa luz sagrada.',
-    hp: 150, dmg: 3, speed: 6, range: 10, atkCd: 1.4, radius: 9, threat: 40, raisable: false, boss: true,
+    hp: 380, dmg: 3, speed: 6, range: 10, atkCd: 1.4, radius: 9, threat: 40, raisable: false, boss: true,
     abilities: [{ id: 'nova', cd: 5 }, { id: 'healAll', cd: 7 }, { id: 'summon', cd: 10 }],
   }),
   commander: living({
     name: 'O Comandante',
     desc: 'Chefe da Fortaleza. Investe em linha reta contra o altar.',
-    hp: 180, dmg: 5, speed: 7, range: 12, atkCd: 1.4, radius: 9, threat: 50, raisable: false, boss: true,
+    hp: 340, dmg: 5, speed: 7, range: 12, atkCd: 1.4, radius: 9, threat: 50, raisable: false, boss: true,
     traits: ['cleave'],
     abilities: [{ id: 'charge', cd: 6 }, { id: 'summon', cd: 9 }],
   }),

@@ -54,5 +54,6 @@ for (let s = 0; s < 60 * 60 * 90 && w.phase !== 'over'; s++) {
     prevSize = w.waveSize;
   }
 }
+console.log("dano na última onda:", JSON.stringify(w.log.hurtWave), "tema:", w.theme);
 console.log(`fim: onda ${w.wave}, ${w.kills} abates, ${Math.floor(w.souls)} almas, exército máx ${w.stats.maxArmy}, tempo ${(w.time / 60).toFixed(1)} min`);
 console.log(`custo médio da simulação: ${((performance.now() - tStart) / steps).toFixed(3)} ms por passo`);

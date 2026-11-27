@@ -1,0 +1,213 @@
+{
+ "frames": [
+  {
+   "filename": "nav-home",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-market",
+   "frame": {
+    "x": 12,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-arsenal",
+   "frame": {
+    "x": 24,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-tree",
+   "frame": {
+    "x": 36,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-altar",
+   "frame": {
+    "x": 48,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-hoard",
+   "frame": {
+    "x": 60,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-bestiary",
+   "frame": {
+    "x": 72,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-records",
+   "frame": {
+    "x": 84,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nav-options",
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 11,
+    "h": 11
+   },
+   "sourceSize": {
+    "w": 11,
+    "h": 11
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "desenhado \u00e0 m\u00e3o em texto (hand_art.py, estilo PixelSpec do codeart2d)",
+  "image": "nav.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 107,
+   "h": 11
+  },
+  "scale": "1",
+  "frameTags": []
+ }
+}

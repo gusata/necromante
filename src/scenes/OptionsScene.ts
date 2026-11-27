@@ -7,6 +7,9 @@ import { buzz } from '../platform/haptics';
 import { meta, resetMeta, saveMeta } from '../platform/save';
 import { APP_VERSION, deviceId, exportLog } from '../platform/telemetry';
 import { navBar } from './nav';
+import { GROW, screenTop, VIEW_H } from '../fx/view';
+import { GROUND_TOP } from '../art/generate';
+
 
 export class OptionsScene extends Phaser.Scene {
   private shaker!: Shaker;
@@ -17,8 +20,8 @@ export class OptionsScene extends Phaser.Scene {
 
   create() {
     this.shaker = new Shaker(this.cameras.main);
-    this.add.image(0, 0, 'ground2').setOrigin(0).setTint(0xb08870);
-    this.add.rectangle(0, 0, 180, 320, 0x0b0806, 0.75).setOrigin(0);
+    this.add.image(0, -GROUND_TOP, 'ground2').setOrigin(0).setTint(0xb08870);
+    this.add.rectangle(0, screenTop(this.scene.key), 180, VIEW_H, 0x0b0806, 0.75).setOrigin(0);
     navBar(this, 'options');
 
     const s = meta.settings;
@@ -34,7 +37,7 @@ export class OptionsScene extends Phaser.Scene {
       ['ESTATÍSTICAS ANÔNIMAS', () => onOff(s.telemetry !== false), () => (s.telemetry = s.telemetry === false)],
     ];
     rows.forEach(([label, value, toggle], i) => {
-      const y = 46 + i * 30;
+      const y = 40 + i * 30;
       pxText(this, 90, y - 14, label, COL.v).setOrigin(0.5, 0);
       const b: UIButton = button(this, 90, y + 2, value(), () => {
         toggle();
@@ -48,7 +51,7 @@ export class OptionsScene extends Phaser.Scene {
     });
 
     // log das últimas runs, para o testador mandar por WhatsApp/e-mail
-    const exp: UIButton = button(this, 90, 236, 'EXPORTAR LOG', async () => {
+    const exp: UIButton = button(this, 90, 222, 'EXPORTAR LOG', async () => {
       const r = await exportLog();
       exp.label.setText(r === 'shared' ? 'ENVIADO' : r === 'copied' ? 'COPIADO' : 'NÃO DEU').setTint(r === 'failed' ? COL.R : COL.G);
       this.time.delayedCall(2000, () => exp.label.setText('EXPORTAR LOG').setTint(COL.v));
@@ -58,7 +61,7 @@ export class OptionsScene extends Phaser.Scene {
     const reset = button(
       this,
       90,
-      262,
+      246,
       'APAGAR PROGRESSO',
       () => {
         if (!armed) {
@@ -78,9 +81,9 @@ export class OptionsScene extends Phaser.Scene {
       { color: COL.v },
     );
 
-    pxText(this, 90, 284, `necromante v${APP_VERSION}`, COL.B).setOrigin(0.5);
-    pxText(this, 90, 293, `id: ${deviceId()}`, COL.B).setOrigin(0.5);
-    pxText(this, 90, 304, 'as estatísticas ajudam a equilibrar o jogo', 0x4a3524).setOrigin(0.5);
+    pxText(this, 90, 266 + GROW, `necromante v${APP_VERSION}`, COL.B).setOrigin(0.5);
+    pxText(this, 90, 275 + GROW, `id: ${deviceId()}`, COL.B).setOrigin(0.5);
+    pxText(this, 90, 284 + GROW, 'as estatísticas ajudam a equilibrar o jogo', 0x4a3524).setOrigin(0.5);
     this.input.keyboard?.once('keydown-ESC', () => transitionTo(this, 'Menu'));
     transitionIn(this);
   }

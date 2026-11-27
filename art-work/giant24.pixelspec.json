@@ -1,0 +1,177 @@
+{
+ "schema": "codeart2d.pixelspec.v1",
+ "name": "giant",
+ "canvas": [
+  24,
+  28
+ ],
+ "anchor_px": [
+  12,
+  28
+ ],
+ "palette": {
+  "w": "#e3dccb",
+  "b": "#a49c86",
+  "B": "#6b6452",
+  "x": "#241c2c",
+  "G": "#aef5bf"
+ },
+ "outline": {
+  "mode": "none"
+ },
+ "poses": {
+  "stride": [
+   "........bbB....wwb......",
+   ".......bbB.....bwwb.....",
+   ".......bbB.....bwwb.....",
+   "......bbB.......bwwb....",
+   "......bbB.......bwwb....",
+   ".....bbBB.......bwwwb...",
+   "....bbbBB.......wwwwwb..",
+   "...bbbbBB.......wwwwwwb."
+  ],
+  "pass": [
+   "........bbB..wwb........",
+   "........bbB..wwb........",
+   "........bbB..wwb........",
+   "........bbB..bwwb.......",
+   ".......bbB...bwwb.......",
+   ".......bbB...bwwwb......",
+   "......bbbBB..wwwwwb.....",
+   ".....bbbbBB..wwwwwwb...."
+  ],
+  "arms": [
+   "...bb.............wwb...",
+   "..bbB.............wwwb..",
+   "..bB..............bwwb..",
+   ".bbB...............bwwb.",
+   ".bB................bwwb.",
+   ".bB................bwwb.",
+   "bbB...............wwwwb.",
+   "bbbB..............wwwwwb",
+   "bbbBB.............wwwwwb",
+   "BbbB..............bwwwbb",
+   ".BB................bbb.."
+  ],
+  "arms_attack": [
+   "...................wwww.",
+   "..................wwwwwb",
+   "..................wwwwwb",
+   "...................bwwb.",
+   "...................bwb..",
+   "..................bwwb..",
+   "..................bwwb..",
+   ".................bwwb...",
+   "...bb...........bwwb....",
+   "..bbB...................",
+   "..bB....................",
+   ".bbB....................",
+   ".bB.....................",
+   ".bB.....................",
+   "bbB.....................",
+   "bbbB....................",
+   "bbbBB...................",
+   "BbbB....................",
+   ".BB....................."
+  ]
+ },
+ "layers": [
+  {
+   "name": "legs",
+   "z": 0,
+   "origin": [
+    0,
+    20
+   ],
+   "rows": "stride"
+  },
+  {
+   "name": "torso",
+   "z": 1,
+   "origin": [
+    0,
+    8
+   ],
+   "rows": [
+    ".....wwwwwwwwwwwwb......",
+    "....wwwwwwbbwwwwwwb.....",
+    "....wxxxxxbbxxxxxwb.....",
+    "....bwwwwwbbwwwwwwb.....",
+    ".....wxxxxbbxxxxwb......",
+    ".....bwwwwbbwwwwwb......",
+    "......wxxxbbxxxwb.......",
+    ".......bwwbbwwwb........",
+    ".........wwwwb..........",
+    ".......wwwwwwwwwb.......",
+    "......wwwbbbbbwwwb......",
+    "......bwb.....bwwb......"
+   ]
+  },
+  {
+   "name": "head",
+   "z": 2,
+   "origin": [
+    0,
+    0
+   ],
+   "rows": [
+    "........wwwwwwww........",
+    ".......wwwwwwwwwwb......",
+    "......wwwwwwwwwwwwb.....",
+    "......wwwwxxwwwxxwb.....",
+    "......wwwwxGwwwxGwb.....",
+    "......bwwwwwxwwwwbb.....",
+    ".......bwBwBwBwBwb......",
+    "........bbbbbbbbb......."
+   ]
+  },
+  {
+   "name": "arms",
+   "z": 3,
+   "origin": [
+    0,
+    8
+   ],
+   "rows": "arms"
+  }
+ ],
+ "frames": [
+  {
+   "name": "walk0"
+  },
+  {
+   "name": "walk1",
+   "layers": {
+    "legs": {
+     "rows": "pass"
+    }
+   }
+  },
+  {
+   "name": "attack",
+   "layers": {
+    "arms": {
+     "rows": "arms_attack",
+     "dy": -8
+    }
+   }
+  }
+ ],
+ "clips": {
+  "walk": {
+   "frames": [
+    "walk0",
+    "walk1"
+   ],
+   "duration_ms": 166,
+   "loop": true
+  },
+  "attack": {
+   "frames": [
+    "attack"
+   ],
+   "duration_ms": 200,
+   "loop": false
+  }
+ }
+}

@@ -1,0 +1,32 @@
+{
+ "schema": "generate2dsprite.pixel_look_request.v1",
+ "tool": "pixel_look",
+ "kind": "cast",
+ "key": "blue",
+ "cell": 28,
+ "canvas": [
+  1536,
+  1024
+ ],
+ "masterAt": [
+  2,
+  11
+ ],
+ "master": {
+  "file": "master.png",
+  "sha256": "b38cb31f7618385e8ed71dbb6675a22cfe764c8389e6aea9d683b4b28c3001bd",
+  "size": [
+   16,
+   21
+  ]
+ },
+ "references": [
+  "reference.png",
+  "art-work\\gen\\ref\\peasant-design.png"
+ ],
+ "size": "1536x1024",
+ "next": "route_media.py image --prompt-file prompt.txt --reference reference.png --reference art-work\\gen\\ref\\peasant-design.png --size 1536x1024 --out-dir <take>; then pixel_look.py cast --image <take>/generated.png --request <this folder>",
+ "subject": "a frightened medieval peasant villager holding a big wooden pitchfork upright in the hand on the viewer's right, brown tunic and straw cap",
+ "sameHeight": true,
+ "outline": "rule"
+}

@@ -3,13 +3,18 @@ import type { DeadKind, School } from './types';
 
 export type Slot = 'staff' | 'hood' | 'cloak' | 'amulet' | 'ring';
 export type EquipSlot = 'staff' | 'hood' | 'cloak' | 'amulet' | 'ring1' | 'ring2';
-export type ItemRarity = 'common' | 'magic' | 'rare' | 'legendary' | 'set';
+/**
+ * Raridades, cada uma com uma regra:
+ * comum = um número; mágico = um número e um efeito pequeno; raro = libera um morto ou muda uma regra;
+ * épico = efeito forte com um preço; relíquia = quebra uma regra (só cai no cerco dela); conjunto = 3 peças.
+ */
+export type ItemRarity = 'common' | 'magic' | 'rare' | 'epic' | 'legendary' | 'set';
 
 export const EQUIP_SLOTS: EquipSlot[] = ['staff', 'hood', 'cloak', 'amulet', 'ring1', 'ring2'];
 export const SLOT_OF: Record<EquipSlot, Slot> = { staff: 'staff', hood: 'hood', cloak: 'cloak', amulet: 'amulet', ring1: 'ring', ring2: 'ring' };
 export const SLOT_NAME: Record<Slot, string> = { staff: 'Cajado', hood: 'Capuz', cloak: 'Manto', amulet: 'Amuleto', ring: 'Anel' };
-export const RARITY_NAME: Record<ItemRarity, string> = { common: 'comum', magic: 'mágico', rare: 'raro', legendary: 'relíquia', set: 'conjunto' };
-export const RARITY_COLOR: Record<ItemRarity, string> = { common: '#a49c86', magic: '#6fa8c8', rare: '#e0b040', legendary: '#ff7a3a', set: '#4ee08a' };
+export const RARITY_NAME: Record<ItemRarity, string> = { common: 'comum', magic: 'mágico', rare: 'raro', epic: 'épico', legendary: 'relíquia', set: 'conjunto' };
+export const RARITY_COLOR: Record<ItemRarity, string> = { common: '#a49c86', magic: '#6fa8c8', rare: '#e0b040', epic: '#b468e0', legendary: '#ff7a3a', set: '#4ee08a' };
 /** nível máximo do item (cópias repetidas) */
 export const MAX_ITEM_LEVEL = 5;
 /** nível máximo da forja de cada espaço */
@@ -28,7 +33,7 @@ export interface Item {
   color: string;
   /** texto do efeito no nível dado */
   desc: (lvl: number) => string;
-  /** escola do item: 2 itens da mesma escola dão a maestria, 4 o domínio (conjuntos contam para duas) */
+  /** escola do item: 1 item dá o básico, 2 a maestria, 4 o domínio e 6 a apoteose (conjuntos contam para duas) */
   school?: Partial<Record<School, number>>;
   /** relíquia: só cai no cerco deste índice (0 = vila ... 3 = catedral) */
   region?: number;
@@ -166,6 +171,47 @@ export const ITEMS: Item[] = [
   it({ id: 'cloak_crimson', name: 'Manto Rubro', slot: 'cloak', rarity: 'rare', color: '#9e2236', school: { blood: 1 }, desc: (l) => `regenera 10 de vida a cada ${r1(10 / f(l))}s`, apply: (m, l) => (m.necroRegen += f(l) / 10) }),
   it({ id: 'ring_fury', name: 'Anel da Fúria', slot: 'ring', rarity: 'rare', color: '#ff5060', icon: 'ring_gem', school: { blood: 1 }, desc: (l) => `sacrifícios dão +${pct(0.2 * f(l))} dano aos mortos por 5s`, apply: (m, l) => { m.frenzyDmg += 0.2 * f(l); m.frenzyTime = Math.max(m.frenzyTime, 5); } }),
   it({ id: 'hood_crimson', name: 'Elmo Rubro', slot: 'hood', rarity: 'rare', color: '#9e2236', school: { blood: 1 }, desc: (l) => `levanta cavaleiros rubros. mortos +${pct(0.05 * f(l))} dano`, apply: (m, l) => { pool(m, 'bloodknight', 1); m.deadDmgMul *= 1 + 0.05 * f(l); } }),
+  // ------------------------------------------------ sem escola (novos)
+  it({ id: 'cloak_digger', name: 'Capa do Coveiro', slot: 'cloak', rarity: 'common', color: '#6b5a40', desc: (l) => `levantar ${pct(0.08 * f(l))} mais rápido`, apply: (m, l) => (m.raiseTimeMul *= 1 - 0.08 * f(l)) }),
+  it({ id: 'staff_pilgrim', name: 'Bordão do Peregrino', slot: 'staff', rarity: 'magic', color: '#8a6a4a', desc: (l) => `raios +${Math.round(4 * f(l))} dano. círculo +1`, apply: (m, l) => { m.necroDmg += 0.4 * f(l); m.circleR += 1; } }),
+  it({ id: 'cloak_looter', name: 'Capa do Saqueador', slot: 'cloak', rarity: 'magic', color: '#4a4258', desc: (l) => `gemas caem +${pct(0.15 * f(l))}. +5% almas`, apply: (m, l) => { m.gemMul *= 1 + 0.15 * f(l); m.soulMul += 0.05; } }),
+  it({ id: 'ring_miser', name: 'Anel do Avarento', slot: 'ring', rarity: 'rare', color: '#e0b040', icon: 'ring_gem', desc: (l) => `itens que caem mais raros. elites derrubam item +${pct(0.06 * f(l))}`, apply: (m, l) => { m.itemLuck += 0.1 * f(l); m.eliteLootBonus += 0.06 * f(l); } }),
+  it({ id: 'cloak_deserter', name: 'Manto do Desertor', slot: 'cloak', rarity: 'epic', color: '#3a3448', desc: (l) => `+${Math.round(5 * f(l))} no limite e mortos +${pct(0.1 * f(l))} velocidade. o necromante leva +25% dano`, apply: (m, l) => { m.armyCap += Math.round(5 * f(l)); m.deadSpeedMul *= 1 + 0.1 * f(l); m.necroDmgTakenMul *= 1.25; } }),
+  it({ id: 'amulet_coin', name: 'Moeda do Barqueiro', slot: 'amulet', rarity: 'epic', color: '#c9a23a', desc: (l) => `+${pct(0.15 * f(l))} almas e cada morto gasto dá ${Math.round(2 * f(l))} almas. limite do exército -4`, apply: (m, l) => { m.soulMul += 0.15 * f(l); m.spendSouls += Math.round(2 * f(l)); m.armyCap -= 4; } }),
+  // ------------------------------------------------ ossos (novos)
+  it({ id: 'cloak_bones', name: 'Capa de Ossos Soltos', slot: 'cloak', rarity: 'common', color: '#d8cfb8', school: { bone: 1 }, desc: (l) => `esqueletos +${pct(0.1 * f(l))} vida`, apply: (m, l) => mul(m.kindHpMul, 'skeleton', 1 + 0.1 * f(l)) }),
+  it({ id: 'amulet_vertebrae', name: 'Corrente de Vértebras', slot: 'amulet', rarity: 'magic', color: '#e3dccb', school: { bone: 1 }, desc: (l) => `+${Math.round(2 * f(l))} esqueletos no início. +1 no limite`, apply: (m, l) => { m.startSkeletons += Math.round(2 * f(l)); m.armyCap += 1; } }),
+  it({ id: 'hood_general', name: 'Elmo do General', slot: 'hood', rarity: 'rare', color: '#b8ae98', school: { bone: 1 }, desc: (l) => `${pct(0.04 * f(l))} dos mortos levantados nascem elite`, apply: (m, l) => (m.eliteRaise += 0.04 * f(l)) }),
+  it({ id: 'staff_ossuary', name: 'Cetro do Rei Ossudo', slot: 'staff', rarity: 'epic', color: '#e3dccb', icon: 'staff_skull', school: { bone: 1 }, desc: (l) => `fundir pede 1 esqueleto a menos. colossos +${pct(0.15 * f(l))}. esqueletos -15% vida`, apply: (m, l) => { m.fuseCount = Math.max(2, m.fuseCount - 1); m.giantMul *= 1 + 0.15 * f(l); mul(m.kindHpMul, 'skeleton', 0.85); } }),
+  it({ id: 'cloak_thousand', name: 'Manto dos Mil Ossos', slot: 'cloak', rarity: 'epic', color: '#c8b890', icon: 'cloak_shroud', school: { bone: 1 }, desc: (l) => `+${Math.round(4 * f(l))} esqueletos no começo de cada cerco. mortos -5% dano`, apply: (m, l) => { m.regionSkeletons += Math.round(4 * f(l)); m.deadDmgMul *= 0.95; } }),
+  // ------------------------------------------------ carne (novos)
+  it({ id: 'hood_rawhide', name: 'Capuz de Couro Cru', slot: 'hood', rarity: 'common', color: '#9e5a48', school: { flesh: 1 }, desc: (l) => `zumbis e carniçais +${pct(0.1 * f(l))} vida`, apply: (m, l) => { mul(m.kindHpMul, 'zombie', 1 + 0.1 * f(l)); mul(m.kindHpMul, 'ghoul', 1 + 0.1 * f(l)); } }),
+  it({ id: 'staff_sinew', name: 'Cajado de Tendão', slot: 'staff', rarity: 'magic', color: '#b5525e', school: { flesh: 1 }, desc: (l) => `consumir cura +${pct(0.2 * f(l))} e sacrifica até +1`, apply: (m, l) => { m.consumeHealMul *= 1 + 0.2 * f(l); m.consumeMax += 1; } }),
+  it({ id: 'ring_tooth', name: 'Anel de Dente', slot: 'ring', rarity: 'magic', color: '#e3dccb', school: { flesh: 1 }, desc: (l) => `carniçais +${Math.round(4 * f(l))} dano. zumbis +${pct(0.1 * f(l))} vida`, apply: (m, l) => { add(m.kindDmgAdd, 'ghoul', 0.4 * f(l)); mul(m.kindHpMul, 'zombie', 1 + 0.1 * f(l)); } }),
+  it({ id: 'hood_butcher', name: 'Capuz do Carniceiro', slot: 'hood', rarity: 'rare', color: '#8a3a3a', school: { flesh: 1 }, desc: (l) => `${pct(0.06 * f(l))} de chance de um cadáver levantar dois`, apply: (m, l) => (m.doubleRaiseChance += 0.06 * f(l)) }),
+  it({ id: 'hood_glutton', name: 'Capuz do Glutão', slot: 'hood', rarity: 'epic', color: '#b5525e', school: { flesh: 1 }, desc: (l) => `consumir sacrifica até +3 e cada um dá ${Math.round(3 * f(l))} almas. cadáveres duram 30% menos`, apply: (m, l) => { m.consumeMax += 3; m.consumeSouls += Math.round(3 * f(l)); m.corpseLife *= 0.7; } }),
+  it({ id: 'cloak_slaughter', name: 'Pele do Abatedouro', slot: 'cloak', rarity: 'epic', color: '#9e4a52', school: { flesh: 1 }, desc: (l) => `mortos ignoram ${pct(0.12 * f(l))} do dano, mas andam 15% mais devagar`, apply: (m, l) => { m.deadArmor = 1 - (1 - m.deadArmor) * (1 - 0.12 * f(l)); m.deadSpeedMul *= 0.85; } }),
+  // ------------------------------------------------ praga (novos)
+  it({ id: 'cloak_rag', name: 'Trapo Infecto', slot: 'cloak', rarity: 'common', color: '#7a9a30', school: { plague: 1 }, desc: (l) => `veneno +${pct(0.1 * f(l))}`, apply: (m, l) => (m.poisonDmgMul *= 1 + 0.1 * f(l)) }),
+  it({ id: 'hood_fever', name: 'Capuz Febril', slot: 'hood', rarity: 'magic', color: '#c8d060', school: { plague: 1 }, desc: (l) => `veneno dura +${pct(0.12 * f(l))}. envenenados andam devagar`, apply: (m, l) => { m.poisonDurMul *= 1 + 0.12 * f(l); m.poisonSlow = true; } }),
+  it({ id: 'cloak_flies', name: 'Manto de Moscas', slot: 'cloak', rarity: 'rare', color: '#5a6a2a', school: { plague: 1 }, desc: (l) => `vivos que morrem envenenados: ${pct(0.15 * f(l))} de chance de soltar nuvem de veneno`, apply: (m, l) => (m.killCloud += 0.15 * f(l)) }),
+  it({ id: 'ring_contagion', name: 'Anel do Contágio', slot: 'ring', rarity: 'epic', color: '#9fcf4a', icon: 'ring_gem', school: { plague: 1 }, desc: (l) => `vivos mortos pelos mortos: ${pct(0.08 * f(l))} de chance de explodir. necromante -30 vida`, apply: (m, l) => { m.killExplode += 0.08 * f(l); m.necroMaxHp -= 3; } }),
+  it({ id: 'amulet_hourglass', name: 'Ampulheta Podre', slot: 'amulet', rarity: 'epic', color: '#8fbf3a', school: { plague: 1 }, desc: (l) => `veneno +${pct(0.2 * f(l))} e dura +${pct(0.2 * f(l))}. raios -20% dano`, apply: (m, l) => { m.poisonDmgMul *= 1 + 0.2 * f(l); m.poisonDurMul *= 1 + 0.2 * f(l); m.necroDmg *= 0.8; } }),
+  // ------------------------------------------------ espírito (novos)
+  it({ id: 'cloak_grey', name: 'Capa Cinzenta', slot: 'cloak', rarity: 'common', color: '#8a94a6', school: { spirit: 1 }, desc: (l) => `mortos +${pct(0.06 * f(l))} velocidade`, apply: (m, l) => (m.deadSpeedMul *= 1 + 0.06 * f(l)) }),
+  it({ id: 'staff_medium', name: 'Vara do Médium', slot: 'staff', rarity: 'magic', color: '#6fa8c8', school: { spirit: 1 }, desc: (l) => `raios ${pct(0.05 * f(l))} mais rápidos. fantasmas +${Math.round(4 * f(l))} dano`, apply: (m, l) => { m.castCdMul *= 1 - 0.05 * f(l); add(m.kindDmgAdd, 'ghost', 0.4 * f(l)); } }),
+  it({ id: 'cloak_mist', name: 'Manto de Névoa', slot: 'cloak', rarity: 'magic', color: '#a8c8d8', school: { spirit: 1 }, desc: (l) => `círculo +${r1(1.5 * f(l))} de raio. vivos no círculo 5% mais lentos`, apply: (m, l) => { m.circleR += 1.5 * f(l); m.circleSlow = 1 - (1 - m.circleSlow) * 0.95; } }),
+  it({ id: 'amulet_lantern', name: 'Lanterna das Almas', slot: 'amulet', rarity: 'rare', color: '#bfe9ff', school: { spirit: 1 }, desc: (l) => `quem morre pelo raio dá +${pct(0.5 * f(l))} almas`, apply: (m, l) => (m.boltSoulMul *= 1 + 0.5 * f(l)) }),
+  it({ id: 'staff_echo', name: 'Cajado do Eco', slot: 'staff', rarity: 'epic', color: '#8fd3ff', icon: 'staff_orb', school: { spirit: 1 }, desc: (l) => `raios saltam +2 alvos e são ${pct(0.05 * f(l))} mais rápidos, mas -25% dano`, apply: (m, l) => { m.boltChain += 2; m.castCdMul *= 1 - 0.05 * f(l); m.necroDmg *= 0.75; } }),
+  it({ id: 'hood_wanderer', name: 'Coroa Errante', slot: 'hood', rarity: 'epic', color: '#d8f0ff', school: { spirit: 1 }, desc: (l) => `fantasmas e banshees +${pct(0.3 * f(l))} vida. mortos voltam como fantasma +10%. limite do exército -3`, apply: (m, l) => { mul(m.kindHpMul, 'ghost', 1 + 0.3 * f(l)); mul(m.kindHpMul, 'banshee', 1 + 0.3 * f(l)); m.ghostOnDeath += 0.1; m.armyCap -= 3; } }),
+  // ------------------------------------------------ sangue (novos)
+  it({ id: 'cloak_soaked', name: 'Manto Encharcado', slot: 'cloak', rarity: 'common', color: '#7a1a2a', school: { blood: 1 }, desc: (l) => `explosões +${r1(1.5 * f(l))} de raio`, apply: (m, l) => (m.explodeR += 1.5 * f(l)) }),
+  it({ id: 'hood_penitent', name: 'Capuz do Penitente', slot: 'hood', rarity: 'common', color: '#5a2a2a', school: { blood: 1 }, desc: (l) => `necromante +${Math.round(2 * f(l)) * 10} vida`, apply: (m, l) => (m.necroMaxHp += Math.round(2 * f(l))) }),
+  it({ id: 'hood_headsman', name: 'Capuz do Algoz', slot: 'hood', rarity: 'magic', color: '#2a1a1a', icon: 'hood_mask', school: { blood: 1 }, desc: (l) => `mortos +${pct(0.05 * f(l))} dano. cura 10 a cada ${Math.round(20 / f(l))} abates`, apply: (m, l) => { m.deadDmgMul *= 1 + 0.05 * f(l); m.killHeal += f(l) / 20; } }),
+  it({ id: 'staff_rite', name: 'Cetro do Rito', slot: 'staff', rarity: 'rare', color: '#c8303e', icon: 'staff_orb', school: { blood: 1 }, desc: (l) => `ritual carrega ${pct(0.1 * f(l))} mais rápido. ${pct(0.1 * f(l))} de chance de não gastar a carga`, apply: (m, l) => { m.ritualMul *= 1 - 0.1 * f(l); m.ritualKeep += 0.1 * f(l); } }),
+  it({ id: 'cloak_martyr', name: 'Manto do Mártir', slot: 'cloak', rarity: 'rare', color: '#9e2236', school: { blood: 1 }, desc: (l) => `cada morto gasto cura o necromante (10 a cada ${Math.max(1, Math.round(4 / f(l)))})`, apply: (m, l) => (m.spendHeal += f(l) / 4) }),
+  it({ id: 'ring_headsman', name: 'Anel do Carrasco', slot: 'ring', rarity: 'epic', color: '#ff5060', icon: 'ring_gem', school: { blood: 1 }, desc: (l) => `mortos +${pct(0.3 * f(l))} dano em elites e chefes. o necromante sangra 5 de vida a cada 10s`, apply: (m, l) => { m.eliteDmgMul *= 1 + 0.3 * f(l); m.necroDrain += 0.05; } }),
+  it({ id: 'amulet_bloodvial', name: 'Frasco de Sangue', slot: 'amulet', rarity: 'epic', color: '#e0304a', school: { blood: 1 }, desc: (l) => `cura 10 a cada ${Math.round(8 / f(l))} abates. -15% almas`, apply: (m, l) => { m.killHeal += f(l) / 8; m.soulMul -= 0.15; } }),
   // ------------------------------------------------ relíquias: cada cerco guarda duas, e elas quase nunca caem
   it({ id: 'amulet_hunger', name: 'Coração Faminto', slot: 'amulet', rarity: 'legendary', region: 0, school: { blood: 1 }, icon: 'amulet_fang', color: '#e0304a', desc: (l) => `consumir cura ${r1(2 * f(l))}x e sacrifica até +4`, apply: (m, l) => { m.consumeHealMul *= 2 * f(l); m.consumeMax += 4; }, hoard: { desc: (l) => `+${(1 + Math.floor(l / 2)) * 10} vida do necromante`, apply: (m, l) => (m.necroMaxHp += 1 + Math.floor(l / 2)) } }),
   it({ id: 'staff_harvest', name: 'Cajado da Colheita', slot: 'staff', rarity: 'legendary', region: 0, school: { spirit: 1 }, icon: 'staff_orb', color: '#aef5bf', desc: (l) => `quem morre pelo raio levanta mesmo com o exército cheio. raios +${pct(0.05 * f(l))}`, apply: (m, l) => { m.boltOvercap = true; m.castCdMul *= 1 - 0.05 * f(l); }, hoard: { desc: (l) => `raios ${pct(0.02 + 0.01 * l)} mais rápidos`, apply: (m, l) => (m.castCdMul *= 1 - (0.02 + 0.01 * l)) } }),
@@ -194,11 +240,11 @@ export const HOARD_COMPLETE = { desc: '+10% almas e mortos +5% dano', apply: (m:
 
 export const ITEM_BY_ID: Record<string, Item> = Object.fromEntries(ITEMS.map((i) => [i.id, i]));
 
-export const ITEM_PRICE: Record<ItemRarity, number> = { common: 400, magic: 900, rare: 2000, legendary: 4500, set: 2600 };
+export const ITEM_PRICE: Record<ItemRarity, number> = { common: 400, magic: 900, rare: 2000, epic: 3400, legendary: 4500, set: 2600 };
 export const upgradeCost = (item: Item, lvl: number) => Math.round(ITEM_PRICE[item.rarity] * 0.6 * (lvl + 1));
 
-/** raridade bem mais difícil: raro é 1 em ~25, conjunto 1 em ~90; relíquia nunca sai aqui */
-const RARITY_WEIGHT: Record<ItemRarity, number> = { common: 100, magic: 32, rare: 6, legendary: 0, set: 1.5 };
+/** sem sorte: comum ~68%, mágico ~24%, raro ~7%, épico ~1%, conjunto ~0,5%; relíquia nunca sai aqui */
+const RARITY_WEIGHT: Record<ItemRarity, number> = { common: 100, magic: 32, rare: 10, epic: 2.5, legendary: 0, set: 2 };
 
 /** chance de relíquia por chefe e por elite, no cerco dela */
 export const RELIC_BOSS_CHANCE = 0.05;
@@ -213,12 +259,13 @@ export function rollRelic(rand: () => number, region: number): string | null {
   return pool.length ? pool[Math.floor(rand() * pool.length)].id : null;
 }
 
-/** Sorteia um item comum, mágico, raro ou de conjunto. `luck` puxa para raridades maiores; `minRarity` corta as baixas. */
+/** Degrau de cada raridade no sorteio (conjunto fica no degrau do raro, peça por peça). */
+export const RARITY_TIER: Record<ItemRarity, number> = { common: 0, magic: 1, rare: 2, set: 2, epic: 3, legendary: 4 };
+
+/** Sorteia um item comum, mágico, raro, épico ou de conjunto. `luck` puxa para raridades maiores; `minRarity` corta as baixas. */
 export function rollItem(rand: () => number, luck = 0, minRarity: ItemRarity = 'common'): string {
-  // conjunto fica no mesmo degrau do raro (peça por peça, menos chance)
-  const order: ItemRarity[] = ['common', 'magic', 'rare'];
-  const tier = (r: ItemRarity) => (r === 'set' ? 2 : order.indexOf(r));
-  const min = Math.min(2, order.indexOf(minRarity === 'legendary' || minRarity === 'set' ? 'rare' : minRarity));
+  const tier = (r: ItemRarity) => RARITY_TIER[r];
+  const min = Math.min(3, tier(minRarity));
   const pool = ITEMS.filter((i) => i.rarity !== 'legendary' && tier(i.rarity) >= min);
   const w = pool.map((i) => RARITY_WEIGHT[i.rarity] * (1 + luck * tier(i.rarity) * 1.5));
   let r = rand() * w.reduce((a, b) => a + b, 0);

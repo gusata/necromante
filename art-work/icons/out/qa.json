@@ -1,0 +1,1855 @@
+{
+  "status": "warn",
+  "method": "pixel_qa.py: every input PNG is loaded as 8-bit RGBA and measured with codeart_core.qa_pixels (alpha census, exact palette lookup, 4-neighbour outline gaps and L-corners against codeart_core.QA_PIXEL_GATES); optional codeart_core.detect_grid, an anchor bounds check and forge_core.seam_report on the frame loop; each check is valued at the worst frame",
+  "notProven": [
+    "Readability, silhouette and appeal at game scale; look at the review sheet.",
+    "Motion quality, timing and spacing; the onion row and loop seam only flag symptoms.",
+    "That the frames share a registered root; the anchor is only checked to lie inside each canvas.",
+    "Palette conformance: no --palette was given.",
+    "Outline continuity and L-corners: no --outline colour was given."
+  ],
+  "checks": [
+    {
+      "id": "partial_alpha",
+      "status": "pass",
+      "value": 0,
+      "threshold": 0
+    },
+    {
+      "id": "off_palette",
+      "status": "skipped",
+      "value": null,
+      "threshold": 0
+    },
+    {
+      "id": "outline_gaps",
+      "status": "skipped",
+      "value": null,
+      "threshold": 0
+    },
+    {
+      "id": "l_corners",
+      "status": "skipped",
+      "value": null,
+      "threshold": 10
+    },
+    {
+      "id": "same_size",
+      "status": "warn",
+      "value": [
+        [
+          14,
+          14
+        ],
+        [
+          36,
+          36
+        ]
+      ],
+      "threshold": "one canvas size"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "frames/item-amulet_ancestor.png",
+      "sha256": "86da3d4a525e6f6de51d7bfd8ff29aaf42083649ae6e48eb778580d0cfe9c3a3",
+      "bytes": 598
+    },
+    {
+      "path": "frames/item-amulet_chalice.png",
+      "sha256": "941a3366d1de143e9baea82c4576ee35fb54b10284c1f2dea09de075bd352554",
+      "bytes": 484
+    },
+    {
+      "path": "frames/item-amulet_dagger.png",
+      "sha256": "d9388070982a88ac06be573ae160dadf0745d4defc5c225ee6205ef4ff4136d1",
+      "bytes": 536
+    },
+    {
+      "path": "frames/item-amulet_digger.png",
+      "sha256": "6f2518cd2f4bfa60449e37fe89e37f8a9741cc5810bf4a78c2af6f48dbe59e83",
+      "bytes": 533
+    },
+    {
+      "path": "frames/item-amulet_feast.png",
+      "sha256": "4c8cc5901de3a6db9556b845b81fbace5350e6e1129566bee6aaec37929c69fb",
+      "bytes": 563
+    },
+    {
+      "path": "frames/item-amulet_ghoul.png",
+      "sha256": "47b85992b82bb33255e176f611e3ae08af9b6565b36346848151384fb80d862a",
+      "bytes": 455
+    },
+    {
+      "path": "frames/item-amulet_hunger.png",
+      "sha256": "02253e0166b1882dafa9a76a964c51d12746bc55092c3096ffc9d0253840e6f3",
+      "bytes": 620
+    },
+    {
+      "path": "frames/item-amulet_pact.png",
+      "sha256": "823903ba512745144ebe2ddf82da2ec20ad9b6cc1c7ad146063edd812f63a0ce",
+      "bytes": 577
+    },
+    {
+      "path": "frames/item-amulet_quiver.png",
+      "sha256": "d2a90546efe8a472c234bde59c856ef22736fc1dd0964836bf9db3c77d8bdb5b",
+      "bytes": 653
+    },
+    {
+      "path": "frames/item-amulet_rats.png",
+      "sha256": "934603d4d871243c359ff0e7caf0ff268f851243a41f3873fd4d8d920c26528c",
+      "bytes": 611
+    },
+    {
+      "path": "frames/item-amulet_reliquary.png",
+      "sha256": "144aec1db7af3c3b3b1b4e4300e7cc53b7d2a6bda79b477908eb2c9066497eaa",
+      "bytes": 594
+    },
+    {
+      "path": "frames/item-amulet_tooth.png",
+      "sha256": "d2848fa37a1963625dddadb87705309e86730889be95646c9d6a7b51ca48de4a",
+      "bytes": 474
+    },
+    {
+      "path": "frames/item-amulet_veil.png",
+      "sha256": "1f7e260c765b33e9da40f508ea61663a97b87e57801d51a76b7bcaa55722dad1",
+      "bytes": 520
+    },
+    {
+      "path": "frames/item-cloak_bile.png",
+      "sha256": "b9e65c764be2beb96a63896e7466fb83e6b9f7ad97f078fc44a71a0ececf68d6",
+      "bytes": 627
+    },
+    {
+      "path": "frames/item-cloak_choir.png",
+      "sha256": "45a89c9eae336c9351190957d5b4e15a803ab47d2294d8fa6e34dfcd1f1f25a5",
+      "bytes": 624
+    },
+    {
+      "path": "frames/item-cloak_crimson.png",
+      "sha256": "6fa9844e776a5fa813ad2b56daabfc6cc050401a9933a2975aca57cbed365836",
+      "bytes": 563
+    },
+    {
+      "path": "frames/item-cloak_flesh.png",
+      "sha256": "a8f7c0c544737d82f5c4a94052d65a0bc42b23c2835bca29c9824b5f48da66c5",
+      "bytes": 618
+    },
+    {
+      "path": "frames/item-cloak_ossuary.png",
+      "sha256": "ed5fca8e7773f6b331604386b3829531448fd0e0815d4c8fa68e229a9a5841c4",
+      "bytes": 639
+    },
+    {
+      "path": "frames/item-cloak_pact.png",
+      "sha256": "41b48edbf83c65e38cb69db15b02a8c19acd0ab5f03e65ae72452ad28b3c31f7",
+      "bytes": 632
+    },
+    {
+      "path": "frames/item-cloak_reaper.png",
+      "sha256": "668d31f7a25aeb5d1a48bbf6e7509b20a11d5a4ebfe6c9201a07741e53595d6e",
+      "bytes": 609
+    },
+    {
+      "path": "frames/item-cloak_shroud.png",
+      "sha256": "b4b95bfbe8083df9e4dce9f6f912b23cab35686e38f2942d0200c1c4e9debf4a",
+      "bytes": 540
+    },
+    {
+      "path": "frames/item-cloak_wool.png",
+      "sha256": "c3edc66dbe4bfc5b0cb3a89a4bec542a311be78e62718d3efe3310ec69de64ea",
+      "bytes": 534
+    },
+    {
+      "path": "frames/item-hood_banshee.png",
+      "sha256": "cc2153c9ebf388f0c26ca8cfee4f009e113d2e688a3a81ff0b3c8a1f3cc7da3e",
+      "bytes": 507
+    },
+    {
+      "path": "frames/item-hood_choir.png",
+      "sha256": "12464d7ff3dd20cc870eef650b3a580c49d66a98d35a810e3dfbcf7225653474",
+      "bytes": 548
+    },
+    {
+      "path": "frames/item-hood_crimson.png",
+      "sha256": "743c310c9ff1118d3e33b0f079996c2c78a45a7d106210615018b594f0b5d045",
+      "bytes": 580
+    },
+    {
+      "path": "frames/item-hood_eye.png",
+      "sha256": "11b4724626ff516ed0fd4a4775c311d7c783abe947211700c3eca9cf66970f02",
+      "bytes": 673
+    },
+    {
+      "path": "frames/item-hood_lich.png",
+      "sha256": "9e7607e0575400742427f1009d02379e3f43e34424bae4e26b7efd6086a8d72c",
+      "bytes": 472
+    },
+    {
+      "path": "frames/item-hood_maggot.png",
+      "sha256": "188714f31b6d06bfb30dc4589f9c8f800c9e3ddb6a646b07210c4ef8bbe8ff7f",
+      "bytes": 545
+    },
+    {
+      "path": "frames/item-hood_pest.png",
+      "sha256": "71a13733ddc10623974c028de14caba3afc8964f64180e330b4dcbd6d7496eaf",
+      "bytes": 622
+    },
+    {
+      "path": "frames/item-hood_plague.png",
+      "sha256": "8eeb0d0deaedef8becaf512aaef8b8344255d7bf8ac27f55c19f1d8175abb230",
+      "bytes": 669
+    },
+    {
+      "path": "frames/item-hood_seer.png",
+      "sha256": "de1358922f89341ec8a8a1c618e18e5a6f51bc2d4ec4fd8b64ce10386fb1091e",
+      "bytes": 549
+    },
+    {
+      "path": "frames/item-hood_skull.png",
+      "sha256": "b1578706516b4720c7a3e719f583aac138a316633ee9bd155883c6b05a0c5e81",
+      "bytes": 499
+    },
+    {
+      "path": "frames/item-hood_worn.png",
+      "sha256": "528836d6bb414bdd1802e54a4e9370da2bcbc67a1cc15f4cd53ad585b3fdcdea",
+      "bytes": 598
+    },
+    {
+      "path": "frames/item-ring_abyss.png",
+      "sha256": "95271faed4818db9984a29b5053a0f46c828f796c6338e3798b4bb1502f5a460",
+      "bytes": 514
+    },
+    {
+      "path": "frames/item-ring_blood.png",
+      "sha256": "6123057d2064da2adf3483f2a2099565f4d42116278d704924894374da905160",
+      "bytes": 522
+    },
+    {
+      "path": "frames/item-ring_bone.png",
+      "sha256": "7529798e8e46196b4ddf9c1da903984bb7a31f6625053373dcefd09be8c02ef5",
+      "bytes": 514
+    },
+    {
+      "path": "frames/item-ring_chains.png",
+      "sha256": "583fc92e9e405d30e35c17fae39a951e8900b2a7a86d15e00e8c84ef10fd1c0c",
+      "bytes": 570
+    },
+    {
+      "path": "frames/item-ring_fever.png",
+      "sha256": "5c39f28fbbb5fd736d245f553e40569939ef36716dbf35b8ba814e9159311a55",
+      "bytes": 579
+    },
+    {
+      "path": "frames/item-ring_flesh.png",
+      "sha256": "cb98a99af3f6eaa227b2e2e7521d00203f288393da9afe5fce7d69e7b2e655c0",
+      "bytes": 439
+    },
+    {
+      "path": "frames/item-ring_fury.png",
+      "sha256": "524d8d62975b60c5f2bfbd0db84a381ad0eaa7617c919dd4d4a0e9bf64d50dac",
+      "bytes": 577
+    },
+    {
+      "path": "frames/item-ring_hide.png",
+      "sha256": "a7cb67b348ad9e6e2bf4404e35aeefc25a1662b1ccfa6a3b8df5c3ad493027ec",
+      "bytes": 468
+    },
+    {
+      "path": "frames/item-ring_iron.png",
+      "sha256": "72972489b58e41fbbcb8377c0a3bec44bc6af4639af76bbff5296350f7256481",
+      "bytes": 400
+    },
+    {
+      "path": "frames/item-ring_pact.png",
+      "sha256": "e2fd113fec5608089ed9cdd253ec0439d57faf94ac9e60a97f315dea65fcc3bf",
+      "bytes": 539
+    },
+    {
+      "path": "frames/item-ring_pest.png",
+      "sha256": "fcd6931807a5113bcc87f1ddad36e3f4e07a9e35db91a27491d289a61164d885",
+      "bytes": 557
+    },
+    {
+      "path": "frames/item-ring_plague.png",
+      "sha256": "b1af39e55f56588e5602ea22632035233e5adf851608dc3623ead17ab3ae9402",
+      "bytes": 555
+    },
+    {
+      "path": "frames/item-ring_rosary.png",
+      "sha256": "31f482afaafe2452e04b243ffaeb4433c8bbcbeff491296b8f381a883192cede",
+      "bytes": 572
+    },
+    {
+      "path": "frames/item-ring_spirit.png",
+      "sha256": "f9ba2c5c26b700d21c5d9afdc50b9e0b1587eae5f97761d49c9a229d78f9c4ae",
+      "bytes": 478
+    },
+    {
+      "path": "frames/item-ring_spores.png",
+      "sha256": "3873168891029711d6c8a61afa1743d536eddc77497465318296e0f0b9683688",
+      "bytes": 601
+    },
+    {
+      "path": "frames/item-ring_tibia.png",
+      "sha256": "cf84bbdad937769dacfb49a1da40120a19ebbf362010346a87e7119200d0ef2c",
+      "bytes": 424
+    },
+    {
+      "path": "frames/item-ring_tomb.png",
+      "sha256": "3326fca346e16e0665478aab4ee637999be7ab977cd6998c459482aa6284b2dc",
+      "bytes": 479
+    },
+    {
+      "path": "frames/item-staff_banner.png",
+      "sha256": "5180d61cbfe9c0bc52fcedc3a5976e5531a6a5ce061b5ca621110c79f55adbcf",
+      "bytes": 557
+    },
+    {
+      "path": "frames/item-staff_bone.png",
+      "sha256": "9011fa00e5159efd0463d95e5f745e85de888d1b71b41c1940ef67f81c5e3f20",
+      "bytes": 490
+    },
+    {
+      "path": "frames/item-staff_censer.png",
+      "sha256": "d071607f430e06d0c13819b37ae9f520f70e9cfc499af75c928d173707d56cb4",
+      "bytes": 624
+    },
+    {
+      "path": "frames/item-staff_choir.png",
+      "sha256": "b653a0f0062927e060576a71c317fea0b81dcc422ce41563d0d13c924da41af3",
+      "bytes": 494
+    },
+    {
+      "path": "frames/item-staff_grimoire.png",
+      "sha256": "92b3910d2f84810981377c12283f5e495bc9b398635d4539ce7b4b59ada71d75",
+      "bytes": 594
+    },
+    {
+      "path": "frames/item-staff_harvest.png",
+      "sha256": "28a283ab418b0bc13c6ae1f6566c846c9fa0e2564fa40dbeb630d5cb921a52a8",
+      "bytes": 499
+    },
+    {
+      "path": "frames/item-staff_lich.png",
+      "sha256": "d9988ccd3785c62c0d84f49b4c328cddfc7c83218db5a9a1abfea7e1a981018d",
+      "bytes": 546
+    },
+    {
+      "path": "frames/item-staff_pest.png",
+      "sha256": "fc1128804f7c95d2b0a9a5c72412175ca4af320cdd37c46021f9e132ce4cf927",
+      "bytes": 645
+    },
+    {
+      "path": "frames/item-staff_rot.png",
+      "sha256": "8481709cf21c60b6cdcdc7e8d56b35b9ca77765615e3014939ef971db71e5af3",
+      "bytes": 626
+    },
+    {
+      "path": "frames/item-staff_stitch.png",
+      "sha256": "53bf4284af362b93eec4315c48ca92705a322b8aaf13af955e4fb1ce8a08c2da",
+      "bytes": 477
+    },
+    {
+      "path": "frames/item-staff_storm.png",
+      "sha256": "9b01aeebbc96b0b12dffea8450cd0ec4f01b76d783077b38cf9b13b2a8517604",
+      "bytes": 474
+    },
+    {
+      "path": "frames/item-staff_thirst.png",
+      "sha256": "bc22b752853a4a236dcc12ba03654563bb20f11875ee658c09214043a4c231ef",
+      "bytes": 444
+    },
+    {
+      "path": "frames/item-staff_yew.png",
+      "sha256": "5ca8b727618be15951f02d6c62faa45282b8c762905be746af599034e6e96a0c",
+      "bytes": 543
+    },
+    {
+      "path": "frames/school-blood.png",
+      "sha256": "b118795bc62830e3e5fd09a99624be237a20684cc6fcbc03ba63469de8710109",
+      "bytes": 192
+    },
+    {
+      "path": "frames/school-bone.png",
+      "sha256": "b00feb7c41d8ff1a147f26c8322cca7d5fa57ba6fef0a1eed29d50fed8183858",
+      "bytes": 229
+    },
+    {
+      "path": "frames/school-flesh.png",
+      "sha256": "e931d24d011ddd6aca6edb170ef57f0b431248157b43d6c81a58f057e3b9fa69",
+      "bytes": 223
+    },
+    {
+      "path": "frames/school-neutral.png",
+      "sha256": "eb866cfbac5cd9c87e58e0816726048831f215b34698315f25d44f5862f98b0b",
+      "bytes": 222
+    },
+    {
+      "path": "frames/school-plague.png",
+      "sha256": "40b9c8b6a1622a0ac373baa5273369dc942de521f7b7217e32755219dad5f274",
+      "bytes": 191
+    },
+    {
+      "path": "frames/school-spirit.png",
+      "sha256": "04ccbb26fc568d4c875b4391012b71407ff48e50f1bbca7b8c9ed888b593e735",
+      "bytes": 195
+    }
+  ],
+  "outputs": [],
+  "tool": {
+    "name": "pixel_qa.py",
+    "version": "0.6.0"
+  },
+  "frames": [
+    {
+      "file": "frames/item-amulet_ancestor.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 410,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 8,
+      "orphans": 90,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-amulet_chalice.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 509,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 9,
+      "orphans": 20,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        3,
+        31,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-amulet_dagger.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 279,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 14,
+      "orphans": 22,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-amulet_digger.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 333,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 13,
+      "orphans": 49,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-amulet_feast.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 477,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 41,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-amulet_ghoul.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 303,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 21,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-amulet_hunger.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 616,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 51,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        1,
+        33,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-amulet_pact.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 573,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 48,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        1,
+        32,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-amulet_quiver.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 482,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 14,
+      "orphans": 51,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-amulet_rats.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 521,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 16,
+      "orphans": 25,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-amulet_reliquary.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 451,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 56,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-amulet_tooth.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 251,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 7,
+      "orphans": 33,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        25
+      ]
+    },
+    {
+      "file": "frames/item-amulet_veil.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 463,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 9,
+      "orphans": 45,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        31,
+        31
+      ]
+    },
+    {
+      "file": "frames/item-cloak_bile.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 756,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 33,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-cloak_choir.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 732,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 9,
+      "orphans": 42,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-cloak_crimson.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 748,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 9,
+      "orphans": 33,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-cloak_flesh.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 748,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 9,
+      "orphans": 43,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-cloak_ossuary.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 748,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 38,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-cloak_pact.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 748,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 11,
+      "orphans": 40,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-cloak_reaper.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 763,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 8,
+      "orphans": 38,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        0,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-cloak_shroud.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 707,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 6,
+      "orphans": 41,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-cloak_wool.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 748,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 8,
+      "orphans": 31,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-hood_banshee.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 519,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 8,
+      "orphans": 25,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        5,
+        33,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-hood_choir.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 767,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 36,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        1,
+        32,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-hood_crimson.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 748,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 36,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        2,
+        0,
+        34,
+        33
+      ]
+    },
+    {
+      "file": "frames/item-hood_eye.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 697,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 62,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        3,
+        33,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-hood_lich.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 627,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 13,
+      "orphans": 38,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        4,
+        32,
+        31
+      ]
+    },
+    {
+      "file": "frames/item-hood_maggot.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 763,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 9,
+      "orphans": 15,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        2,
+        2,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-hood_pest.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 779,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 25,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        2,
+        2,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-hood_plague.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 802,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 41,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        1,
+        33,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-hood_seer.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 758,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 19,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        2,
+        2,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-hood_skull.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 600,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 6,
+      "orphans": 30,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        2,
+        32,
+        30
+      ]
+    },
+    {
+      "file": "frames/item-hood_worn.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 761,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 28,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        2,
+        2,
+        34,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-ring_abyss.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 434,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 39,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        5,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_blood.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 398,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 53,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        5,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_bone.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 436,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 7,
+      "orphans": 47,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        4,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_chains.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 468,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 45,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        6,
+        32,
+        32
+      ]
+    },
+    {
+      "file": "frames/item-ring_fever.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 438,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 49,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        4,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_flesh.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 320,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 6,
+      "orphans": 38,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        13,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_fury.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 404,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 56,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        3,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_hide.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 321,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 40,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        14,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_iron.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 314,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 6,
+      "orphans": 26,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        16,
+        31,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-ring_pact.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 421,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 48,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        6,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_pest.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 406,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 56,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        6,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_plague.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 450,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 37,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        5,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_rosary.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 395,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 8,
+      "orphans": 58,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        5,
+        33,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-ring_spirit.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 416,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 27,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        6,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_spores.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 425,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 11,
+      "orphans": 43,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        7,
+        32,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_tibia.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 333,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 5,
+      "orphans": 35,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        13,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-ring_tomb.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 486,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 9,
+      "orphans": 30,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        2,
+        31,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-staff_banner.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 633,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 16,
+      "orphans": 38,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        0,
+        32,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_bone.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 338,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 7,
+      "orphans": 70,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        32,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_censer.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 427,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 13,
+      "orphans": 53,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        3,
+        33,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-staff_choir.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 273,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 75,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        1,
+        28,
+        34
+      ]
+    },
+    {
+      "file": "frames/item-staff_grimoire.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 365,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 17,
+      "orphans": 62,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        2,
+        33,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_harvest.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 269,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 12,
+      "orphans": 31,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        7,
+        1,
+        35,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_lich.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 371,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 105,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        1,
+        33,
+        35
+      ]
+    },
+    {
+      "file": "frames/item-staff_pest.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 408,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 102,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        3,
+        2,
+        33,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_rot.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 373,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 14,
+      "orphans": 63,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        3,
+        32,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_stitch.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 236,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 8,
+      "orphans": 101,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        5,
+        1,
+        33,
+        32
+      ]
+    },
+    {
+      "file": "frames/item-staff_storm.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 326,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 94,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        1,
+        33,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_thirst.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 263,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 11,
+      "orphans": 68,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        1,
+        30,
+        36
+      ]
+    },
+    {
+      "file": "frames/item-staff_yew.png",
+      "size": [
+        36,
+        36
+      ],
+      "source_mode": "RGBA",
+      "visible": 344,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 10,
+      "orphans": 99,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        4,
+        1,
+        33,
+        35
+      ]
+    },
+    {
+      "file": "frames/school-blood.png",
+      "size": [
+        14,
+        14
+      ],
+      "source_mode": "RGBA",
+      "visible": 83,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 5,
+      "orphans": 17,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        2,
+        1,
+        12,
+        14
+      ]
+    },
+    {
+      "file": "frames/school-bone.png",
+      "size": [
+        14,
+        14
+      ],
+      "source_mode": "RGBA",
+      "visible": 130,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 7,
+      "orphans": 22,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        1,
+        0,
+        13,
+        14
+      ]
+    },
+    {
+      "file": "frames/school-flesh.png",
+      "size": [
+        14,
+        14
+      ],
+      "source_mode": "RGBA",
+      "visible": 118,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 5,
+      "orphans": 22,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        0,
+        2,
+        14,
+        14
+      ]
+    },
+    {
+      "file": "frames/school-neutral.png",
+      "size": [
+        14,
+        14
+      ],
+      "source_mode": "RGBA",
+      "visible": 120,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 5,
+      "orphans": 18,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        1,
+        1,
+        13,
+        13
+      ]
+    },
+    {
+      "file": "frames/school-plague.png",
+      "size": [
+        14,
+        14
+      ],
+      "source_mode": "RGBA",
+      "visible": 83,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 5,
+      "orphans": 17,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        2,
+        1,
+        12,
+        14
+      ]
+    },
+    {
+      "file": "frames/school-spirit.png",
+      "size": [
+        14,
+        14
+      ],
+      "source_mode": "RGBA",
+      "visible": 122,
+      "partial_alpha": 0,
+      "off_palette": null,
+      "colors": 5,
+      "orphans": 7,
+      "l_corners": null,
+      "outline_gaps": null,
+      "bbox": [
+        1,
+        0,
+        13,
+        12
+      ]
+    }
+  ]
+}

@@ -4,6 +4,9 @@
  *   npm run sim -- [runs] [nivelMeta 0..5]          runs livres (equipamento de uma escola que gira por seed)
  *   npm run sim -- [runs] [nivelMeta] builds        compara as 5 escolas: equipamento todo de uma escola
  *   npm run sim -- [runs] [nivelMeta] chars         compara os personagens
+ *
+ * No modo builds: BUILD_N=2|4|6 diz quantos espaços vão para a escola (maestria, domínio,
+ * apoteose; padrão 6) e SCHOOL=bone roda só uma escola (para rodar em paralelo).
  */
 import { autopilot } from '../src/sim/autopilot';
 import { SCHOOL_ORDER, SCHOOLS } from '../src/sim/cards';
@@ -17,11 +20,14 @@ import { World } from '../src/sim/world';
 const runs = Number(process.argv[2] ?? 40);
 const metaLevel = Number(process.argv[3] ?? 0);
 const mode = process.argv[4] ?? 'free';
+const BUILD_N = Number(process.env.BUILD_N ?? 6);
 
 const meta = freshMeta();
 fillTree(meta, metaLevel);
 
 interface Result {
+  /** dano tomado por onda, em % da vida máxima, por região (0..3) */
+  hurt: number[][];
   wave: number;
   souls: number;
   bosses: number;
@@ -39,7 +45,7 @@ function geared(base: MetaState, focus: School | undefined, all = false): MetaSt
   const cap = Math.min(2, metaLevel - 1);
   const lvl = Math.max(0, metaLevel - 2);
   EQUIP_SLOTS.forEach((slot, i) => {
-    const want = focus && (all || i % 2 === 0) ? focus : undefined;
+    const want = focus && (all ? i < BUILD_N : i % 2 === 0) ? focus : undefined;
     const fits = ITEMS.filter((it) => it.slot === SLOT_OF[slot] && order.indexOf(it.rarity) >= 0 && order.indexOf(it.rarity) <= cap && !Object.values(m.equipped).includes(it.id));
     const pick =
       fits.filter((it) => (want ? it.school?.[want] : !it.school)).sort((a, b) => order.indexOf(b.rarity) - order.indexOf(a.rarity))[0] ??
@@ -62,8 +68,20 @@ function play(seed: number, schools: School[], focus?: School, m0 = meta, all = 
   }
   const counts = w.schoolCounts();
   const top = SCHOOL_ORDER.reduce((a, b) => (counts[b] > counts[a] ? b : a));
-  const build = counts[top] >= 4 ? `${top}*` : counts[top] >= 2 ? top : 'misto';
-  return { wave: w.wave, souls: Math.floor(w.souls), bosses: w.bossesKilled.length, build };
+  const build = counts[top] >= 6 ? `${top}**` : counts[top] >= 4 ? `${top}*` : counts[top] >= 2 ? top : 'misto';
+  const hurt: number[][] = [[], [], [], []];
+  for (const lw of w.log.waves) {
+    const r = Math.floor((lw.w - 1) / 6);
+    if (r > 3) continue;
+    const dmg = Object.values(lw.hurt).reduce((a, b) => a + b, 0) / 10;
+    hurt[r].push((100 * dmg) / w.necro.maxHp);
+  }
+  // a onda em que morreu também conta (não entra no log porque não terminou)
+  if (w.phase === 'over') {
+    const r = Math.floor((w.wave - 1) / 6);
+    if (r <= 3) hurt[r].push(100);
+  }
+  return { wave: w.wave, souls: Math.floor(w.souls), bosses: w.bossesKilled.length, build, hurt };
 }
 
 const avg = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0);
@@ -89,15 +107,32 @@ if (mode === 'chars') {
   table(rows);
 } else if (mode === 'builds') {
   // todas as escolas liberadas; cada linha força uma escola
-  const rows: [string, Result[]][] = SCHOOL_ORDER.map((s) => [SCHOOLS[s].name, Array.from({ length: runs }, (_, i) => play(5000 + i, SCHOOL_ORDER, s, meta, true))]);
-  console.log(`runs=${runs} por escola, meta=${metaLevel} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
+  const only = process.env.SCHOOL as School | undefined;
+  const rows: [string, Result[]][] = SCHOOL_ORDER.filter((s) => !only || s === only).map((s) => [
+    `${SCHOOLS[s].name} ${BUILD_N}`,
+    Array.from({ length: runs }, (_, i) => play(5000 + i, SCHOOL_ORDER, s, meta, true)),
+  ]);
+  console.log(`runs=${runs} por escola, ${BUILD_N} espaços, meta=${metaLevel} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
   table(rows);
 } else {
   const schools = SCHOOL_ORDER.slice(0, Math.min(5, 2 + Math.min(3, metaLevel)));
-  const all = Array.from({ length: runs }, (_, i) => play(1000 + i, schools));
+  const seed0 = Number(process.env.SEED0 ?? 1000);
+  const all = Array.from({ length: runs }, (_, i) => play(seed0 + i, schools));
+  // modo para juntar vários processos em paralelo (scripts/simpar.sh)
+  if (process.env.JSON) {
+    for (const r of all) console.log(JSON.stringify(r));
+    process.exit(0);
+  }
   console.log(`runs=${runs} meta=${metaLevel} (${((Date.now() - t0) / 1000).toFixed(1)}s)`);
   const groups = new Map<string, Result[]>();
   for (const r of all) groups.set(r.build, [...(groups.get(r.build) ?? []), r]);
   table([['TODAS', all], ...[...groups.entries()].sort((a, b) => b[1].length - a[1].length)]);
   console.log('(* = domínio da escola)');
+  // curva de tensão: quanto da vida cada onda tira, em média, em cada região
+  const curve = [0, 1, 2, 3].map((r) => {
+    const v = all.flatMap((x) => x.hurt[r]);
+    const hit = v.filter((d) => d > 0).length;
+    return `${['vila', 'mosteiro', 'fortaleza', 'catedral'][r]} ${avg(v).toFixed(0)}%/onda (${v.length ? Math.round((100 * hit) / v.length) : 0}% com dano)`;
+  });
+  console.log(`dano: ${curve.join('  ')}`);
 }

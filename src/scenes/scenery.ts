@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { FIELD } from '../sim/defs';
 import { DEPTH } from '../fx/juice';
+import { GROUND_TOP } from '../art/generate';
 
 export { DEPTH };
 
@@ -56,11 +57,12 @@ export class Scenery {
   private ground: Phaser.GameObjects.Image;
 
   constructor(private scene: Phaser.Scene) {
-    this.ground = scene.add.image(0, 0, 'ground0').setOrigin(0).setDepth(DEPTH.ground);
+    this.ground = scene.add.image(0, -GROUND_TOP, 'ground0').setOrigin(0).setDepth(DEPTH.ground);
   }
 
-  /** Monta a região (0..3); `abyss` > 0 deixa tudo avermelhado. */
-  build(region: number, abyss = 0) {
+  /** Monta a região (0..3); `abyss` > 0 deixa tudo avermelhado. `dy` desce o cenário todo (menu em tela comprida). */
+  build(region: number, abyss = 0, dy = 0) {
+    this.ground.y = dy - GROUND_TOP;
     for (const o of this.objects) o.destroy();
     this.objects = [];
     this.lights = [];
@@ -69,7 +71,8 @@ export class Scenery {
     if (abyss > 0) this.ground.setTint(0xd08080);
     else this.ground.clearTint();
 
-    LAYOUTS[r].forEach(([key, x, y, light], i) => {
+    LAYOUTS[r].forEach(([key, x, y0, light], i) => {
+      const y = y0 + dy;
       if (key !== 'px') {
         const animated = ANIMATED.has(key);
         const o = animated ? this.scene.add.sprite(x, y, `${key}0`) : this.scene.add.image(x, y, key);
@@ -108,8 +111,10 @@ export class Darkness {
     scene: Phaser.Scene,
     public amount = 0.62,
     height: number = FIELD.h,
+    /** y do topo da camada (acima de 0 em tela comprida) */
+    private top = 0,
   ) {
-    this.rt = scene.add.renderTexture(0, 0, FIELD.w, height).setOrigin(0).setDepth(DEPTH.dark);
+    this.rt = scene.add.renderTexture(0, top, FIELD.w, height).setOrigin(0).setDepth(DEPTH.dark);
     this.stamp = scene.make.image({ x: 0, y: 0, key: 'light48' }, false);
   }
 
@@ -120,7 +125,7 @@ export class Darkness {
       const flick = 1 + Math.sin(time * 0.011 + l.x) * 0.04;
       this.stamp
         .setTexture(l.key)
-        .setPosition(Math.round(l.x), Math.round(l.y))
+        .setPosition(Math.round(l.x), Math.round(l.y - this.top))
         .setScale((l.scale ?? 1) * flick)
         .setAlpha(l.alpha ?? 1);
       this.rt.erase(this.stamp);

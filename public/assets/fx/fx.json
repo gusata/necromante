@@ -1,0 +1,147 @@
+{
+  "fx-explosao-morto": {
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 6,
+    "durationsMs": [
+      50,
+      60,
+      70,
+      80,
+      90,
+      100
+    ],
+    "loop": false
+  },
+  "fx-levantar": {
+    "frameWidth": 16,
+    "frameHeight": 16,
+    "frames": 4,
+    "durationsMs": [
+      70,
+      80,
+      90,
+      120
+    ],
+    "loop": false
+  },
+  "fx-fusao-colosso": {
+    "frameWidth": 24,
+    "frameHeight": 24,
+    "frames": 4,
+    "durationsMs": [
+      90,
+      90,
+      80,
+      140
+    ],
+    "loop": false
+  },
+  "fx-nuvem-veneno": {
+    "frameWidth": 24,
+    "frameHeight": 24,
+    "frames": 4,
+    "durationsMs": [
+      160,
+      160,
+      160,
+      160
+    ],
+    "loop": true
+  },
+  "fx-coluna-luz": {
+    "frameWidth": 16,
+    "frameHeight": 64,
+    "frames": 4,
+    "durationsMs": [
+      90,
+      90,
+      90,
+      90
+    ],
+    "loop": true
+  },
+  "fx-grito-banshee": {
+    "frameWidth": 32,
+    "frameHeight": 32,
+    "frames": 4,
+    "durationsMs": [
+      80,
+      80,
+      80,
+      80
+    ],
+    "loop": true
+  },
+  "fx-raio-segmento": {
+    "frameWidth": 8,
+    "frameHeight": 8,
+    "frames": 3,
+    "durationsMs": [
+      60,
+      60,
+      60
+    ],
+    "loop": true
+  },
+  "fx-ritual-necromante": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "frames": 4,
+    "durationsMs": [
+      150,
+      120,
+      120,
+      150
+    ],
+    "loop": true
+  },
+  "fx-ritual-bruxa": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "frames": 4,
+    "durationsMs": [
+      150,
+      120,
+      120,
+      150
+    ],
+    "loop": true
+  },
+  "fx-ritual-coveiro": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "frames": 4,
+    "durationsMs": [
+      150,
+      120,
+      120,
+      150
+    ],
+    "loop": true
+  },
+  "fx-ritual-ceifador": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "frames": 4,
+    "durationsMs": [
+      150,
+      120,
+      120,
+      150
+    ],
+    "loop": true
+  },
+  "fx-ritual-vampiro": {
+    "frameWidth": 64,
+    "frameHeight": 64,
+    "frames": 4,
+    "durationsMs": [
+      150,
+      120,
+      120,
+      150
+    ],
+    "loop": true
+  }
+}

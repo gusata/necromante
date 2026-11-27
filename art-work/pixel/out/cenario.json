@@ -1,0 +1,411 @@
+{
+ "frames": [
+  {
+   "filename": "tomb",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 9,
+    "h": 10
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 9,
+    "h": 10
+   },
+   "sourceSize": {
+    "w": 9,
+    "h": 10
+   },
+   "duration": 100
+  },
+  {
+   "filename": "tomb2",
+   "frame": {
+    "x": 10,
+    "y": 0,
+    "w": 9,
+    "h": 8
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 9,
+    "h": 8
+   },
+   "sourceSize": {
+    "w": 9,
+    "h": 8
+   },
+   "duration": 100
+  },
+  {
+   "filename": "cross",
+   "frame": {
+    "x": 20,
+    "y": 0,
+    "w": 8,
+    "h": 9
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 9
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 9
+   },
+   "duration": 100
+  },
+  {
+   "filename": "tree",
+   "frame": {
+    "x": 29,
+    "y": 0,
+    "w": 14,
+    "h": 12
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 14,
+    "h": 12
+   },
+   "sourceSize": {
+    "w": 14,
+    "h": 12
+   },
+   "duration": 100
+  },
+  {
+   "filename": "fence",
+   "frame": {
+    "x": 44,
+    "y": 0,
+    "w": 12,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 12,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "pillar",
+   "frame": {
+    "x": 57,
+    "y": 0,
+    "w": 7,
+    "h": 13
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 13
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 13
+   },
+   "duration": 100
+  },
+  {
+   "filename": "wall",
+   "frame": {
+    "x": 65,
+    "y": 0,
+    "w": 12,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 12,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "barrel",
+   "frame": {
+    "x": 78,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "pew",
+   "frame": {
+    "x": 86,
+    "y": 0,
+    "w": 14,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 14,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 14,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bones",
+   "frame": {
+    "x": 101,
+    "y": 0,
+    "w": 8,
+    "h": 4
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 8,
+    "h": 4
+   },
+   "sourceSize": {
+    "w": 8,
+    "h": 4
+   },
+   "duration": 100
+  },
+  {
+   "filename": "candle0",
+   "frame": {
+    "x": 110,
+    "y": 0,
+    "w": 3,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 3,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 3,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "candle1",
+   "frame": {
+    "x": 114,
+    "y": 0,
+    "w": 3,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 3,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 3,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "brazier0",
+   "frame": {
+    "x": 118,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "brazier1",
+   "frame": {
+    "x": 126,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "banner0",
+   "frame": {
+    "x": 134,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "banner1",
+   "frame": {
+    "x": 142,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 7,
+    "h": 7
+   },
+   "sourceSize": {
+    "w": 7,
+    "h": 7
+   },
+   "duration": 100
+  },
+  {
+   "filename": "candelabra0",
+   "frame": {
+    "x": 150,
+    "y": 0,
+    "w": 5,
+    "h": 9
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 9
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 9
+   },
+   "duration": 100
+  },
+  {
+   "filename": "candelabra1",
+   "frame": {
+    "x": 156,
+    "y": 0,
+    "w": 5,
+    "h": 9
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 5,
+    "h": 9
+   },
+   "sourceSize": {
+    "w": 5,
+    "h": 9
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "desenhado \u00e0 m\u00e3o em texto (hand_art.py, estilo PixelSpec do codeart2d)",
+  "image": "cenario.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 161,
+   "h": 13
+  },
+  "scale": "1",
+  "frameTags": []
+ }
+}

@@ -1,0 +1,17 @@
+Create exactly ONE wide landscape image (3:2), the same size and layout as the FIRST attached image.
+
+Two images are attached.
+
+The FIRST image: at its left stands a pixel-art game sprite on a flat blue (#0000FF) background, shown enlarged. Every square of 28 px in it is one pixel of the sprite. The rest of the picture, to the right of it, is empty.
+
+The SECOND image is a picture of another character of the same game: a frightened medieval peasant villager holding a big wooden pitchfork upright in the hand on the viewer's right, brown tunic and straw cap. It shows WHO to draw: the design and the colours, not its style and not its proportions.
+
+Reproduce the FIRST image: the same figure at the left, at exactly the same size and in the same place, the same pixel art on the same coarse, regular square pixel grid, one flat colour per pixel, hard edges, the same dark outline one pixel wide, the same colours.
+
+THE ONLY CHANGE: in the empty area to the right, add a SECOND figure: the character of the SECOND image, drawn as a sprite of the same game by the same pixel artist, right after the first sprite.
+
+The second figure is drawn on the same pixel grid, with pixels exactly as large as the first figure's, and it stands on the same ground line: the soles of its feet are on the same horizontal line as the first figure's. It is exactly as tall as the first figure: the top of its head and the soles of its feet are on the same two horizontal lines as the first figure's head and feet. Only what it holds or wears on its head (a staff, a blade, horns, a hat) may rise above that line. It has the same kind of body build and head size as the first figure, the same kind of outline, the same kind of shading and the same colour mood. It is not more detailed than the first figure.
+
+Pose: three-quarter view facing the viewer's right, standing, feet on the ground line.
+
+The two figures stand well apart and do not touch. The background stays the same flat pure blue (#0000FF) everywhere, there is no pure blue on the second figure, and there is no shadow, no floor, no glow, no text and nothing else in the picture.

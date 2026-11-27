@@ -1,8 +1,9 @@
 import type Phaser from 'phaser';
 import { audio } from '../audio/audio';
 import { COL } from '../art/palette';
-import { pxText } from '../art/text';
+import { pxText, pxWidth } from '../art/text';
 import { meta } from '../platform/save';
+import { baseScrollY, VIEW_H, VIEW_W } from './view';
 
 export const DEPTH = {
   ground: 0,
@@ -50,28 +51,29 @@ export class Shaker {
     const max = 6;
     const ox = max * s * Math.sin(this.t * 61.3) * Math.cos(this.t * 17.1) + this.kickX;
     const oy = max * s * Math.sin(this.t * 53.7 + 1.3) * Math.cos(this.t * 23.9) + this.kickY;
-    this.cam.setScroll(Math.round(ox), Math.round(oy));
+    this.cam.setScroll(Math.round(ox), Math.round(oy) + baseScrollY(this.cam.scene.scene.key));
   }
 }
 
 /** Flash de tela inteira. */
 export function flash(scene: Phaser.Scene, color: number, alpha = 0.6, duration = 120) {
-  const r = scene.add.rectangle(0, 0, 400, 400, color, alpha).setOrigin(0).setDepth(DEPTH.modal - 1).setScrollFactor(0);
+  const r = scene.add.rectangle(0, 0, VIEW_W, VIEW_H, color, alpha).setOrigin(0).setDepth(DEPTH.modal - 1).setScrollFactor(0);
   scene.tweens.add({ targets: r, alpha: 0, duration, onComplete: () => r.destroy() });
 }
 
 let floating = 0;
 /** teto de números flutuantes ao mesmo tempo (os grandes sempre passam) */
-const MAX_FLOATING = 16;
+/** números flutuantes ao mesmo tempo (mais que isso vira poluição na horda) */
+const MAX_FLOATING = 10;
 
 /** Número/texto flutuante que sobe e some. */
 export function floatText(scene: Phaser.Scene, x: number, y: number, text: string, color: number, big = false) {
   if (!big && floating >= MAX_FLOATING) return;
   floating++;
-  const t = pxText(scene, Math.round(x), Math.round(y), text, color)
+  // grande = cabeçalho (maiúsculas espaçadas), nunca ampliado
+  const t = pxText(scene, Math.round(x), Math.round(y), text, color, false, big)
     .setOrigin(0.5)
     .setDepth(DEPTH.overlay + 1);
-  if (big) t.setScale(2);
   scene.tweens.add({ targets: t, y: y - (big ? 16 : 10), duration: 500, ease: 'Cubic.easeOut' });
   scene.tweens.add({
     targets: t,
@@ -92,7 +94,7 @@ export function floatText(scene: Phaser.Scene, x: number, y: number, text: strin
 
 /** Cobertura com dither Bayer 4x4: texturas `dither0..16` geradas no Boot. */
 function cover(scene: Phaser.Scene, depth: number) {
-  return scene.add.tileSprite(0, 0, 180, 320, 'dither16').setOrigin(0).setDepth(depth).setScrollFactor(0);
+  return scene.add.tileSprite(0, 0, VIEW_W, VIEW_H, 'dither16').setOrigin(0).setDepth(depth).setScrollFactor(0);
 }
 const level = (p: number) => `dither${Math.max(0, Math.min(16, Math.round(p * 16)))}`;
 
@@ -205,7 +207,9 @@ export function button(
   const img = scene.add.image(x, y, tex).setDepth(depth).setInteractive({ useHandCursor: true });
   // botão dourado: texto escuro sem sombra, para ler bem no fundo claro
   const gold = tex.startsWith('btn-gold');
-  const label = pxText(scene, x, y - 2, text, gold ? 0x3a1c04 : (opts.color ?? COL.u), gold).setOrigin(0.5, 0).setDepth(depth + 1);
+  // espaçamento largo nos rótulos (docs/ARTE.md) quando cabe na largura do botão
+  const wide = pxWidth(text, true) <= img.width - 8;
+  const label = pxText(scene, x, y - 2, text, gold ? 0x3a1c04 : (opts.color ?? COL.u), gold, wide).setOrigin(0.5, 0).setDepth(depth + 1);
   let enabled = true;
   img.on('pointerdown', () => {
     if (!enabled) {

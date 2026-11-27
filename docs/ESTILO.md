@@ -6,7 +6,7 @@ Escuro, frio, silencioso. O cemitério é quase preto; a luz conta a história. 
 
 ## Resolução e escala
 
-- Tela base: **180×320** (retrato). O Phaser escala para a tela com `pixelArt: true` (sem suavização).
+- Tela de **360×640** (retrato); o mundo continua em **180×320** e a câmera usa zoom 2. Toda arte usa uma grade só: 1 pixel da arte = 1 pixel do mundo (veja `docs/ARTE.md`, que tem a direção de arte completa).
 - Nada de rotação ou escala fracionária em sprites parados. Exceções permitidas, por serem rápidas: queda ao morrer, pulo ao levantar e esticar/achatar ao levar dano.
 - Posições sempre arredondadas para o pixel inteiro (`Math.round`).
 
@@ -28,7 +28,15 @@ Cores de humanoides (roupas, cabelo) ficam no mapa de cada spec em `src/art/huma
 
 ### Interface
 
-Tema quente, definido em `UI` (`src/art/palette.ts`): fundo `#14100c`, painéis `#1f1712` com moldura `#4a3524`, ouro `#e0b040`. Texto principal creme (`u`, `#f2e3c6`), secundário (`v`, `#a89078`) e ouro claro (`U`, `#f0c050`). Todo painel e botão sai de `panelTex` (borda escura, moldura de 1px, brilho em cima, cantos arredondados). O botão principal é dourado (`btn-gold`) e usa a fonte sem sombra (`px-flat`) com texto marrom-escuro.
+Tema quente, definido em `UI` (`src/art/palette.ts`): fundo `#14100c`, painéis `#1f1712` com moldura `#4a3524`, ouro `#e0b040`. Texto principal creme (`u`, `#f2e3c6`), secundário (`v`, `#a89078`) e ouro claro (`U`, `#f0c050`). Todo painel e botão sai de `panelTex`, no desenho liso do King Dies Rich: borda escura de 1 px, moldura de 1 px na cor do papel (dourada = ativo/destaque, marrom apagado = resto), miolo chapado, cantos cortados, sem rebites nem pontilhado. Botões têm uma beirada escura de 2 px embaixo que some ao apertar. Espaços de item: moldura e fundo tingidos pela raridade, com o ícone da escola no canto de cima. O botão principal é dourado (`btn-gold`) e usa a fonte sem sombra (`px-flat`) com texto marrom-escuro.
+
+Fonte: **Tiny5** (texto) e **Tiny5 Duo** (títulos e botões, `wide = true`), de Stefan Schmidt, licença SIL OFL 1.1 (`public/assets/fonts/Tiny5-OFL.txt`). Maiúsculas de 5 px, minúsculas e acentos completos. Os glifos ficam em `src/art/fontData.ts`, gerado por `python scripts/fonts/build_font.py` a partir dos BDF em `scripts/fonts/`. Escreva os textos em minúsculas: `pxText` põe maiúscula só no começo; listas em várias linhas usam `cap` em cada item. Títulos e botões continuam em MAIÚSCULAS.
+
+Navegação fora da partida (`src/scenes/nav.ts`):
+
+- **Cabeçalho** (y 0–16): nome da aba à esquerda, almas e a engrenagem das opções à direita.
+- **Sub-abas** (y 19–33): só quando a aba junta mais de uma tela (PODER: arsenal, árvore e altar; COLEÇÃO: tesouro e bestiário). Use `nav.top` para saber onde o conteúdo começa.
+- **Barra de abas** (y 290–320): INÍCIO, MERCADO, PODER, COLEÇÃO e FEITOS, ao alcance do polegar. A aba ativa tem filete dourado em cima. Nenhum conteúdo passa de `TABBAR_Y` (290); listas compridas rolam com o dedo.
 
 ### Aliados e regiões
 
@@ -52,7 +60,9 @@ Na simulação, o raio de colisão das unidades é multiplicado por `SIZE_SCALE`
 
 ## Contorno e luz
 
-- Contorno de 1px em `k` em tudo que é personagem ou objeto.
+- Arte gerada em código: contorno de 1px em `k` em tudo que é personagem ou objeto.
+- Direção nova (docs/ARTE.md): sem contorno preto; a borda é o tom mais escuro do próprio material, no lado da
+  sombra. A arte gerada vai sendo trocada aos poucos.
 - No upscale 2x, o contorno duplo é afinado para 1px e as bordas ganham luz em cima e sombra embaixo/direita, para não parecer "pixel gordo".
 
 ## Animação

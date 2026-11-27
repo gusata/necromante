@@ -84,6 +84,22 @@ export interface Mods {
   /** vivos mortos pelo raio levantam em qualquer lugar */
   boltForce: boolean;
 
+  // itens (épicos e raros que mudam regra)
+  /** multiplicador do dano que o necromante leva */
+  necroDmgTakenMul: number;
+  /** multiplicador do dano dos mortos em elites e chefes */
+  eliteDmgMul: number;
+  /** chance de um vivo morto pelos mortos explodir */
+  killExplode: number;
+  /** chance de um vivo morto envenenado soltar nuvem */
+  killCloud: number;
+  /** almas por morto gasto (explodir, fundir, consumir) */
+  spendSouls: number;
+  /** vida do necromante por morto gasto (frações acumulam) */
+  spendHeal: number;
+  /** multiplicador das almas de quem morre pelo raio */
+  boltSoulMul: number;
+
   // árvore da necrópole
   doubleRaiseChance: number;
   /** esqueletos grátis no começo de cada região */
@@ -111,6 +127,19 @@ export interface Mods {
   gemMul: number;
 
   // sinergias (definidas pela contagem de itens por escola)
+  /** básico de ossos: empurrão (px) dos golpes de esqueletos e arqueiros */
+  boneKnock: number;
+  /** básico de carne: vida por golpe dos mortos de carne */
+  fleshMend: number;
+  /** básico de praga: chance de envenenar ao acertar */
+  plagueTouch: number;
+  /** básico de espírito: segundos de lentidão do raio */
+  spiritChill: number;
+  boneApo: boolean;
+  fleshApo: boolean;
+  plagueApo: boolean;
+  spiritApo: boolean;
+  bloodApo: boolean;
   boneRebirth: number;
   boneDominion: boolean;
   fleshInfect: boolean;
@@ -177,6 +206,13 @@ export function baseMods(): Mods {
     fleshLeech: false,
     consumeRaise: 0,
     boltForce: false,
+    necroDmgTakenMul: 1,
+    eliteDmgMul: 1,
+    killExplode: 0,
+    killCloud: 0,
+    spendSouls: 0,
+    spendHeal: 0,
+    boltSoulMul: 1,
     doubleRaiseChance: 0,
     regionSkeletons: 0,
     eliteRaise: 0,
@@ -193,6 +229,15 @@ export function baseMods(): Mods {
     merchantExtra: 0,
     eliteLootBonus: 0,
     gemMul: 1,
+    boneKnock: 0,
+    fleshMend: 0,
+    plagueTouch: 0,
+    spiritChill: 0,
+    boneApo: false,
+    fleshApo: false,
+    plagueApo: false,
+    spiritApo: false,
+    bloodApo: false,
     boneRebirth: 0,
     boneDominion: false,
     fleshInfect: false,

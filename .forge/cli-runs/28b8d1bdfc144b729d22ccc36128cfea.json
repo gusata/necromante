@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 2,
+  "provider": "openai",
+  "kind": "image",
+  "route": "codex-cli",
+  "requestedModel": "codex-image_gen",
+  "options": {
+    "tool": "image_gen"
+  },
+  "promptSha256": "f2fcdaa2983e66cd25a34aa258e496b17fb1afc62622aa5d86ef565e5f7e9dcd",
+  "references": [
+    {
+      "sha256": "db2ecba10462bc617ef02c8ab2abe00b574b7a08f9560e6847fc1c50251564f4",
+      "bytes": 7690
+    },
+    {
+      "sha256": "273513da630057cd784cbad665aa73becce38e6479ce48746a4b2243af324c82",
+      "bytes": 2585
+    }
+  ],
+  "fingerprint": "590a70df31133e09e1469b29bb03a1c56cf7c65b9e13ab2531625940e9ecb2ac",
+  "estimate": {
+    "usd": 0.0,
+    "currency": "USD",
+    "pricesVersion": "2026-10-06",
+    "items": [],
+    "basis": "subscription quota call: no per-call USD price; counted by call caps"
+  },
+  "consent": {
+    "provider": "openai",
+    "model": "codex-image_gen",
+    "calls": 1,
+    "estimateUsd": 0.0,
+    "route": "codex-cli",
+    "quota": true,
+    "account": "the user's own Codex sign-in (ChatGPT)",
+    "note": "uses the subscription quota of that sign-in, never API credit"
+  },
+  "artSource": "host_image",
+  "execution": "execute",
+  "status": "failed",
+  "outputDir": "../../art-work/gen/take-peasant1",
+  "receipt": {
+    "startedAt": "2026-11-25T16:47:25.672Z",
+    "submittedAt": "2026-11-25T16:47:25.690Z",
+    "completedAt": "2026-11-25T16:47:27.161Z",
+    "wallMs": 1489,
+    "providerMs": 1443,
+    "attempt": 1,
+    "purpose": "route_media image",
+    "toolVersion": "cli_media/0.6.0",
+    "outcomeCode": "AUTH_REQUIRED"
+  },
+  "ledger": {
+    "projectDir": "../..",
+    "reservationId": "885acb28a27949259ff0b9c54b9f79cf",
+    "status": "failed"
+  },
+  "cliRun": {
+    "tool": "codex",
+    "runId": "28b8d1bdfc144b729d22ccc36128cfea",
+    "cwd": "<tmp>/forge-cli-28b8d1bdfc14-116d4706",
+    "startedAt": "2026-11-25T16:47:25.672Z",
+    "version": "0.172.0",
+    "versionText": "codex-cli 0.172.0",
+    "recipe": "codex-exec-imagegen/1",
+    "home": "CODEX_HOME",
+    "verifiedBefore": false,
+    "threadId": "01a2139a-dc6d-7db1-b8cd-79e23ab8b77c"
+  },
+  "error": {
+    "code": "AUTH_REQUIRED",
+    "message": "the Codex CLI is not signed in; run its login command in your own terminal"
+  },
+  "errorType": "CliMediaError"
+}

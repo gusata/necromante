@@ -2,7 +2,7 @@ import { SCHOOL_ORDER } from './cards';
 import { BOSS_DEFS, UNIT_DEFS } from './defs';
 import { MAX_HERESY } from './heresy';
 import { ITEM_BY_ID } from './items';
-import { gainGem, gainItem, type MetaState, rollMarket } from './meta';
+import { championNext, championRankFor, gainGem, gainItem, type MetaState, rollMarket } from './meta';
 import { ENDLESS_MODS, REGIONS } from './regions';
 import { RNG } from './rng';
 import type { BossKind, School, UnitKind } from './types';
@@ -87,8 +87,8 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'rituals', name: 'Sacerdote das Trevas', desc: 'use o ritual 10 vezes numa run', reward: 800, check: (_, r) => r.stats.rituals >= 10 },
   { id: 'dominion', name: 'Domínio', desc: 'chegue ao domínio de uma escola', reward: 500, check: (_, r) => SCHOOL_ORDER.some((s) => r.schoolCounts[s] >= 5) },
   { id: 'five', name: 'Mestre das Cinco', desc: 'domínio nas 5 escolas, em qualquer run', reward: 3000, check: (m) => m.dominions.length >= 5 },
-  { id: 'heresy5', name: 'Herege', desc: 'vença a catedral na heresia 5', reward: 2000, check: (_, r) => r.heresy >= 5 && beat(r, 'archbishop') },
-  { id: 'heresy10', name: 'Juízo Final', desc: 'vença a catedral na heresia 10', reward: 5000, check: (_, r) => r.heresy >= 10 && beat(r, 'archbishop') },
+  { id: 'heresy5', name: 'Herege', desc: 'vença a catedral no nível IV', reward: 2000, check: (_, r) => r.heresy >= 3 && beat(r, 'archbishop') },
+  { id: 'heresy10', name: 'Juízo Final', desc: 'vença a catedral no nível VI', reward: 5000, check: (_, r) => r.heresy >= 5 && beat(r, 'archbishop') },
   {
     id: 'legend',
     name: 'Lendário',
@@ -148,13 +148,22 @@ export function applyRunResult(meta: MetaState, r: RunResult): RunSummary {
     const key = k as UnitKind;
     meta.kills[key] = (meta.kills[key] ?? 0) + (n ?? 0);
   }
+  // campeões: o chefe precisa cair algumas vezes antes de aceitar servir
   const champions: string[] = [];
   for (const b of r.bossesKilled) {
-    const rank = Math.min(5, (meta.champions[b] ?? 0) + 1);
-    meta.champions[b] = rank;
-    if (!meta.selectedChampion) meta.selectedChampion = b;
-    meta.kills[b] = (meta.kills[b] ?? 0) + 1;
-    champions.push(`${BOSS_DEFS[b].name.toLowerCase()} rank ${rank}`);
+    const kills = (meta.kills[b] ?? 0) + 1;
+    meta.kills[b] = kills;
+    const had = meta.champions[b] ?? 0;
+    const rank = Math.max(had, championRankFor(kills));
+    const name = BOSS_DEFS[b].name.toLowerCase();
+    if (rank > had) {
+      meta.champions[b] = rank;
+      if (!meta.selectedChampion) meta.selectedChampion = b;
+      champions.push(rank === 1 ? `${name} liberado!` : `${name} rank ${rank}`);
+    } else {
+      const next = championNext(kills);
+      if (next) champions.push(`${name} ${kills}/${next.need}${next.rank === 1 ? '' : ` (rank ${next.rank})`}`);
+    }
   }
   const loot: string[] = [];
   for (const id of r.loot) {
@@ -164,17 +173,24 @@ export function applyRunResult(meta: MetaState, r: RunResult): RunSummary {
   for (const g of r.gems ?? []) gainGem(meta, g);
   rollMarket(meta);
   const before = meta.bossesBeaten;
-  const mainBosses = r.bossesKilled.filter((b) => b !== 'seraph').length;
-  meta.bossesBeaten = Math.max(before, Math.min(4, mainBosses));
+  // o cerco mais fundo vencido (começar num checkpoint conta os cercos pulados)
+  const deepest = Math.max(0, ...r.bossesKilled.map((b) => REGIONS.findIndex((reg) => reg.boss === b) + 1));
+  meta.bossesBeaten = Math.max(before, deepest);
   if (record) meta.best = { wave: r.wave, souls: earned };
 
-  // heresia: vencer a catedral libera o próximo nível
+  // níveis da Descida: progresso por nível; vencer a catedral libera o próximo
   let heresyUnlocked: number | null = null;
-  if (r.bossesKilled.includes('archbishop') && !r.daily) {
-    const next = Math.min(MAX_HERESY, r.heresy + 1);
-    if (next > meta.heresyMax) {
-      meta.heresyMax = next;
-      heresyUnlocked = next;
+  if (!r.daily) {
+    const lvl = Math.max(0, Math.min(MAX_HERESY, r.heresy));
+    while (meta.levels.length <= lvl) meta.levels.push(0);
+    meta.levels[lvl] = Math.max(meta.levels[lvl], deepest);
+    if (deepest >= 4) {
+      const next = Math.min(MAX_HERESY, lvl + 1);
+      if (next > meta.heresyMax) {
+        meta.heresyMax = next;
+        while (meta.levels.length <= next) meta.levels.push(0);
+        heresyUnlocked = next;
+      }
     }
   }
 

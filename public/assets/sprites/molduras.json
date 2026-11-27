@@ -1,0 +1,172 @@
+{
+ "frames": [
+  {
+   "filename": "slot-common",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "duration": 100
+  },
+  {
+   "filename": "slot-empty",
+   "frame": {
+    "x": 25,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "duration": 100
+  },
+  {
+   "filename": "slot-epic",
+   "frame": {
+    "x": 50,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "duration": 100
+  },
+  {
+   "filename": "slot-legendary",
+   "frame": {
+    "x": 75,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "duration": 100
+  },
+  {
+   "filename": "slot-magic",
+   "frame": {
+    "x": 100,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "duration": 100
+  },
+  {
+   "filename": "slot-rare",
+   "frame": {
+    "x": 125,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "duration": 100
+  },
+  {
+   "filename": "slot-set",
+   "frame": {
+    "x": 150,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 24,
+    "h": 24
+   },
+   "sourceSize": {
+    "w": 24,
+    "h": 24
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "install_pack.py (arte desenhada \u00e0 m\u00e3o)",
+  "version": "1",
+  "image": "molduras.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 174,
+   "h": 24
+  },
+  "scale": "1",
+  "frameTags": [],
+  "layers": [],
+  "slices": []
+ }
+}

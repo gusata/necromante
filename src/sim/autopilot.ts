@@ -1,5 +1,6 @@
 import { NECRO } from './defs';
 import { EVENT_BY_ID } from './events';
+import { GIFT_BY_ID } from './gifts';
 import type { World } from './world';
 
 /**
@@ -7,6 +8,19 @@ import type { World } from './world';
  * Não é ótimo de propósito: aproxima um jogador mediano.
  */
 export function autopilot(w: World, skill = 1): void {
+  if (w.phase === 'event' && w.event?.id === 'gift') {
+    // dádiva: prefere a escola que já tem mais pontos, senão a primeira
+    const counts = w.schoolCounts();
+    const score = (id: string) => {
+      const s = GIFT_BY_ID[id]?.school;
+      return s ? 1 + counts[s] : 0.5;
+    };
+    const c = w.event.choices;
+    let best = 0;
+    for (let i = 1; i < c.length; i++) if (score(c[i]) > score(c[best])) best = i;
+    w.resolveEvent(best);
+    return;
+  }
   if (w.phase === 'event' && w.event) {
     const def = EVENT_BY_ID[w.event.id];
     w.resolveEvent(def?.auto ? def.auto(w) : 0);
@@ -23,6 +37,11 @@ export function autopilot(w: World, skill = 1): void {
       best = u;
     }
   }
+  // postura: defende quando a vida cai ou muitos vivos chegam perto do altar
+  let atAltar = 0;
+  for (const u of w.units) if (u.alive && u.faction === 'living' && Math.hypot(u.x - NECRO.x, u.y - NECRO.y) < 70) atAltar++;
+  if (w.stance === 'attack' && (w.necro.hp < w.necro.maxHp * 0.6 || atAltar >= 8)) w.setStance('guard');
+  else if (w.stance === 'guard' && w.necro.hp >= w.necro.maxHp * 0.8 && atAltar <= 2) w.setStance('attack');
   const lerp = 0.04 * skill;
   if (best) w.setCircle(w.circle.x + (best.x - w.circle.x) * lerp, w.circle.y + (best.y - w.circle.y) * lerp);
   // horda: explodir só vale com muitos mortos e muitos vivos perto

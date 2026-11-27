@@ -1,0 +1,223 @@
+{
+  "schema": "codeart2d.codeart_meta.v1",
+  "art_source": "code",
+  "placeholder": false,
+  "disclosure": "code-drawn, no image model",
+  "generator": "render_pixelspec.py",
+  "spec_sha256": "b86a36c57a78f4035bc107862e9e5493eacb7c1b3687ee5dd87a0480c74f13bb",
+  "renderer": {
+    "name": "codeart_core.render_pixelspec",
+    "version": "1.1"
+  },
+  "palette": {
+    "colors": {
+      "w": "#e3dccb",
+      "b": "#a49c86",
+      "B": "#6b6452",
+      "x": "#241c2c",
+      "G": "#aef5bf",
+      "m": "#c8d0e0",
+      "M": "#6a7284",
+      "r": "#8a4a26",
+      "n": "#4a3222"
+    },
+    "variants": {}
+  },
+  "outputs": [
+    {
+      "path": "base/frames/walk0.png",
+      "sha256": "39e6e5158a26d56c15cae37541114f41b3c01ff4d5fb873c77be18e513b7c959",
+      "bytes": 427
+    },
+    {
+      "path": "base/frames/walk1.png",
+      "sha256": "0c73cfb26b45f65789a4678e942a3a8ea1e40cff8c550448d54dae28c7359253",
+      "bytes": 404
+    },
+    {
+      "path": "base/frames/attack.png",
+      "sha256": "656f0980da0f5f1521efcb07b17fd72d53c849d03e4e780c228cd1e8139ca883",
+      "bytes": 404
+    },
+    {
+      "path": "preview-x8.png",
+      "sha256": "2b354048319dfab99f736be1e7c5d6c22c648172b959e9299991651e17646804",
+      "bytes": 1435
+    }
+  ],
+  "qa": {
+    "status": "pass",
+    "method": "render_pixelspec.py: every published frame PNG is read back and measured with codeart_core.qa_pixels against the resolved palette of its variant (alpha census, exact palette lookup and, with an outline, 4-neighbour outline gaps and L-corners); each check is the worst frame against its gate in codeart_core.QA_PIXEL_GATES",
+    "notProven": [
+      "Readability, silhouette and appeal at game scale; check them on a review sheet (pixel_qa.py --review).",
+      "Motion, timing and spacing between frames; numbers do not judge animation quality.",
+      "That the art matches the brief and the intent of the spec.",
+      "Outline continuity and L-corners: the spec has no outline, so they were not measured."
+    ],
+    "checks": [
+      {
+        "id": "partial_alpha",
+        "status": "pass",
+        "value": 0,
+        "threshold": 0
+      },
+      {
+        "id": "off_palette",
+        "status": "pass",
+        "value": 0,
+        "threshold": 0
+      },
+      {
+        "id": "outline_gaps",
+        "status": "skipped",
+        "value": null,
+        "threshold": 0
+      },
+      {
+        "id": "l_corners",
+        "status": "skipped",
+        "value": null,
+        "threshold": 10
+      },
+      {
+        "id": "half_cycle_duplicates",
+        "status": "skipped",
+        "value": null,
+        "threshold": 0.95,
+        "detail": {
+          "clips": [
+            {
+              "clip": "walk",
+              "frames": 2,
+              "pairs": [],
+              "note": "fewer than 4 frames: no half cycle to compare"
+            }
+          ],
+          "variant": "base"
+        }
+      }
+    ],
+    "inputs": [
+      {
+        "path": "../skel16-v2.pixelspec.json",
+        "sha256": "b86a36c57a78f4035bc107862e9e5493eacb7c1b3687ee5dd87a0480c74f13bb",
+        "bytes": 3211
+      }
+    ],
+    "outputs": [
+      {
+        "path": "base/frames/walk0.png",
+        "sha256": "39e6e5158a26d56c15cae37541114f41b3c01ff4d5fb873c77be18e513b7c959",
+        "bytes": 427
+      },
+      {
+        "path": "base/frames/walk1.png",
+        "sha256": "0c73cfb26b45f65789a4678e942a3a8ea1e40cff8c550448d54dae28c7359253",
+        "bytes": 404
+      },
+      {
+        "path": "base/frames/attack.png",
+        "sha256": "656f0980da0f5f1521efcb07b17fd72d53c849d03e4e780c228cd1e8139ca883",
+        "bytes": 404
+      }
+    ],
+    "tool": {
+      "name": "render_pixelspec.py",
+      "version": "0.6.0"
+    },
+    "frames": [
+      {
+        "file": "base/frames/walk0.png",
+        "variant": "base",
+        "frame": "walk0",
+        "visible": 192,
+        "partial_alpha": 0,
+        "off_palette": 0,
+        "colors": 9,
+        "orphans": 25,
+        "l_corners": null,
+        "outline_gaps": null,
+        "bbox": [
+          1,
+          1,
+          16,
+          22
+        ]
+      },
+      {
+        "file": "base/frames/walk1.png",
+        "variant": "base",
+        "frame": "walk1",
+        "visible": 194,
+        "partial_alpha": 0,
+        "off_palette": 0,
+        "colors": 9,
+        "orphans": 22,
+        "l_corners": null,
+        "outline_gaps": null,
+        "bbox": [
+          1,
+          0,
+          16,
+          22
+        ]
+      },
+      {
+        "file": "base/frames/attack.png",
+        "variant": "base",
+        "frame": "attack",
+        "visible": 183,
+        "partial_alpha": 0,
+        "off_palette": 0,
+        "colors": 9,
+        "orphans": 28,
+        "l_corners": null,
+        "outline_gaps": null,
+        "bbox": [
+          1,
+          1,
+          16,
+          22
+        ]
+      }
+    ]
+  },
+  "pixelspec": {
+    "name": "skel",
+    "schema": "codeart2d.pixelspec.v1",
+    "canvas": [
+      16,
+      22
+    ],
+    "anchor_px": [
+      8,
+      22
+    ],
+    "outline": "none",
+    "variants": {
+      "base": "base"
+    },
+    "frames": [
+      {
+        "index": 0,
+        "name": "walk0",
+        "file": "frames/walk0.png"
+      },
+      {
+        "index": 1,
+        "name": "walk1",
+        "file": "frames/walk1.png"
+      },
+      {
+        "index": 2,
+        "name": "attack",
+        "file": "frames/attack.png"
+      }
+    ],
+    "preview": {
+      "file": "preview-x8.png",
+      "scale": 8,
+      "layout": "rows are variants, columns are distinct frames"
+    }
+  }
+}

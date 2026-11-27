@@ -99,12 +99,17 @@ const BOW = ['.............Nk.', '..............N.', '..............N.', '......
 const withBow = (rows: string[]) => rows.map((r, i) => (i >= 8 && i <= 16 ? overlay(r, BOW[i - 8]) : r));
 export const SKEL_ARCHER = [withBow(SKEL_BASE[0]), withBow(SKEL_BASE[1]), withBow(SKEL_BASE[0])];
 
-/** esqueleto compacto 12x14: base do colosso (ampliado 2x = 24x28) */
-const GIANT_TOP = ['....kkkk....', '...kwwwwk...', '...kgkwgk...', '...kwwwwk...', '....kbkbk...', '....kkkk....', '...kbwwbk...', '..kbkwwkbk..', '..kk.kwk.kk.', '....kwwk....'];
+/**
+ * Colosso 12x14 (ampliado com Scale2x = 24x28): bruto de osso com crânio grande e olhos verde-alma, ombros
+ * largos de costelas fundidas e punhos enormes. Ataque: os dois punhos descem à frente.
+ */
+const GIANT_HEAD = ['...kkkkkk...', '..kwwwwwwk..', '..kwGwwGwbk.', '..kwwwkwwbk.', '...kbwbwbk..'];
+const GIANT_TORSO = ['kwwwbwwbwwbk', 'kwkwkbbkwkbk'];
+const GIANT_ARMS = ['kbk.kwwk.kbk', 'kwwkkbbkkwwk', 'kwwk.kk.kwwk'];
 export const GIANT_BASE = [
-  [...GIANT_TOP, '...kbk.kbk..', '...kk..kk...'],
-  [...GIANT_TOP, '....kbkbk...', '....kk.kk...'],
-  [...GIANT_TOP.slice(0, 7), '..kbkwwkbbk.', '..kk.kwk..kk', '....kwwk....', '...kbk.kbk..', '...kk..kk...'],
+  [...GIANT_HEAD, ...GIANT_TORSO, ...GIANT_ARMS, '..kwk..kwk..', '..kwk..kwk..', '..kkk..kkk..'],
+  [...GIANT_HEAD, ...GIANT_TORSO, ...GIANT_ARMS, '...kwkkwk...', '...kwkkwk...', '...kkkkkk...'],
+  [...GIANT_HEAD, ...GIANT_TORSO, 'kbk.kwwkkwwk', 'kwwkkbbkkwwk', 'kwwk.kk.kkk.', '..kwk..kwk..', '..kwk..kwk..', '..kkk..kkk..'],
 ];
 
 
@@ -204,10 +209,16 @@ export const NAV_ICONS: Record<string, string[]> = {
 // ícones dos botões de ação
 export const EXPLODE_ICON = ['..o.o..', '.oOyOo.', 'oOyyyOo', '.Oyyyo.', 'oOyyyOo', '.oOOOo.', '..o.o..'];
 export const FUSE_ICON = ['w.....w', '.w...w.', '..kwk..', '.kwwwk.', '.kwkwk.', '.kwwwk.', '..k.k..'];
+/** postura: espada (ataque) e escudo (defesa) */
+export const ATTACK_ICON = ['.....mw', '....mwm', '.y.mwm.', '..ywm..', '..yy...', '.y..y..', 'y......'];
+export const GUARD_ICON = ['MmmmmmM', 'MmRRRmM', 'MmRwRmM', 'MmRRRmM', '.MmRmM.', '..MmM..', '...M...'];
+/** saco de achados no HUD da run */
+export const BAG_ICON = ['..kkk..', '...k...', '.kyyyk.', 'kyyOyyk', 'kyOOOyk', 'kyyOyyk', '.kyyyk.'];
 export const CONSUME_ICON = ['.RR.RR.', 'RrRRRRR', 'RRRRRRR', 'RRRRRRR', '.RRRRR.', '..RRR..', '...R...'];
 
 /** gema: g = cor, L = brilho, C = sombra */
-export const GEM_ICON = ['..kkk..', '.kLgLk.', 'kLggggk', 'kgggggk', '.kgCgk.', '..kCk..', '...k...'];
+/** gema lapidada em losango: faceta clara em cima à esquerda, sombra embaixo à direita (sem contorno) */
+export const GEM_ICON = ['..LLg..', '.LLggC.', 'LLLggCC', 'LgggggC', '.gggCC.', '..gCC..', '...C...'];
 export const RITUAL_ICON = [
   '...kkkkk...',
   '..kgGGGgk..',
@@ -236,6 +247,15 @@ export const HAND_ICON = [
 export const LOCK_ICON = ['.kkk.', 'k...k', 'kkkkk', 'kyyyk', 'kykyk', 'kkkkk'];
 
 /** Ícones das escolas (7x7), desenhados com a letra 's' = cor da escola. */
+/** silhuetas dos espaços vazios (11x11): cajado, capuz, manto, amuleto, anel */
+export const SLOT_SILHOUETTES: Record<string, string[]> = {
+  staff: ['.......sss.', '......s...s', '......s...s', '.......sss.', '......s....', '.....s.....', '....s......', '...s.......', '..s........', '.s.........', 's..........'],
+  hood: ['...sssss...', '..sssssss..', '.sss...sss.', '.ss.....ss.', 'ss.......ss', 'ss.......ss', 'ss.......ss', 'sss.....sss', 'ssss...ssss', 'sssssssssss', '...........'],
+  cloak: ['...s...s...', '..sssssss..', '.sssssssss.', '.sss.s.sss.', 'ssss.s.ssss', 'ssss.s.ssss', 'ssss.s.ssss', 'ssss.s.ssss', 'sss..s..sss', '...........', '...........'],
+  amulet: ['s.........s', '.s.......s.', '..s.....s..', '...s...s...', '....sss....', '...sssss...', '...ss.ss...', '...sssss...', '....sss....', '...........', '...........'],
+  ring: ['....sss....', '...s.s.s...', '....sss....', '...sssss...', '..ss...ss..', '.ss.....ss.', '.ss.....ss.', '.ss.....ss.', '..ss...ss..', '...sssss...', '...........'],
+};
+
 export const SCHOOL_ICONS: Record<string, string[]> = {
   bone: ['.sssss.', 'sssssss', 'skssks.', 'sssssss', '.sksks.', 's.....s', '.s...s.'],
   flesh: ['.ss.ss.', 'sssssss', 'sssssss', 'sssssss', '.sssss.', '..sss..', '...s...'],
@@ -258,63 +278,6 @@ export const BUILDING_ICONS: Record<string, string[]> = {
   'b-hall': ['...........', '.k..k..k...', '.yk.y.ky...', '.yyyyyyy...', '.yOyyyOy...', '.yyyyyyy...', '.kkkkkkk...', '...........', '...........', '...........', '...........'],
 };
 
-/** Fonte 3x5. Desenhada em branco, recebe tint na cena. */
-export const FONT_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 :!./+-?<>()%=,\'"';
-export const FONT: Record<string, string[]> = {
-  A: ['.#.', '#.#', '###', '#.#', '#.#'],
-  B: ['##.', '#.#', '##.', '#.#', '##.'],
-  C: ['.##', '#..', '#..', '#..', '.##'],
-  D: ['##.', '#.#', '#.#', '#.#', '##.'],
-  E: ['###', '#..', '##.', '#..', '###'],
-  F: ['###', '#..', '##.', '#..', '#..'],
-  G: ['.##', '#..', '#.#', '#.#', '.##'],
-  H: ['#.#', '#.#', '###', '#.#', '#.#'],
-  I: ['###', '.#.', '.#.', '.#.', '###'],
-  J: ['..#', '..#', '..#', '#.#', '.#.'],
-  K: ['#.#', '#.#', '##.', '#.#', '#.#'],
-  L: ['#..', '#..', '#..', '#..', '###'],
-  M: ['#.#', '###', '###', '#.#', '#.#'],
-  N: ['##.', '#.#', '#.#', '#.#', '#.#'],
-  O: ['.#.', '#.#', '#.#', '#.#', '.#.'],
-  P: ['##.', '#.#', '##.', '#..', '#..'],
-  Q: ['.#.', '#.#', '#.#', '##.', '.##'],
-  R: ['##.', '#.#', '##.', '#.#', '#.#'],
-  S: ['.##', '#..', '.#.', '..#', '##.'],
-  T: ['###', '.#.', '.#.', '.#.', '.#.'],
-  U: ['#.#', '#.#', '#.#', '#.#', '###'],
-  V: ['#.#', '#.#', '#.#', '#.#', '.#.'],
-  W: ['#.#', '#.#', '###', '###', '#.#'],
-  X: ['#.#', '#.#', '.#.', '#.#', '#.#'],
-  Y: ['#.#', '#.#', '.#.', '.#.', '.#.'],
-  Z: ['###', '..#', '.#.', '#..', '###'],
-  '0': ['###', '#.#', '#.#', '#.#', '###'],
-  '1': ['.#.', '##.', '.#.', '.#.', '###'],
-  '2': ['##.', '..#', '.#.', '#..', '###'],
-  '3': ['##.', '..#', '.#.', '..#', '##.'],
-  '4': ['#.#', '#.#', '###', '..#', '..#'],
-  '5': ['###', '#..', '##.', '..#', '##.'],
-  '6': ['.##', '#..', '###', '#.#', '###'],
-  '7': ['###', '..#', '.#.', '.#.', '.#.'],
-  '8': ['###', '#.#', '###', '#.#', '###'],
-  '9': ['###', '#.#', '###', '..#', '##.'],
-  ' ': ['...', '...', '...', '...', '...'],
-  ':': ['...', '.#.', '...', '.#.', '...'],
-  '!': ['.#.', '.#.', '.#.', '...', '.#.'],
-  '.': ['...', '...', '...', '...', '.#.'],
-  '/': ['..#', '..#', '.#.', '#..', '#..'],
-  '+': ['...', '.#.', '###', '.#.', '...'],
-  '-': ['...', '...', '###', '...', '...'],
-  '?': ['##.', '..#', '.#.', '...', '.#.'],
-  '<': ['..#', '.#.', '#..', '.#.', '..#'],
-  '>': ['#..', '.#.', '..#', '.#.', '#..'],
-  '(': ['.#.', '#..', '#..', '#..', '.#.'],
-  ')': ['.#.', '..#', '..#', '..#', '.#.'],
-  '%': ['#.#', '..#', '.#.', '#..', '#.#'],
-  '=': ['...', '###', '...', '###', '...'],
-  ',': ['...', '...', '...', '.#.', '#..'],
-  "'": ['.#.', '.#.', '...', '...', '...'],
-  '"': ['#.#', '#.#', '...', '...', '...'],
-};
 
 // ------------------------------------------------------------ itens (9x9)
 // c = cor do item, L = clara, C = escura, y = gema/destaque, d = sombra interna, N = madeira

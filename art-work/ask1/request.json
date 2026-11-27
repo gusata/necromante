@@ -1,0 +1,32 @@
+{
+ "schema": "generate2dsprite.pixel_look_request.v1",
+ "tool": "pixel_look",
+ "kind": "cast",
+ "key": "blue",
+ "cell": 14,
+ "canvas": [
+  1536,
+  1024
+ ],
+ "masterAt": [
+  2,
+  48
+ ],
+ "master": {
+  "file": "master.png",
+  "sha256": "343047f0155993e895c57da0d8aef9f96b2fd79c11c970863f4422de9debf2fd",
+  "size": [
+   14,
+   21
+  ]
+ },
+ "references": [
+  "reference.png",
+  "art-work\\skel-old-big.png"
+ ],
+ "size": "1536x1024",
+ "next": "route_media.py image --prompt-file prompt.txt --reference reference.png --reference art-work\\skel-old-big.png --size 1536x1024 --out-dir <take>; then pixel_look.py cast --image <take>/generated.png --request <this folder>",
+ "subject": "an undead skeleton warrior, a more detailed redesign of the second image: big cracked cream-bone skull about a third of its height with a jaw, glowing pale mint-green eye sockets, hunched menacing posture, visible ribcage and spine, thin bony arms and legs, gripping a large chipped rusty iron sword in its hand on the viewer's right, dark near-black outline, light from the upper left, stylized and slightly comedic",
+ "sameHeight": false,
+ "outline": "rule"
+}

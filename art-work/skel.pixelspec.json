@@ -1,0 +1,265 @@
+{
+ "schema": "codeart2d.pixelspec.v1",
+ "name": "skel",
+ "canvas": [
+  32,
+  44
+ ],
+ "anchor_px": [
+  16,
+  44
+ ],
+ "palette": {
+  "k": "#07050b",
+  "W": "#f8f4e8",
+  "w": "#e3dccb",
+  "b": "#a49c86",
+  "B": "#6b6452",
+  "G": "#aef5bf",
+  "g": "#38b46a",
+  "s": "#c8d0e0",
+  "m": "#8a94a6",
+  "M": "#464e5e",
+  "r": "#7a4426",
+  "R": "#a0602a",
+  "n": "#3d2a20",
+  "N": "#634532"
+ },
+ "outline": {
+  "mode": "solid",
+  "color": "k"
+ },
+ "poses": {
+  "legs_stride": [
+   ".....bbB...Wwb........",
+   ".....bbB....Wwb.......",
+   "....bbB.....Wwb.......",
+   "....bbBB.....Wwbb.....",
+   "...bbBB......WWwb.....",
+   "...bbB........Wwb.....",
+   "...bbB........Wwb.....",
+   "..bbB..........Wwb....",
+   "..bbB..........Wwb....",
+   "..bbB..........Wwb....",
+   "..bbB..........Wwb....",
+   "..bbB..........Wwwb...",
+   ".bbbBB........Wwwwwb..",
+   "bbbbBB........Wwwwwwb."
+  ],
+  "legs_pass": [
+   "......bbB..Wwb........",
+   "......bbB..Wwb........",
+   ".......bbB..Wwb.......",
+   ".......bbBB.WWwb......",
+   "......bbBB..Wwwb......",
+   "......bbB....Wwb......",
+   ".....bbB.....Wwb......",
+   ".....bbB.....Wwb......",
+   ".....bbB.....Wwb......",
+   ".....bbB.....Wwb......",
+   ".....bbB.....Wwb......",
+   ".....bbB.....Wwb......",
+   ".....bbB.....Wwwb.....",
+   "....bbbBB...Wwwwwb....",
+   "....bbbbBB..Wwwwwwb..."
+  ],
+  "arm_sword_up": [
+   "........sm...",
+   "........smM..",
+   "........smM..",
+   "........mRM..",
+   "........sm...",
+   "........smM..",
+   "........mmM..",
+   "........rmM..",
+   "........smM..",
+   "........srM..",
+   "........smM..",
+   "........smM..",
+   ".WWw....mRM..",
+   ".wwwb...smM..",
+   "..wwb...mmM..",
+   "..Wwb...rmM..",
+   "..bwwb..smM..",
+   "...bwwbMmmmMM",
+   "....bwWwwnnb.",
+   ".....bwwwwwb.",
+   "........nNn..",
+   "........MMM.."
+  ],
+  "arm_sword_slash": [
+   ".............",
+   ".............",
+   "..WWwb.......",
+   "..wwwwwb.....",
+   "..bwwwwwWWb..",
+   "...bbwwWWwwb.",
+   ".....bwwwwwb.",
+   "......MMmmmMM",
+   ".......smmM..",
+   ".......smmM..",
+   "........smmM.",
+   "........srmM.",
+   ".........smmM",
+   ".........smmM",
+   ".........srmM",
+   "..........smM",
+   "..........smM",
+   "..........sm.",
+   "...........s."
+  ]
+ },
+ "layers": [
+  {
+   "name": "back_arm",
+   "z": 0,
+   "origin": [
+    6,
+    16
+   ],
+   "rows": [
+    "..bbB",
+    ".bbB.",
+    ".bbB.",
+    "bbB..",
+    "bbB..",
+    "bbB..",
+    "BbbB.",
+    "bbB..",
+    ".bbB.",
+    ".bbB.",
+    ".bBBb",
+    "..BB."
+   ]
+  },
+  {
+   "name": "legs",
+   "z": 1,
+   "origin": [
+    6,
+    29
+   ],
+   "rows": "legs_stride"
+  },
+  {
+   "name": "torso",
+   "z": 2,
+   "origin": [
+    8,
+    15
+   ],
+   "rows": [
+    ".......bb.....",
+    "...WWWwwwwwb..",
+    "..WWwwwbbwwwb.",
+    "..Wwkkwbbwkkwb",
+    "..wwwwwbbwwwwb",
+    "..bwkkwbbwkkbB",
+    "...wwwwbbwwwb.",
+    "...bkkwbbwkkB.",
+    "....bwwbbwwB..",
+    "......wbbB....",
+    "......wbbB....",
+    "...WWwwwwwbB..",
+    "..WwwwbBbwwbB.",
+    "..bwwB...bwwB."
+   ]
+  },
+  {
+   "name": "head",
+   "z": 3,
+   "origin": [
+    11,
+    2
+   ],
+   "rows": [
+    "....WWWWWw....",
+    "..WWWwwwwwwb..",
+    ".WWwwwwwwwwwb.",
+    ".Wwwwwwwwwwwwb",
+    "WwwBwwwwwwwwwb",
+    "WwwwBwkkkwwkkb",
+    "wwwwwkkGkwkGkb",
+    "wwwwwkkgkwkgkb",
+    "bwwwwwkkwwwkkb",
+    ".bwwwwwwbkwwb.",
+    ".BbwwwwwkBwwb.",
+    "..BkwkwkwkwB..",
+    "...BbBbBbbB..."
+   ]
+  },
+  {
+   "name": "front_arm",
+   "z": 4,
+   "origin": [
+    18,
+    4
+   ],
+   "rows": "arm_sword_up"
+  }
+ ],
+ "frames": [
+  {
+   "name": "walk0"
+  },
+  {
+   "name": "walk1",
+   "layers": {
+    "head": {
+     "dy": -1
+    },
+    "torso": {
+     "dy": -1
+    },
+    "back_arm": {
+     "dy": -1
+    },
+    "front_arm": {
+     "dy": -1
+    },
+    "legs": {
+     "rows": "legs_pass",
+     "dy": -1
+    }
+   }
+  },
+  {
+   "name": "attack",
+   "layers": {
+    "head": {
+     "dx": 1,
+     "dy": 1
+    },
+    "torso": {
+     "dx": 1,
+     "dy": 1
+    },
+    "back_arm": {
+     "dx": 1,
+     "dy": 1
+    },
+    "front_arm": {
+     "rows": "arm_sword_slash",
+     "dy": 11
+    }
+   }
+  }
+ ],
+ "clips": {
+  "walk": {
+   "frames": [
+    "walk0",
+    "walk1"
+   ],
+   "duration_ms": 166,
+   "loop": true
+  },
+  "attack": {
+   "frames": [
+    "attack"
+   ],
+   "duration_ms": 200,
+   "loop": false
+  }
+ }
+}

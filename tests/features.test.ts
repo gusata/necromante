@@ -3,7 +3,7 @@ import { autopilot } from '../src/sim/autopilot';
 import { ITEMS, relicsOf, rollItem, rollRelic } from '../src/sim/items';
 import { EVENTS, ROUTES } from '../src/sim/events';
 import { heresyEffects } from '../src/sim/heresy';
-import { freshMeta, migrate } from '../src/sim/meta';
+import { CHAMPION_KILLS, championRankFor, freshMeta, migrate } from '../src/sim/meta';
 import { baseMods } from '../src/sim/mods';
 import { ACHIEVEMENTS, applyRunResult, dailySetup, type RunResult } from '../src/sim/progress';
 import { SpatialGrid } from '../src/sim/spatial';
@@ -136,11 +136,14 @@ describe('eventos e encruzilhadas', () => {
 describe('heresia', () => {
   it('soma os efeitos dos níveis', () => {
     expect(heresyEffects(0).livingHp).toBe(1);
-    expect(heresyEffects(4).waveSize).toBe(1.2);
-    expect(heresyEffects(10).livingDmg).toBe(1);
-    const w = new World(setup({ heresy: 10 }));
+    expect(heresyEffects(2).waveSize).toBe(1.2);
+    expect(heresyEffects(4).livingDmg).toBe(1);
+    expect(heresyEffects(1).livingDmg).toBe(0);
+    const w = new World(setup({ heresy: 5 }));
     expect(w.units.filter((u) => u.kind === 'skeleton')).toHaveLength(0);
     expect(w.mods.soulMul).toBeCloseTo(2);
+    // runs salvas antes da mudança podiam ter heresia até 10: vale o último nível
+    expect(new World(setup({ heresy: 10 })).mods.soulMul).toBeCloseTo(2);
   });
 });
 
@@ -205,6 +208,44 @@ describe('progresso', () => {
     expect(m.heresyMax).toBe(1);
     applyRunResult(m, result({ bossesKilled: ['archbishop'], heresy: 1 }));
     expect(m.heresyMax).toBe(2);
+  });
+
+  it('níveis: progresso por nível e checkpoint conta os cercos pulados', () => {
+    const m = freshMeta();
+    m.levels = [2];
+    m.bossesBeaten = 2;
+    // começou na Fortaleza e venceu o comandante: o nível I vai a 3
+    applyRunResult(m, result({ bossesKilled: ['commander'], wave: 19 }));
+    expect(m.levels[0]).toBe(3);
+    expect(m.bossesBeaten).toBe(3);
+    applyRunResult(m, result({ bossesKilled: ['archbishop'], wave: 25 }));
+    expect(m.heresyMax).toBe(1);
+    expect(m.levels).toEqual([4, 0]);
+    applyRunResult(m, result({ bossesKilled: ['woodcutter', 'abbot'], heresy: 1 }));
+    expect(m.levels).toEqual([4, 2]);
+  });
+
+  it('campeão: o chefe precisa cair algumas vezes', () => {
+    const m = freshMeta();
+    for (let i = 1; i < CHAMPION_KILLS[0]; i++) {
+      const s = applyRunResult(m, result());
+      expect(m.champions.woodcutter ?? 0).toBe(0);
+      expect(s.champions[0]).toContain(`${i}/${CHAMPION_KILLS[0]}`);
+    }
+    const s = applyRunResult(m, result());
+    expect(m.champions.woodcutter).toBe(1);
+    expect(m.selectedChampion).toBe('woodcutter');
+    expect(s.champions[0]).toContain('liberado');
+    expect(championRankFor(CHAMPION_KILLS[4] + 10)).toBe(5);
+  });
+
+  it('migra a heresia antiga (0..10) para os níveis (0..5)', () => {
+    const m = migrate({ version: 5, heresyMax: 7, heresy: 3, bossesBeaten: 4 });
+    expect(m.heresyMax).toBe(4);
+    expect(m.heresy).toBe(2);
+    expect(m.levels).toEqual([4, 4, 4, 4, 0]);
+    const fresh = migrate({ version: 5, bossesBeaten: 2 });
+    expect(fresh.levels).toEqual([2]);
   });
 
   it('diário: seed fixa por dia, bônus só na primeira tentativa', () => {
@@ -364,10 +405,13 @@ describe('checkpoint', () => {
     const { freshMeta: fm, maxStartRegion } = await import('../src/sim/meta');
     const m = fm();
     expect(maxStartRegion(m)).toBe(0);
-    m.bossesBeaten = 2;
+    m.levels = [2];
     expect(maxStartRegion(m)).toBe(2);
-    m.bossesBeaten = 4;
+    m.levels = [4, 1];
     expect(maxStartRegion(m)).toBe(3);
+    // cada nível tem o próprio checkpoint
+    expect(maxStartRegion(m, 1)).toBe(1);
+    expect(maxStartRegion(m, 2)).toBe(0);
   });
 });
 

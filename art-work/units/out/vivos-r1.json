@@ -1,0 +1,1775 @@
+{
+ "frames": [
+  {
+   "filename": "peasant0",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "peasant1",
+   "frame": {
+    "x": 17,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "peasant2",
+   "frame": {
+    "x": 34,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-peasant",
+   "frame": {
+    "x": 51,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "torch0",
+   "frame": {
+    "x": 68,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "torch1",
+   "frame": {
+    "x": 85,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "torch2",
+   "frame": {
+    "x": 102,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-torch",
+   "frame": {
+    "x": 119,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "militia0",
+   "frame": {
+    "x": 136,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "militia1",
+   "frame": {
+    "x": 153,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "militia2",
+   "frame": {
+    "x": 170,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-militia",
+   "frame": {
+    "x": 187,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "hunter0",
+   "frame": {
+    "x": 204,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "hunter1",
+   "frame": {
+    "x": 221,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "hunter2",
+   "frame": {
+    "x": 238,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-hunter",
+   "frame": {
+    "x": 255,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "monk0",
+   "frame": {
+    "x": 272,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "monk1",
+   "frame": {
+    "x": 289,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "monk2",
+   "frame": {
+    "x": 306,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-monk",
+   "frame": {
+    "x": 323,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "priest0",
+   "frame": {
+    "x": 340,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "priest1",
+   "frame": {
+    "x": 357,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "priest2",
+   "frame": {
+    "x": 374,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-priest",
+   "frame": {
+    "x": 391,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nun0",
+   "frame": {
+    "x": 408,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nun1",
+   "frame": {
+    "x": 425,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "nun2",
+   "frame": {
+    "x": 442,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-nun",
+   "frame": {
+    "x": 459,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ringer0",
+   "frame": {
+    "x": 476,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ringer1",
+   "frame": {
+    "x": 493,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "ringer2",
+   "frame": {
+    "x": 510,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-ringer",
+   "frame": {
+    "x": 527,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "flagellant0",
+   "frame": {
+    "x": 544,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "flagellant1",
+   "frame": {
+    "x": 561,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "flagellant2",
+   "frame": {
+    "x": 578,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-flagellant",
+   "frame": {
+    "x": 595,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "soldier0",
+   "frame": {
+    "x": 612,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "soldier1",
+   "frame": {
+    "x": 629,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "soldier2",
+   "frame": {
+    "x": 646,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-soldier",
+   "frame": {
+    "x": 663,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "crossbow0",
+   "frame": {
+    "x": 680,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "crossbow1",
+   "frame": {
+    "x": 697,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "crossbow2",
+   "frame": {
+    "x": 714,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-crossbow",
+   "frame": {
+    "x": 731,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shield0",
+   "frame": {
+    "x": 748,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shield1",
+   "frame": {
+    "x": 765,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "shield2",
+   "frame": {
+    "x": 782,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-shield",
+   "frame": {
+    "x": 799,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "knight0",
+   "frame": {
+    "x": 816,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "knight1",
+   "frame": {
+    "x": 833,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "knight2",
+   "frame": {
+    "x": 850,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-knight",
+   "frame": {
+    "x": 867,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "halberd0",
+   "frame": {
+    "x": 884,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "halberd1",
+   "frame": {
+    "x": 901,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "halberd2",
+   "frame": {
+    "x": 918,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-halberd",
+   "frame": {
+    "x": 935,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "paladin0",
+   "frame": {
+    "x": 952,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "paladin1",
+   "frame": {
+    "x": 969,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "paladin2",
+   "frame": {
+    "x": 986,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-paladin",
+   "frame": {
+    "x": 1003,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "inquisitor0",
+   "frame": {
+    "x": 1020,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "inquisitor1",
+   "frame": {
+    "x": 1037,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "inquisitor2",
+   "frame": {
+    "x": 1054,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-inquisitor",
+   "frame": {
+    "x": 1071,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "witchhunter0",
+   "frame": {
+    "x": 1088,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "witchhunter1",
+   "frame": {
+    "x": 1105,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "witchhunter2",
+   "frame": {
+    "x": 1122,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-witchhunter",
+   "frame": {
+    "x": 1139,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "templar0",
+   "frame": {
+    "x": 1156,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "templar1",
+   "frame": {
+    "x": 1173,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "templar2",
+   "frame": {
+    "x": 1190,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-templar",
+   "frame": {
+    "x": 1207,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bishop0",
+   "frame": {
+    "x": 1224,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bishop1",
+   "frame": {
+    "x": 1241,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "bishop2",
+   "frame": {
+    "x": 1258,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-bishop",
+   "frame": {
+    "x": 1275,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  },
+  {
+   "filename": "hurler0",
+   "frame": {
+    "x": 1292,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "hurler1",
+   "frame": {
+    "x": 1309,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "hurler2",
+   "frame": {
+    "x": 1326,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 22
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 22
+   },
+   "duration": 100
+  },
+  {
+   "filename": "corpse-hurler",
+   "frame": {
+    "x": 1343,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 16,
+    "h": 6
+   },
+   "sourceSize": {
+    "w": 16,
+    "h": 6
+   },
+   "duration": 100
+  }
+ ],
+ "meta": {
+  "app": "desenhado por c\u00f3digo (art-work/units/make_living.py)",
+  "image": "vivos.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 1360,
+   "h": 22
+  },
+  "scale": "1",
+  "frameTags": []
+ }
+}

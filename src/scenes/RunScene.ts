@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { audio } from '../audio/audio';
+import { fxScale, hasFx, RITUAL_FX } from '../art/fx';
 import { charKey, REGION_DARK, unitKey } from '../art/generate';
 import { CHAR_GLOW } from '../art/sprites';
 import { COL } from '../art/palette';
@@ -11,21 +12,24 @@ import { buzz, heartbeat } from '../platform/haptics';
 import { deviceInfo, logRun } from '../platform/telemetry';
 import { clearRun, meta, saveMeta, saveRun, savedRun } from '../platform/save';
 import { autopilot } from '../sim/autopilot';
-import { DOMINION_AT, MASTERY_AT, SCHOOL_ORDER, SCHOOLS } from '../sim/cards';
+import { DOMINION_AT, MASTERY_AT, SCHOOL_ORDER, SCHOOLS, schoolTier, TIER_NAME } from '../sim/cards';
 import { CHARACTER_BY_ID } from '../sim/characters';
 import { BOSS_DEFS, CIRCLE_REACH, FIELD, NECRO, UNIT_DEFS } from '../sim/defs';
 import { ITEM_BY_ID, ITEM_PRICE, RARITY_COLOR, rollItem } from '../sim/items';
-import { maxStartRegion, metaMods, schoolBonus, unlockedSchools } from '../sim/meta';
+import { championNext, championRankFor, maxStartRegion, metaMods, schoolBonus, unlockedSchools } from '../sim/meta';
+import { levelRoman } from '../sim/heresy';
 import { championUnlocked } from '../sim/tree';
-import { EVENT_BY_ID, ROUTE_BY_ID } from '../sim/events';
+import { EVENT_BY_ID, ROUTE_BY_ID, THEME_BY_ID } from '../sim/events';
+import { GIFT_BY_ID } from '../sim/gifts';
 import { GEMS, parseGem, RANK_NAME } from '../sim/gems';
 import { applyRunResult, dailySetup, todayKey } from '../sim/progress';
 import { circleName } from '../sim/regions';
 import type { BossKind, Corpse, GameEvent, School, Unit } from '../sim/types';
-import { World } from '../sim/world';
+import { GUARD_R, World } from '../sim/world';
 import { wrap } from './BestiaryScene';
 import { Darkness, Scenery, type Light } from './scenery';
 import { Tutorial } from './tutorial';
+import { RUN_HUD_Y, RUN_TOP, SAFE_BOTTOM, screenTop, VIEW_H } from '../fx/view';
 
 const STEP = 1 / 60;
 const DRAG_GAIN = 1.25;
@@ -69,9 +73,12 @@ interface ActionButton {
   y: number;
 }
 type Emitter = Phaser.GameObjects.Particles.ParticleEmitter;
-type EmitterName = 'blood' | 'bone' | 'soul' | 'spark' | 'gold' | 'poison' | 'fire' | 'dust' | 'frenzy';
+type EmitterName = 'blood' | 'bone' | 'soul' | 'spark' | 'gold' | 'poison' | 'fire' | 'dust' | 'frenzy' | 'chill';
 
 const hexOf = (s: string) => parseInt(s.slice(1), 16);
+/** contorno do elite conforme o afixo: rápido, blindado, mártir, fanático */
+const AFFIX_COLOR: Record<string, number> = { swift: 0x8fd3ff, armored: 0xc9ccd4, martyr: 0xfff6d0, zealot: 0xff4a3a };
+const AFFIX_NAME: Record<string, string> = { swift: 'RÁPIDO', armored: 'BLINDADO', martyr: 'MÁRTIR', zealot: 'FANÁTICO' };
 /** mira direta: o círculo fica um pouco acima do dedo */
 const DIRECT_OFFSET = 14;
 const RITUAL_X = 166;
@@ -79,10 +86,21 @@ const RITUAL_Y = 282;
 /** botões de ação redondos (centro) */
 const ACT_X = [14, 38, 62];
 const ACT_Y = 283;
+/** topo do HUD de cima: em tela comprida ele sobe junto com a tela (src/fx/view.ts) */
+const T = RUN_HUD_Y;
 /** borda direita da coluna de almas/exército no topo */
 const HUD_RIGHT = 163;
+/** botão de postura, ao lado do ritual */
+const STANCE_X = 142;
+const STANCE_Y = 283;
 /** tetos de efeitos visuais simultâneos (horda) */
 const MAX_TEMP_SPRITES = 40;
+/** névoa no alto do campo: acima de FOG_FULL o vivo é só silhueta; até FOG_HALF, meio apagado */
+const FOG_FULL = 46;
+const FOG_HALF = 62;
+const FOG_TINT = 0x161c28;
+const FOG_EYES = 0xf0a040;
+const fogLevel = (y: number) => (y < FOG_FULL ? 2 : y < FOG_HALF ? 1 : 0);
 const MAX_TEMP_LIGHTS = 16;
 const MAX_UNIT_LIGHTS = 10;
 
@@ -94,6 +112,10 @@ export class RunScene extends Phaser.Scene {
   private projectiles = new Map<number, Phaser.GameObjects.Image>();
   private seenTelegraphs = new Set<number>();
   private fxList: Fx[] = [];
+  /** nuvens de veneno desenhadas (efeito fx-nuvem-veneno), por id da nuvem */
+  private cloudSprites = new Map<number, Phaser.GameObjects.Sprite>();
+  /** explosões desenhadas na tela agora: na horda, acima do teto volta para o anel do código */
+  private boomSprites = 0;
   private tempLights: (Light & { life: number; max: number })[] = [];
   private scenery!: Scenery;
   private overlay!: Phaser.GameObjects.Graphics;
@@ -103,6 +125,14 @@ export class RunScene extends Phaser.Scene {
   private necro!: Phaser.GameObjects.Sprite;
   private orb!: Phaser.GameObjects.Image;
   private necroFlashUntil = 0;
+  /** aparência do necromante pela escola mais alta: halo, anel nos pés e partículas */
+  private look: {
+    halo: Phaser.GameObjects.Image;
+    ring: Phaser.GameObjects.Graphics;
+    aura: Phaser.GameObjects.Sprite | null;
+    motes: Phaser.GameObjects.Particles.ParticleEmitter | null;
+    key: string;
+  } | null = null;
   private castUntil = 0;
   private emit!: Record<EmitterName, Emitter>;
   private shaker!: Shaker;
@@ -134,6 +164,8 @@ export class RunScene extends Phaser.Scene {
   private necroKey = 'necro';
   private bag!: { icon: Phaser.GameObjects.Image; count: Phaser.GameObjects.BitmapText };
   private ritualBtn!: Phaser.GameObjects.Image;
+  private affixSeen = new Set<string>();
+  private stanceBtn!: { img: Phaser.GameObjects.Image; icon: Phaser.GameObjects.Image };
   private ritualReadyAt = 0;
   // horda: pools de sprites e agregação de efeitos por quadro
   private sprPool: Phaser.GameObjects.Sprite[] = [];
@@ -146,9 +178,13 @@ export class RunScene extends Phaser.Scene {
   private comboAt = 0;
   private comboBest = 0;
   private comboText!: Phaser.GameObjects.BitmapText;
+  /** números de dano que ainda cabem neste quadro */
+  private numBudget = 0;
   private darkDt = 0;
   private speedText!: Phaser.GameObjects.BitmapText;
   private hpText!: Phaser.GameObjects.BitmapText;
+  /** barra de vida do kit de interface (sem o kit, a barra é desenhada no hudGfx) */
+  private hpKit: { frame: Phaser.GameObjects.NineSlice; ghost: Phaser.GameObjects.Image; fill: Phaser.GameObjects.Image; shown: number } | null = null;
   private ended = false;
   private resume = false;
   private firstRegionNoCurtain = false;
@@ -221,6 +257,7 @@ export class RunScene extends Phaser.Scene {
 
   create() {
     this.units.clear();
+    this.affixSeen.clear();
     this.corpses.clear();
     this.sprPool = [];
     this.shadowPool = [];
@@ -233,6 +270,8 @@ export class RunScene extends Phaser.Scene {
     this.projectiles.clear();
     this.seenTelegraphs.clear();
     this.fxList = [];
+    this.cloudSprites.clear();
+    this.boomSprites = 0;
     this.tempLights = [];
     this.buttons = [];
     this.modal = [];
@@ -257,7 +296,7 @@ export class RunScene extends Phaser.Scene {
         mods: metaMods(meta),
         schools: unlockedSchools(meta),
         champion: champ ? { boss: champ, rank: meta.champions[champ]! } : null,
-        schoolBonus: schoolBonus(meta),
+        schoolBonus: DEBUG.apo ? { ...schoolBonus(meta), [DEBUG.apo]: 6 } : schoolBonus(meta),
         heresy: day ? 0 : Math.min(meta.heresy, meta.heresyMax),
         character: meta.character,
         endless: day?.endless,
@@ -272,7 +311,7 @@ export class RunScene extends Phaser.Scene {
     this.shaker = new Shaker(this.cameras.main);
     this.scenery = new Scenery(this);
     this.decals = this.add.renderTexture(0, 0, FIELD.w, FIELD.h).setOrigin(0).setDepth(DEPTH.decal);
-    this.dark = new Darkness(this, 0.54);
+    this.dark = new Darkness(this, 0.54, FIELD.h - RUN_TOP, RUN_TOP);
     // no checkpoint a onda atual é o chefe da região anterior: o visual já é o da próxima
     this.applyRegionLook(this.world.wave > 0 ? (this.firstRegionNoCurtain ? this.world.regionIndex + 1 : this.world.regionIndex) : 0);
     this.overlay = this.add.graphics().setDepth(DEPTH.overlay);
@@ -288,7 +327,7 @@ export class RunScene extends Phaser.Scene {
       .setDepth(DEPTH.glow);
     this.tweens.add({ targets: this.orb, alpha: 0.55, scale: 1.25, yoyo: true, repeat: -1, duration: 700, ease: 'Sine.easeInOut' });
 
-    this.vignette = this.add.image(0, 0, 'vignette').setOrigin(0).setTint(COL.R).setAlpha(0).setDepth(DEPTH.hud - 1);
+    this.vignette = this.add.image(0, RUN_TOP, 'vignette').setOrigin(0).setTint(COL.R).setAlpha(0).setDepth(DEPTH.hud - 1);
 
     this.createParticles();
     this.createHud();
@@ -354,7 +393,9 @@ export class RunScene extends Phaser.Scene {
       fire: mk({ speed: { min: 8, max: 30 }, angle: { min: 240, max: 300 }, gravityY: -40, lifespan: { min: 200, max: 500 }, tint: [COL.O, COL.o, COL.R], alpha: { start: 1, end: 0 } }),
       dust: mk({ speed: { min: 20, max: 60 }, angle: { min: 180, max: 360 }, gravityY: 60, lifespan: { min: 300, max: 700 }, tint: [0x3a3340, 0x2a2430, 0x4a4250], alpha: { start: 0.9, end: 0 } }, 'px2'),
       frenzy: mk({ speed: { min: 2, max: 10 }, angle: { min: 250, max: 290 }, lifespan: 400, tint: [COL.R, 0xff6070], alpha: { start: 1, end: 0 } }),
+      chill: mk({ speed: { min: 6, max: 22 }, lifespan: { min: 250, max: 500 }, tint: [0x8fd3ff, 0xd8f0ff, 0xffffff], alpha: { start: 1, end: 0 } }),
     };
+    this.setupNecroLook();
     this.add
       .particles(0, 0, 'px', {
         x: { min: 0, max: FIELD.w },
@@ -369,45 +410,84 @@ export class RunScene extends Phaser.Scene {
       .setDepth(DEPTH.glow);
   }
 
+  /**
+   * Tela comprida: a faixa acima do campo é névoa pontilhada, mais densa no alto.
+   * É de onde os vivos chegam; o campo e a luta continuam iguais.
+   */
+  private topFog() {
+    const h = -RUN_TOP;
+    if (h <= 0) return;
+    // de cima (cheio) até 12 px dentro do campo (vazio); desenhada uma vez numa textura
+    const span = h + 12;
+    const key = `topfog-${span}`;
+    if (!this.textures.exists(key)) {
+      const tex = this.textures.createCanvas(key, 180, span)!;
+      const ctx = tex.getContext();
+      const bayer = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+      ctx.fillStyle = '#07050b';
+      for (let y = 0; y < span; y++) {
+        const d = (1 - y / span) * 16;
+        for (let x = 0; x < 180; x++) if (bayer[(y % 4) * 4 + (x % 4)] < d) ctx.fillRect(x, y, 1, 1);
+      }
+      tex.refresh();
+    }
+    this.add.image(0, RUN_TOP, key).setOrigin(0).setDepth(DEPTH.dark + 1);
+  }
+
   private createHud() {
     // topo sem faixa: uma sombra suave e o texto flutuando por cima do campo
-    this.add.image(0, 0, 'topbar').setOrigin(0).setDepth(DEPTH.hud - 1);
+    this.add.image(0, T, 'topbar').setOrigin(0).setDepth(DEPTH.hud - 1);
     this.add.image(0, FIELD.h, 'hudbar').setOrigin(0).setDepth(DEPTH.hud);
+    // embaixo da barra de gestos: a mesma cor do rodapé
+    if (SAFE_BOTTOM > 0) this.add.rectangle(0, FIELD.h + 24, 180, SAFE_BOTTOM, 0x14100c).setOrigin(0).setDepth(DEPTH.hud);
+    this.topFog();
 
     // esquerda: onda grande e o nome da região embaixo
-    const wave = pxText(this, 4, 3, 'ONDA 1', COL.u).setScale(2).setDepth(DEPTH.hud);
-    const region = pxText(this, 4, 15, '', COL.y).setDepth(DEPTH.hud);
+    const wave = pxText(this, 4, T + 5, 'ONDA 1', COL.u, false, true).setDepth(DEPTH.hud);
+    const region = pxText(this, 4, T + 14, '', COL.y).setDepth(DEPTH.hud);
     // direita: almas, exército e itens achados, alinhados pela direita
-    const soulIcon = this.add.image(0, 7, 'icon-soul').setDepth(DEPTH.hud);
-    const souls = pxText(this, HUD_RIGHT, 3, '0', COL.G).setScale(2).setOrigin(1, 0).setDepth(DEPTH.hud);
-    const armyIcon = this.add.image(0, 18, 'icon-skull').setDepth(DEPTH.hud);
-    const army = pxText(this, HUD_RIGHT, 15, '0/10', COL.w).setOrigin(1, 0).setDepth(DEPTH.hud);
+    const soulIcon = this.add.image(0, T + 8, 'icon-soul').setDepth(DEPTH.hud);
+    const souls = pxText(this, HUD_RIGHT, T + 5, '0', COL.G, false, true).setOrigin(1, 0).setDepth(DEPTH.hud);
+    const armyIcon = this.add.image(0, T + 18, 'icon-skull').setDepth(DEPTH.hud);
+    const army = pxText(this, HUD_RIGHT, T + 15, '0/10', COL.w).setOrigin(1, 0).setDepth(DEPTH.hud);
 
-    const pause = this.add.image(174, 5, 'icon-pause').setDepth(DEPTH.hud).setInteractive({ useHandCursor: true });
+    const pause = this.add.image(174, T + 5, 'icon-pause').setDepth(DEPTH.hud).setInteractive({ useHandCursor: true });
     pause.input!.hitArea.setTo(-5, -5, 15, 15);
     pause.on('pointerdown', () => this.togglePause());
 
     // escolas: só aparecem as que você tem, numa fileira embaixo da onda
     const schools = unlockedSchools(meta).map((s) => {
-      const icon = this.add.image(0, 27, `school-${s}`).setDepth(DEPTH.hud).setVisible(false);
-      const count = pxText(this, 0, 24, '0', COL.v).setDepth(DEPTH.hud).setVisible(false);
+      const icon = this.add.image(0, T + 27, `school-${s}`).setDepth(DEPTH.hud).setVisible(false);
+      const count = pxText(this, 0, T + 24, '0', COL.v).setDepth(DEPTH.hud).setVisible(false);
       return { school: s, icon, count };
     });
-    const bossName = pxText(this, 90, 33, '', COL.O).setOrigin(0.5, 0).setDepth(DEPTH.hud).setVisible(false);
+    const bossName = pxText(this, 90, T + 33, '', COL.O).setOrigin(0.5, 0).setDepth(DEPTH.hud).setVisible(false);
     // velocidade do jogo (1x / 2x), embaixo da pausa
-    this.speedText = pxText(this, 177, 15, `${meta.settings.speed}X`, meta.settings.speed > 1 ? COL.y : COL.v)
+    this.speedText = pxText(this, 177, T + 15, `${meta.settings.speed}X`, meta.settings.speed > 1 ? COL.y : COL.v)
       .setOrigin(1, 0)
       .setDepth(DEPTH.hud);
-    const speedHit = this.add.zone(170, 18, 18, 12).setInteractive({ useHandCursor: true }).setDepth(DEPTH.hud);
+    const speedHit = this.add.zone(170, T + 18, 18, 12).setInteractive({ useHandCursor: true }).setDepth(DEPTH.hud);
     speedHit.on('pointerdown', () => this.toggleSpeed());
-    this.comboText = pxText(this, 90, 60, '', COL.w).setOrigin(0.5).setDepth(DEPTH.hud).setVisible(false);
+    // combo: no canto de cima, fora da luta
+    this.comboText = pxText(this, 4, T + 36, '', COL.w, false, true).setOrigin(0, 0).setDepth(DEPTH.hud).setVisible(false);
     this.hud = { wave, region, souls, soulIcon, army, armyIcon, schools, bossName, hpFlashUntil: 0, hpShake: 0, shownSouls: 0, bossShownHp: 1 };
     // vida: barra grossa no rodapé, com o número dentro
     this.add.image(7, FIELD.h + 12, 'icon-heart').setDepth(DEPTH.hud + 2).setScale(1.5);
     this.hpText = pxText(this, 95, FIELD.h + 10, '', COL.u).setOrigin(0.5, 0).setDepth(DEPTH.hud + 2);
+    this.hpKit = null;
+    if (['ui-hp-frame', 'ui-hp-fill', 'ui-hp-fill-low', 'ui-hp-ghost'].every((k) => this.textures.exists(k))) {
+      this.hpKit = {
+        frame: this.add.nineslice(0, 0, 'ui-hp-frame', undefined, 164, 12, 2, 2, 2, 2).setOrigin(0).setDepth(DEPTH.hud + 1),
+        ghost: this.add.image(0, 0, 'ui-hp-ghost').setOrigin(0).setDepth(DEPTH.hud + 1),
+        fill: this.add.image(0, 0, 'ui-hp-fill').setOrigin(0).setDepth(DEPTH.hud + 1),
+        shown: 1,
+      };
+      this.hpText.y = FIELD.h + 9;
+    }
     this.bag = {
-      icon: this.add.image(0, 29, 'item-ring_iron').setDepth(DEPTH.hud).setVisible(false),
-      count: pxText(this, HUD_RIGHT, 26, '', COL.y).setOrigin(1, 0).setDepth(DEPTH.hud),
+      // saco de achados: ícone fixo no pixel do mundo (o do item seria meio pixel aqui)
+      icon: this.add.image(0, T + 29, 'icon-bag').setDepth(DEPTH.hud).setVisible(false),
+      count: pxText(this, HUD_RIGHT, T + 26, '', COL.y).setOrigin(1, 0).setDepth(DEPTH.hud),
     };
 
     const defs: [string, () => boolean, () => boolean][] = [
@@ -420,6 +500,12 @@ export class RunScene extends Phaser.Scene {
     this.ritualBtn.input!.hitArea.setTo(-6, -6, 23, 22);
     this.ritualBtn.on('pointerdown', () => this.pressRitual());
     this.ritualBtn.setTint(CHAR_GLOW[meta.character] ?? COL.g);
+
+    // postura do exército: ataque / defesa
+    const sImg = this.add.image(STANCE_X, STANCE_Y, 'act-round').setDepth(DEPTH.hud).setInteractive({ useHandCursor: true });
+    sImg.input!.hitArea.setTo(-3, -3, 28, 28);
+    sImg.on('pointerdown', () => this.toggleStance());
+    this.stanceBtn = { img: sImg, icon: this.add.image(STANCE_X, STANCE_Y, 'icon-attack').setDepth(DEPTH.hud).setScale(1.5) };
 
     // ações: três botões redondos só com ícone, no canto de baixo à esquerda
     defs.forEach(([iconKey, can, act], i) => {
@@ -436,17 +522,18 @@ export class RunScene extends Phaser.Scene {
 
   private createInput() {
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
-      if (this.ended || this.modalKind || p.y >= FIELD.h || (p.y < 12 && p.x > 160) || (p.y < 22 && p.x > 158)) return;
-      if (Math.hypot(p.x - RITUAL_X, p.y - RITUAL_Y) < 12) return;
-      if (ACT_X.some((x) => Math.hypot(p.x - x, p.y - ACT_Y) < 13)) return;
-      this.drag = { px: p.x, py: p.y, cx: this.world.circle.x, cy: this.world.circle.y };
+      if (this.ended || this.modalKind || p.worldY >= FIELD.h || (p.worldY < T + 12 && p.worldX > 160) || (p.worldY < T + 22 && p.worldX > 158)) return;
+      if (Math.hypot(p.worldX - RITUAL_X, p.worldY - RITUAL_Y) < 12) return;
+      if (Math.hypot(p.worldX - STANCE_X, p.worldY - STANCE_Y) < 13) return;
+      if (ACT_X.some((x) => Math.hypot(p.worldX - x, p.worldY - ACT_Y) < 13)) return;
+      this.drag = { px: p.worldX, py: p.worldY, cx: this.world.circle.x, cy: this.world.circle.y };
       // mira direta: o círculo vai para onde o dedo tocou (um pouco acima, para o dedo não cobrir)
-      if (meta.settings.aim === 'direct') this.world.setCircle(p.x, p.y - DIRECT_OFFSET);
+      if (meta.settings.aim === 'direct') this.world.setCircle(p.worldX, p.worldY - DIRECT_OFFSET);
     });
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
       if (!this.drag || !p.isDown || this.modalKind) return;
-      if (meta.settings.aim === 'direct') this.world.setCircle(p.x, p.y - DIRECT_OFFSET);
-      else this.world.setCircle(this.drag.cx + (p.x - this.drag.px) * DRAG_GAIN, this.drag.cy + (p.y - this.drag.py) * DRAG_GAIN);
+      if (meta.settings.aim === 'direct') this.world.setCircle(p.worldX, p.worldY - DIRECT_OFFSET);
+      else this.world.setCircle(this.drag.cx + (p.worldX - this.drag.px) * DRAG_GAIN, this.drag.cy + (p.worldY - this.drag.py) * DRAG_GAIN);
     });
     this.input.on('pointerup', () => (this.drag = null));
 
@@ -468,6 +555,8 @@ export class RunScene extends Phaser.Scene {
     kb.on('keydown-FOUR', () => this.pressRitual());
     kb.on('keydown-R', () => this.pressRitual());
     kb.on('keydown-S', () => this.toggleSpeed());
+    kb.on('keydown-D', () => this.toggleStance());
+    kb.on('keydown-A', () => this.toggleStance());
     kb.on('keydown-ESC', () => this.togglePause());
     kb.on('keydown-P', () => this.togglePause());
   }
@@ -492,6 +581,16 @@ export class RunScene extends Phaser.Scene {
     this.tweens.add({ targets: this.speedText, scale: 1.6, duration: 80, yoyo: true });
     audio.play('click');
     buzz('light');
+  }
+
+  private toggleStance() {
+    if (this.ended || this.modalKind) return;
+    const next = this.world.stance === 'attack' ? 'guard' : 'attack';
+    if (!this.world.setStance(next)) return;
+    audio.play(next === 'guard' ? 'bones' : 'whoosh');
+    buzz('light');
+    floatText(this, STANCE_X, STANCE_Y - 16, next === 'guard' ? 'DEFESA' : 'ATAQUE', next === 'guard' ? COL.b : COL.O);
+    this.tweens.add({ targets: [this.stanceBtn.img, this.stanceBtn.icon], scale: '*=1.25', duration: 70, yoyo: true });
   }
 
   private pressRitual() {
@@ -529,6 +628,7 @@ export class RunScene extends Phaser.Scene {
 
     const events = this.world.events;
     this.world.events = [];
+    this.numBudget = 2;
     this.boomCount = 0;
     for (const e of events) this.onEvent(e, time);
     if (this.boomCount > 0) this.bigBoom(this.boomCount);
@@ -560,7 +660,8 @@ export class RunScene extends Phaser.Scene {
     const w = this.world;
     switch (e.type) {
       case 'bolt':
-        this.fxList.push({ kind: 'bolt', pts: this.jagged(e.x1, e.y1, e.x2, e.y2), x: e.x2, y: e.y2, r: 0, color: COL.G, life: 0.12, max: 0.12 });
+        if (!this.boltSprite(e.x1, e.y1, e.x2, e.y2))
+          this.fxList.push({ kind: 'bolt', pts: this.jagged(e.x1, e.y1, e.x2, e.y2), x: e.x2, y: e.y2, r: 0, color: COL.G, life: 0.12, max: 0.12 });
         this.emit.spark.explode(4, e.x2, e.y2);
         this.tempLights.push({ x: e.x2, y: e.y2, key: 'light24', life: 0.12, max: 0.12 });
         this.castUntil = time + 110;
@@ -579,13 +680,19 @@ export class RunScene extends Phaser.Scene {
         if (e.faction === 'living') {
           this.emit.blood.explode(e.big ? 6 : 3, e.x, e.y - 9);
           audio.play('hit');
-          if (e.dmg >= 1 || e.dtype === 'explode') floatText(this, e.x, e.y - 24, showNum(e.dmg), e.dtype === 'explode' ? COL.O : e.big ? COL.y : COL.w, e.big);
+          // na horda só aparecem os números que importam: golpes grandes, explosões e poucos por quadro
+          const worth = e.big || e.dtype === 'explode' || e.dmg >= 3;
+          if (e.crit) {
+            // dano extra em elite e chefe: número dourado com exclamação e faíscas
+            if (!this.playFx('fx-critico', e.x, e.y - 9)) this.emit.gold.explode(5, e.x, e.y - 9);
+            if (this.numBudget-- > 0) floatText(this, e.x, e.y - 26, `${showNum(e.dmg)}!`, COL.y, true);
+          } else if (worth && this.numBudget-- > 0) floatText(this, e.x, e.y - 24, showNum(e.dmg), e.dtype === 'explode' ? COL.O : e.big ? COL.y : COL.w, e.big);
         } else {
           this.emit.bone.explode(2, e.x, e.y - 9);
           audio.play('hitDead');
           if (e.dtype === 'holy') {
             this.emit.gold.explode(3, e.x, e.y - 6);
-            floatText(this, e.x, e.y - 24, showNum(e.dmg), COL.y);
+            if (this.numBudget-- > 0) floatText(this, e.x, e.y - 24, showNum(e.dmg), COL.y);
           }
         }
         break;
@@ -612,10 +719,13 @@ export class RunScene extends Phaser.Scene {
         this.onDeath(e);
         break;
       case 'raiseStart':
+        // terra abrindo na frente do morto que sobe (a base do monte é a última linha da arte)
+        this.playFx('fx-levantar', e.x, e.y + 1, { origin: [0.5, 1], depth: DEPTH.world + e.y + 0.5 });
         this.emit.dust.explode(4, e.x, e.y);
         this.emit.soul.explode(4, e.x, e.y);
         break;
       case 'raised':
+        this.onRaisedHow(e.how, e.x, e.y);
         this.emit.soul.explode(14, e.x, e.y - 9);
         this.emit.dust.explode(6, e.x, e.y);
         this.tempLights.push({ x: e.x, y: e.y - 9, key: 'light24', life: 0.35, max: 0.35 });
@@ -635,8 +745,15 @@ export class RunScene extends Phaser.Scene {
         {
           // cada morto explode no lugar; tremor, flash e som saem uma vez só, somados, em bigBoom()
           const many = this.boomCount > 8;
-          this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 3, r: e.r, color: COL.G, life: 0.3, max: 0.3 });
-          if (!many) this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 3, r: e.r * 0.6, color: 0xffffff, life: 0.15, max: 0.15 });
+          // a arte tem teto: com dezenas explodindo juntas, as que passam disso viram o anel leve
+          const drawn = this.boomSprites < 12 ? this.playFx('fx-explosao-morto', e.x, e.y - 3, { scale: fxScale(e.r * 2, 32) }) : null;
+          if (drawn) {
+            this.boomSprites++;
+            drawn.once(Phaser.GameObjects.Events.DESTROY, () => this.boomSprites--);
+          } else {
+            this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 3, r: e.r, color: COL.G, life: 0.3, max: 0.3 });
+            if (!many) this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 3, r: e.r * 0.6, color: 0xffffff, life: 0.15, max: 0.15 });
+          }
           this.emit.soul.explode(many ? 4 : 12, e.x, e.y - 3);
           this.emit.bone.explode(many ? 5 : 14, e.x, e.y - 3);
           this.emit.spark.explode(many ? 3 : 10, e.x, e.y - 3);
@@ -650,7 +767,7 @@ export class RunScene extends Phaser.Scene {
         }
       case 'fuse':
         this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 6, r: 22, color: COL.g, life: 0.4, max: 0.4 });
-        this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 6, r: 10, color: COL.w, life: 0.25, max: 0.25 });
+        if (!this.playFx('fx-fusao-colosso', e.x, e.y - 6)) this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 6, r: 10, color: COL.w, life: 0.25, max: 0.25 });
         this.emit.soul.explode(28, e.x, e.y - 8);
         this.emit.bone.explode(16, e.x, e.y - 8);
         this.tempLights.push({ x: e.x, y: e.y - 6, key: 'light48', scale: 1.3, life: 0.5, max: 0.5 });
@@ -725,7 +842,11 @@ export class RunScene extends Phaser.Scene {
         this.onRegionStart(e.region);
         break;
       case 'waveStart':
-        if (!e.boss) this.banner(`ONDA ${e.local}`, COL.R, 120, w.region.name.toUpperCase());
+        if (!e.boss && e.theme && THEME_BY_ID[e.theme]) {
+          const th = THEME_BY_ID[e.theme];
+          this.banner(th.name.toUpperCase(), COL.O, 120, th.desc);
+          audio.play('warn');
+        } else if (!e.boss) this.banner(`ONDA ${e.local}`, COL.R, 120, w.region.name.toUpperCase());
         audio.play('bell');
         audio.setIntensity(e.boss ? 2 : 1);
         break;
@@ -755,6 +876,10 @@ export class RunScene extends Phaser.Scene {
       }
       case 'synergy':
         this.onSynergy(e.school, e.level);
+        this.updateNecroLook();
+        break;
+      case 'schoolFx':
+        this.onSchoolFx(e.fx, e.x, e.y);
         break;
       case 'ritual':
         this.onRitual(e.char, e.x, e.y, e.r, time);
@@ -766,8 +891,10 @@ export class RunScene extends Phaser.Scene {
         buzz('medium');
         break;
       case 'wail':
-        this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 4, r: e.r, color: 0xf4eefc, life: 0.35, max: 0.35 });
-        this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 4, r: e.r * 0.6, color: 0xa08cc8, life: 0.25, max: 0.25 });
+        if (!this.playFx('fx-grito-banshee', e.x, e.y - 4, { scale: fxScale(e.r * 2, 32), hold: 240, fade: 120 })) {
+          this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 4, r: e.r, color: 0xf4eefc, life: 0.35, max: 0.35 });
+          this.fxList.push({ kind: 'ring', x: e.x, y: e.y - 4, r: e.r * 0.6, color: 0xa08cc8, life: 0.25, max: 0.25 });
+        }
         audio.play('scream', 1.6);
         this.shaker.add(0.08);
         break;
@@ -789,6 +916,7 @@ export class RunScene extends Phaser.Scene {
         // aviso: um bando vai entrar pela lateral
         const x = e.side < 0 ? 6 : FIELD.w - 6;
         floatText(this, x, e.y, e.side < 0 ? '>' : '<', COL.R, true);
+        if (e.raid) floatText(this, e.side < 0 ? 34 : FIELD.w - 34, e.y - 10, 'INCURSÃO', COL.R);
         this.fxList.push({ kind: 'beam', pts: [x, e.y - 24, x, e.y + 24], x, y: e.y, r: 0, color: COL.R, life: 0.5, max: 0.5 });
         audio.play('warn');
         break;
@@ -831,7 +959,13 @@ export class RunScene extends Phaser.Scene {
     audio.play('explode');
     buzz('heavy');
     this.time.delayedCall(150, () => buzz('heavy'));
-    this.fxList.push({ kind: 'ring', x, y, r, color, life: 0.6, max: 0.6 });
+    // círculo do ritual no chão, embaixo das unidades; a luz do ritual acende ele
+    const circle = this.playFx(RITUAL_FX[char] ?? '', x, y, { scale: fxScale(r * 2, 64), depth: DEPTH.altar + 1, hold: 700, fade: 300 });
+    if (circle) {
+      const sc = circle.scale;
+      circle.setScale(sc * 0.6);
+      this.tweens.add({ targets: circle, scale: sc, duration: 160, ease: 'Back.easeOut' });
+    } else this.fxList.push({ kind: 'ring', x, y, r, color, life: 0.6, max: 0.6 });
     this.fxList.push({ kind: 'ring', x, y, r: r * 0.6, color: 0xffffff, life: 0.4, max: 0.4 });
     this.fxList.push({ kind: 'column', x: NECRO.x, y: 0, r: 8, color, life: 0.5, max: 0.5 });
     this.tempLights.push({ x, y, key: 'light80', scale: 2, life: 0.8, max: 0.8 });
@@ -854,7 +988,7 @@ export class RunScene extends Phaser.Scene {
     this.tempLights.push({ x, y: y - 6, key: 'light24', life: 0.5, max: 0.5 });
     audio.play('soul');
     if (g.rank > 1) floatText(this, x, y - 16, `${GEMS[g.type].name.toLowerCase()} ${RANK_NAME[g.rank]}`, color);
-    const icon = this.add.image(x, y - 6, `gem-${g.type}`).setDepth(DEPTH.hud + 2);
+    const icon = this.add.image(x, y - 6, `gem-${g.type}-${g.rank}`).setDepth(DEPTH.hud + 2);
     this.tweens.add({ targets: icon, y: y - 18, duration: 250, ease: 'Back.easeOut' });
     this.tweens.add({
       targets: icon,
@@ -874,14 +1008,14 @@ export class RunScene extends Phaser.Scene {
   private onItemDrop(id: string, x: number, y: number) {
     const it = ITEM_BY_ID[id];
     const color = parseInt(RARITY_COLOR[it.rarity].slice(1), 16);
-    const big = it.rarity === 'rare' || it.rarity === 'legendary';
+    const big = it.rarity === 'rare' || it.rarity === 'epic' || it.rarity === 'legendary';
     this.fxList.push({ kind: 'column', x, y: 0, r: big ? 6 : 3, color, life: 0.6, max: 0.6 });
     this.tempLights.push({ x, y: y - 6, key: 'light48', life: 0.8, max: 0.8 });
     this.emit.gold.explode(big ? 24 : 10, x, y - 6);
     audio.play(big ? 'synergy' : 'buy');
     buzz(big ? 'heavy' : 'medium');
-    if (big) this.shaker.add(it.rarity === 'legendary' ? 0.6 : 0.3);
-    if (it.rarity === 'legendary') flash(this, color, 0.3, 300);
+    if (big) this.shaker.add(it.rarity === 'legendary' ? 0.6 : it.rarity === 'epic' ? 0.45 : 0.3);
+    if (it.rarity === 'legendary' || it.rarity === 'epic') flash(this, color, it.rarity === 'legendary' ? 0.3 : 0.2, 300);
     const icon = this.add.image(x, y - 6, `item-${id}`).setDepth(DEPTH.hud + 2).setScale(2);
     const frame = this.add.image(x, y - 6, `slot-${it.rarity}`).setDepth(DEPTH.hud + 1).setScale(0.9);
     const name = pxText(this, x, y - 24, it.name.toUpperCase(), color).setOrigin(0.5).setDepth(DEPTH.hud + 2);
@@ -899,7 +1033,7 @@ export class RunScene extends Phaser.Scene {
       onComplete: () => {
         icon.destroy();
         frame.destroy();
-        this.bag.icon.setTexture(`item-${id}`).setVisible(true);
+        this.bag.icon.setVisible(true);
         setPxText(this.bag.count, `${this.world.loot.length}`);
         this.tweens.add({ targets: this.bag.icon, scale: 1.8, duration: 80, yoyo: true });
         audio.play('soul');
@@ -974,7 +1108,9 @@ export class RunScene extends Phaser.Scene {
         buzz('medium');
         break;
       case 'beam':
-        this.fxList.push({ kind: 'column', x: e.x, y: 0, r: e.r, color: vsLiving ? COL.G : 0xfff0b0, life: 0.35, max: 0.35 });
+        // a coluna desenhada é a do Arcebispo (dourada); a que acerta os vivos segue no código, verde
+        if (vsLiving || !this.columnSprite(e.x, e.r))
+          this.fxList.push({ kind: 'column', x: e.x, y: 0, r: e.r, color: vsLiving ? COL.G : 0xfff0b0, life: 0.35, max: 0.35 });
         for (let y = 20; y < FIELD.h; y += 24) {
           (vsLiving ? this.emit.soul : this.emit.gold).explode(3, e.x, y);
           this.tempLights.push({ x: e.x, y, key: 'light24', life: 0.35, max: 0.35 });
@@ -1016,8 +1152,8 @@ export class RunScene extends Phaser.Scene {
   private regionCard(numeral: string, name: string, subtitle: string, abyss: boolean) {
     const color = abyss ? COL.R : COL.G;
     const objs = [
-      pxText(this, 90, 92, numeral, color).setOrigin(0.5).setScale(2),
-      pxText(this, 90, 112, name, COL.w).setOrigin(0.5).setScale(2),
+      pxText(this, 90, 92, numeral, color, false, true).setOrigin(0.5),
+      pxText(this, 90, 112, name, COL.w, false, true).setOrigin(0.5),
       pxText(this, 90, 128, subtitle, COL.v).setOrigin(0.5),
     ];
     const line = this.add.rectangle(90, 102, 90, 1, color).setDepth(DEPTH.hud).setScale(0, 1);
@@ -1038,8 +1174,8 @@ export class RunScene extends Phaser.Scene {
     flash(this, COL.R, 0.25, 300);
     audio.play('boss');
     buzz('heavy');
-    const t1 = pxText(this, -60, 120, def.name.toUpperCase(), COL.R).setOrigin(0.5).setScale(2).setDepth(DEPTH.hud);
-    const t2 = pxText(this, 90, 136, 'CHEFE', COL.v).setOrigin(0.5).setDepth(DEPTH.hud).setAlpha(0);
+    const t1 = pxText(this, -60, 120, def.name.toUpperCase(), COL.R, false, true).setOrigin(0.5).setDepth(DEPTH.hud);
+    const t2 = pxText(this, 90, 136, 'CHEFE', COL.v, false, true).setOrigin(0.5).setDepth(DEPTH.hud).setAlpha(0);
     this.tweens.add({ targets: t1, x: 90, duration: 450, ease: 'Back.easeOut' });
     this.tweens.add({ targets: t2, alpha: 1, delay: 300, duration: 300 });
     this.tweens.add({ targets: [t1, t2], alpha: 0, delay: 2000, duration: 400, onComplete: () => [t1, t2].forEach((t) => t.destroy()) });
@@ -1061,8 +1197,13 @@ export class RunScene extends Phaser.Scene {
     buzz('heavy');
     this.time.delayedCall(180, () => buzz('heavy'));
     this.time.delayedCall(360, () => buzz('heavy'));
-    const rank = Math.min(5, (meta.champions[boss] ?? 0) + 1);
-    this.time.delayedCall(900, () => this.banner(rank > 1 ? `CAMPEÃO RANK ${rank}` : 'NOVO CAMPEÃO', COL.y, 150, BOSS_DEFS[boss].name.toUpperCase()));
+    // o campeão só se rende depois de algumas mortes (somando as runs)
+    const kills = (meta.kills[boss] ?? 0) + 1;
+    const had = meta.champions[boss] ?? 0;
+    const rank = Math.max(had, championRankFor(kills));
+    const next = championNext(kills);
+    const title = rank > had ? (rank > 1 ? `CAMPEÃO RANK ${rank}` : 'NOVO CAMPEÃO') : next ? `CAMPEÃO ${kills}/${next.need}` : 'CHEFE VENCIDO';
+    this.time.delayedCall(900, () => this.banner(title, COL.y, 150, BOSS_DEFS[boss].name.toUpperCase()));
   }
 
   private onWaveCleared(souls: number) {
@@ -1078,13 +1219,142 @@ export class RunScene extends Phaser.Scene {
     }
   }
 
-  private onSynergy(school: School, level: 1 | 2) {
+  /** Levantar com origem especial: cada escola tem o seu jeito de mostrar. */
+  private onRaisedHow(how: 'infect' | 'bones' | 'ghost' | 'reassemble' | undefined, x: number, y: number) {
+    if (how === 'infect') {
+      // carne: o cadáver estoura em sangue e já levanta
+      this.playFx('fx-estouro-carne', x, y - 6);
+      this.emit.blood.explode(10, x, y - 6);
+      this.fxList.push({ kind: 'ring', x, y: y - 4, r: 12, color: hexOf(SCHOOLS.flesh.color), life: 0.3, max: 0.3 });
+    } else if (how === 'bones' || how === 'reassemble') {
+      // ossos: as peças voam e se juntam
+      this.playFx('fx-ossos-juntando', x, y - 6);
+      this.emit.bone.explode(how === 'reassemble' ? 12 : 8, x, y - 4);
+      this.fxList.push({ kind: 'ring', x, y: y - 4, r: how === 'reassemble' ? 14 : 9, color: hexOf(SCHOOLS.bone.color), life: 0.3, max: 0.3 });
+      if (how === 'reassemble') audio.play('fuse');
+    } else if (how === 'ghost') {
+      this.playFx('fx-fantasma-volta', x, y - 8);
+      this.emit.chill.explode(8, x, y - 8);
+      this.fxList.push({ kind: 'ring', x, y: y - 8, r: 10, color: hexOf(SCHOOLS.spirit.color), life: 0.3, max: 0.3 });
+    }
+  }
+
+  /** Efeitos de escola e de item que antes aconteciam sem aparecer. */
+  private onSchoolFx(fx: 'rebirth' | 'leech' | 'chill' | 'bonusSouls' | 'shield' | 'feast', x: number, y: number) {
+    switch (fx) {
+      case 'rebirth':
+        // ossos: o morto caído vira uma pilha que pode levantar de novo
+        this.playFx('fx-ossos-juntando', x, y - 4);
+        this.emit.bone.explode(6, x, y - 2);
+        this.fxList.push({ kind: 'ring', x, y: y - 2, r: 7, color: hexOf(SCHOOLS.bone.color), life: 0.25, max: 0.25 });
+        break;
+      case 'leech':
+        // carne: gotas sobem do golpe para o morto
+        if (!this.playFx('fx-gotas-sangue', x, y - 10)) this.emit.frenzy.explode(3, x, y - 8);
+        break;
+      case 'chill':
+        if (!this.playFx('fx-gelo', x, y - 8)) this.emit.chill.explode(5, x, y - 8);
+        break;
+      case 'bonusSouls':
+        this.flyMotes(x, y - 6, this.hud.soulIcon.x, this.hud.soulIcon.y, 2, COL.G, true);
+        break;
+      case 'shield':
+        this.playFx('fx-escudo-sangue', NECRO.x, NECRO.y - 14, { hold: 500, fade: 200 });
+        this.fxList.push({ kind: 'ring', x: NECRO.x, y: NECRO.y - 12, r: 16, color: 0xffd070, life: 0.35, max: 0.35 });
+        this.emit.gold.explode(6, NECRO.x, NECRO.y - 12);
+        break;
+      case 'feast':
+        this.playFx('fx-estouro-carne', x, y - 6, { scale: 2 });
+        this.fxList.push({ kind: 'ring', x, y, r: 26, color: hexOf(SCHOOLS.flesh.color), life: 0.5, max: 0.5 });
+        this.emit.blood.explode(20, x, y - 6);
+        this.shaker.add(0.4);
+        audio.play('slam');
+        break;
+    }
+  }
+
+  /** Halo, anel nos pés e partículas do necromante (escondidos até haver maestria). */
+  private setupNecroLook() {
+    const halo = this.add.image(NECRO.x, NECRO.y - 14, 'glow64').setBlendMode(Phaser.BlendModes.ADD).setDepth(DEPTH.glow).setVisible(false);
+    const ring = this.add.graphics().setDepth(DEPTH.altar + 0.5).setVisible(false);
+    this.look = { halo, ring, aura: null, motes: null, key: '' };
+    this.updateNecroLook();
+  }
+
+  /**
+   * O necromante muda com a escola mais alta, como o rei do King Dies Rich muda com o equipamento:
+   * maestria acende um halo fraco, domínio põe um anel nos pés e o halo pulsa, apoteose solta partículas da escola.
+   */
+  private updateNecroLook() {
+    const lk = this.look;
+    if (!lk) return;
+    const c = this.world.schoolCounts();
+    let best: School | null = null;
+    for (const sc of SCHOOL_ORDER) if (schoolTier(c[sc]) > 0 && (!best || c[sc] > c[best])) best = sc;
+    const tier = best ? schoolTier(c[best]) : 0;
+    const key = `${best}:${tier}`;
+    if (key === lk.key) return;
+    lk.key = key;
+    this.tweens.killTweensOf(lk.halo);
+    lk.motes?.destroy();
+    lk.motes = null;
+    lk.aura?.destroy();
+    lk.aura = null;
+    lk.ring.clear().setVisible(false);
+    if (!best || !tier) {
+      lk.halo.setVisible(false);
+      return;
+    }
+    const color = hexOf(SCHOOLS[best].color);
+    const alpha = tier === 1 ? 0.22 : tier === 2 ? 0.38 : 0.55;
+    lk.halo.setVisible(true).setTint(color).setAlpha(alpha).setScale(tier === 3 ? 1.3 : 1);
+    if (tier >= 2) {
+      this.tweens.add({ targets: lk.halo, alpha: alpha * 0.55, scale: lk.halo.scale * 1.12, yoyo: true, repeat: -1, duration: tier === 3 ? 600 : 1000, ease: 'Sine.easeInOut' });
+      const auraKey = `fx-aura-${best}`;
+      if (hasFx(this, auraKey)) {
+        // aura desenhada (48x16, em loop) no chão embaixo do necromante
+        lk.aura = this.add.sprite(NECRO.x, NECRO.y + 2, auraKey).setDepth(DEPTH.altar + 0.5).setScale(tier === 3 ? 1.25 : 1);
+        lk.aura.play(auraKey);
+      } else {
+        lk.ring.setVisible(true).lineStyle(1, color, 0.8).strokeEllipse(NECRO.x, NECRO.y + 2, 30, 9);
+        if (tier === 3) lk.ring.lineStyle(1, 0xffffff, 0.5).strokeEllipse(NECRO.x, NECRO.y + 2, 38, 12);
+      }
+    }
+    if (tier === 3) {
+      lk.motes = this.add
+        .particles(0, 0, 'px', {
+          x: { min: NECRO.x - 12, max: NECRO.x + 12 },
+          y: { min: NECRO.y - 30, max: NECRO.y },
+          speedY: { min: -26, max: -8 },
+          lifespan: { min: 500, max: 1000 },
+          tint: [color, 0xffffff],
+          alpha: { start: 1, end: 0 },
+          frequency: 70,
+        })
+        .setDepth(DEPTH.fx);
+    }
+  }
+
+  private onSynergy(school: School, level: 1 | 2 | 3) {
     const info = SCHOOLS[school];
     const color = hexOf(info.color);
     this.time.delayedCall(250, () => {
-      flash(this, color, level === 2 ? 0.55 : 0.35, level === 2 ? 600 : 350);
-      this.shaker.add(level === 2 ? 0.9 : 0.5);
-      if (level === 2) {
+      flash(this, color, level >= 2 ? 0.55 + (level - 2) * 0.25 : 0.35, level >= 2 ? 600 + (level - 2) * 400 : 350);
+      this.shaker.add(level === 3 ? 1.4 : level === 2 ? 0.9 : 0.5);
+      if (level === 3) {
+        // apoteose: três ondas, o campo para um instante e o necromante explode em luz
+        for (const [r, life, c] of [
+          [380, 1.2, color],
+          [260, 0.9, 0xffffff],
+          [160, 0.7, color],
+        ] as const)
+          this.fxList.push({ kind: 'ring', x: NECRO.x, y: NECRO.y - 20, r, color: c, life, max: life });
+        this.tempLights.push({ x: NECRO.x, y: NECRO.y - 16, key: 'light80', life: 1.2, max: 1.2 });
+        this.playFx(`fx-apoteose-${school}`, NECRO.x, NECRO.y - 20, { depth: DEPTH.fx + 1 });
+        this.hitstop(220);
+        this.time.delayedCall(120, () => audio.play('explode'));
+        this.time.delayedCall(360, () => audio.play('slam'));
+      } else if (level === 2) {
         // domínio: uma onda da cor da escola atravessa a tela inteira
         this.fxList.push({ kind: 'ring', x: NECRO.x, y: NECRO.y - 20, r: 340, color, life: 0.9, max: 0.9 });
         this.fxList.push({ kind: 'ring', x: NECRO.x, y: NECRO.y - 20, r: 220, color: 0xffffff, life: 0.6, max: 0.6 });
@@ -1093,10 +1363,12 @@ export class RunScene extends Phaser.Scene {
       }
       audio.play('synergy');
       buzz('heavy');
-      const title = level === 1 ? `MAESTRIA: ${info.name.toUpperCase()}` : `DOMÍNIO: ${info.dominionName.toUpperCase()}`;
-      const scale = level === 2 ? 2 : 1;
-      const t1 = pxText(this, 90, 56, title, color).setOrigin(0.5).setScale(scale * 1.5).setDepth(DEPTH.hud).setAlpha(0);
-      const t2 = pxText(this, 90, 68, wrap(level === 1 ? info.mastery : info.dominion, 40), COL.u).setOrigin(0.5, 0).setCenterAlign().setDepth(DEPTH.hud).setAlpha(0);
+      const title =
+        level === 1 ? `MAESTRIA: ${info.name.toUpperCase()}` : level === 2 ? `DOMÍNIO: ${info.dominionName.toUpperCase()}` : `APOTEOSE: ${info.apotheosisName.toUpperCase()}`;
+      const scale = level >= 2 ? 2 : 1;
+      const t1 = pxText(this, 90, 56, title, color, false, true).setOrigin(0.5).setDepth(DEPTH.hud).setAlpha(0);
+      const body = level === 1 ? info.mastery : level === 2 ? info.dominion : info.apotheosis;
+      const t2 = pxText(this, 90, 68, wrap(body, 40), COL.u).setOrigin(0.5, 0).setCenterAlign().setDepth(DEPTH.hud).setAlpha(0);
       this.tweens.add({ targets: [t1, t2], alpha: 1, duration: 250 });
       this.tweens.add({ targets: t1, scale, duration: 350, ease: 'Back.easeOut' });
       this.tweens.add({ targets: [t1, t2], alpha: 0, delay: 2600, duration: 400, onComplete: () => [t1, t2].forEach((t) => t.destroy()) });
@@ -1159,6 +1431,15 @@ export class RunScene extends Phaser.Scene {
       v.spr.setPosition(Math.round(u.x) + lx, Math.round(u.y) + ly + bob).setDepth(DEPTH.world + u.y);
       v.spr.setFlipX(u.facing < 0);
       v.shadow.setPosition(Math.round(u.x), Math.round(u.y));
+      if (u.rush && u.faction === 'living') {
+        // quem corre para o altar: setinha vermelha em cima da cabeça, piscando mais perto do altar
+        const near = Math.hypot(u.x - NECRO.x, u.y - NECRO.y) < 70;
+        if (!near || time % 300 < 200) {
+          const hx = Math.round(u.x);
+          const hy = Math.round(u.y) - 22;
+          this.overlay.fillStyle(near ? 0xff4a3a : 0xc8303e, 1).fillRect(hx - 1, hy, 3, 1).fillRect(hx, hy + 1, 1, 1);
+        }
+      }
 
       if (time < v.attackUntil) {
         if (v.spr.anims.isPlaying) v.spr.anims.pause();
@@ -1168,8 +1449,21 @@ export class RunScene extends Phaser.Scene {
         v.spr.anims.timeScale = u.stunT > 0 ? 0.01 : u.moving ? 1 : 0.25;
       }
 
-      if (time < v.flashUntil) v.spr.setTintFill(0xffffff);
+      // névoa (docs/ARTE.md): vivos que ainda não chegaram na luz são silhuetas escuras de olhos acesos
+      const fog = u.faction === 'living' && !UNIT_DEFS[u.kind].boss && !u.elite && time >= v.flashUntil ? fogLevel(u.y) : 0;
+      if (fog === 2) {
+        v.spr.setTintFill(FOG_TINT);
+        if (u.kind !== 'hound') {
+          // olhos do molde de humanoide: colunas 9 e 11, linha 5 (espelhados quando olha para a esquerda)
+          const top = Math.round(v.spr.y - v.spr.displayHeight);
+          const left = Math.round(v.spr.x - v.spr.displayWidth / 2);
+          this.overlay.fillStyle(FOG_EYES);
+          for (const c of [9, 11]) this.overlay.fillRect(v.spr.flipX ? left + 15 - c : left + c, top + 5, 1, 1);
+        }
+      } else if (time < v.flashUntil) v.spr.setTintFill(0xffffff);
+      else if (fog === 1) v.spr.setTint(0x5a6072);
       else if (u.stunT > 0) v.spr.setTint(0x90b8ff);
+      else if (u.chillT) v.spr.setTint(0xb8e0ff);
       else if (u.faction === 'living' && u.poisonT > 0) v.spr.setTint(0xb8f090);
       else if (u.faction === 'dead' && w.frenzyT > 0) v.spr.setTint(0xffa0a0);
       else v.spr.clearTint();
@@ -1238,6 +1532,11 @@ export class RunScene extends Phaser.Scene {
       spr.setAlpha(0);
       this.tweens.add({ targets: spr, alpha: 1, duration: 250 });
     }
+    if (u.affix && !this.affixSeen.has(u.affix)) {
+      // primeira vez na run: diz o que aquele contorno significa
+      this.affixSeen.add(u.affix);
+      floatText(this, Math.max(30, Math.min(150, u.x)), Math.max(30, u.y + 10), `ELITE ${AFFIX_NAME[u.affix]}`, AFFIX_COLOR[u.affix]);
+    }
     if (u.elite) {
       // contorno dourado: 4 cópias deslocadas atrás do sprite
       v.outline = [
@@ -1245,7 +1544,7 @@ export class RunScene extends Phaser.Scene {
         [1, 0],
         [0, -1],
         [0, 1],
-      ].map(([dx, dy]) => this.add.sprite(u.x + dx, u.y + dy, `${key}0`).setOrigin(0.5, 1).setTintFill(0xf6cf6a).setData('d', [dx, dy]));
+      ].map(([dx, dy]) => this.add.sprite(u.x + dx, u.y + dy, `${key}0`).setOrigin(0.5, 1).setTintFill(AFFIX_COLOR[u.affix ?? ''] ?? 0xf6cf6a).setData('d', [dx, dy]));
     }
     if (u.kind === 'champion') {
       this.emit.soul.explode(20, u.x, u.y - 10);
@@ -1315,6 +1614,8 @@ export class RunScene extends Phaser.Scene {
       if (!img) {
         const key = p.faction === 'dead' ? 'bonearrow' : p.sourceKind === 'crossbow' || p.sourceKind === 'witchhunter' ? 'boltp' : 'arrow';
         img = this.add.image(p.x, p.y, key).setDepth(DEPTH.fx);
+        // o que vem no necromante fica mais visível
+        if (p.atNecro) img.setTint(0xff7060).setScale(1.3);
         this.projectiles.set(p.id, img);
       }
       img.setPosition(Math.round(p.x), Math.round(p.y));
@@ -1369,6 +1670,19 @@ export class RunScene extends Phaser.Scene {
         if ((px + py) % 4 === 0 && px >= 0 && px < FIELD.w) g.fillRect(px, py, 1, 1);
       }
     }
+    if (this.world.stance === 'guard') {
+      // zona da defesa: arco pontilhado em volta do altar
+      // tracejado que gira devagar, na cor do osso
+      g.fillStyle(COL.w, 0.55);
+      const off = this.spin * 0.3;
+      for (let i = 0; i < 160; i++) {
+        if ((i + Math.floor(off)) % 6 >= 3) continue;
+        const a = Math.PI + (i / 160) * Math.PI;
+        const px = Math.round(NECRO.x + Math.cos(a) * GUARD_R);
+        const py = Math.round(NECRO.y + Math.sin(a) * GUARD_R * 0.8);
+        if (px >= 0 && px < FIELD.w) g.fillRect(px, py, 1, 1);
+      }
+    }
     const miasma = this.world.mods.circleMiasma > 0;
     g.fillStyle(miasma ? 0x8fbf3a : COL.g, miasma ? 0.1 : 0.06).fillCircle(cx, cy, r);
     // anéis tracejados: texturas pré-desenhadas por deslocamento (antes eram ~300 retângulos por quadro)
@@ -1410,7 +1724,7 @@ export class RunScene extends Phaser.Scene {
     // véu de cor por cima do campo (praga verde, sangue vermelho)
     const veil = on('plague') ? 0x8fbf3a : on('blood') ? 0xe0304a : on('spirit') ? 0x8fd3ff : 0;
     if (veil) {
-      if (!this.domTint) this.domTint = this.add.rectangle(0, 0, FIELD.w, FIELD.h, veil, 0).setOrigin(0).setDepth(DEPTH.fx - 1).setBlendMode(Phaser.BlendModes.ADD);
+      if (!this.domTint) this.domTint = this.add.rectangle(0, RUN_TOP, FIELD.w, FIELD.h - RUN_TOP, veil, 0).setOrigin(0).setDepth(DEPTH.fx - 1).setBlendMode(Phaser.BlendModes.ADD);
       this.domTint.setVisible(true).setFillStyle(veil, 0.05 + Math.sin(time * 0.002) * 0.025);
     } else this.domTint?.setVisible(false);
   }
@@ -1501,12 +1815,110 @@ export class RunScene extends Phaser.Scene {
 
   private drawClouds(time: number) {
     const g = this.overlay;
+    const art = hasFx(this, 'fx-nuvem-veneno');
+    const alive = new Set<number>();
     for (const c of this.world.clouds) {
-      const a = Math.min(1, c.t / 0.5) * 0.18;
-      g.fillStyle(0x8fbf3a, a).fillCircle(c.x, c.y - 2, c.r);
-      g.fillStyle(0xc8ff8a, a * 0.6).fillCircle(c.x + Math.sin(time * 0.004 + c.id) * 3, c.y - 4, c.r * 0.6);
+      const fade = Math.min(1, c.t / 0.5);
+      if (art) {
+        alive.add(c.id);
+        let spr = this.cloudSprites.get(c.id);
+        if (!spr) {
+          spr = this.add
+            .sprite(Math.round(c.x), Math.round(c.y - 2), 'fx-nuvem-veneno')
+            .setDepth(DEPTH.fx - 1)
+            .setScale(fxScale(c.r * 2, 24));
+          // cada nuvem começa num quadro diferente, para não pulsarem todas juntas
+          spr.play({ key: 'fx-nuvem-veneno', startFrame: c.id % 4 });
+          this.cloudSprites.set(c.id, spr);
+        }
+        spr.setAlpha(fade);
+      } else {
+        const a = fade * 0.18;
+        g.fillStyle(0x8fbf3a, a).fillCircle(c.x, c.y - 2, c.r);
+        g.fillStyle(0xc8ff8a, a * 0.6).fillCircle(c.x + Math.sin(time * 0.004 + c.id) * 3, c.y - 4, c.r * 0.6);
+      }
       if (Math.random() < 0.15) this.emit.poison.explode(1, c.x + Phaser.Math.Between(-c.r, c.r), c.y + Phaser.Math.Between(-c.r / 2, c.r / 2));
     }
+    for (const [id, spr] of this.cloudSprites)
+      if (!alive.has(id)) {
+        spr.destroy();
+        this.cloudSprites.delete(id);
+      }
+  }
+
+  // ================================================================ efeitos desenhados (src/art/fx.ts)
+
+  /**
+   * Toca um efeito desenhado e o apaga no fim. Efeito em loop fica `hold` ms e some em `fade` ms.
+   * Devolve null se o efeito não foi instalado: quem chama cai no efeito do código.
+   */
+  private playFx(
+    key: string,
+    x: number,
+    y: number,
+    o: { scale?: number; depth?: number; origin?: [number, number]; hold?: number; fade?: number } = {},
+  ): Phaser.GameObjects.Sprite | null {
+    if (!hasFx(this, key)) return null;
+    const [ox, oy] = o.origin ?? [0.5, 0.5];
+    const spr = this.add
+      .sprite(Math.round(x), Math.round(y), key)
+      .setOrigin(ox, oy)
+      .setScale(o.scale ?? 1)
+      .setDepth(o.depth ?? DEPTH.fx);
+    spr.play(key);
+    if (spr.anims.currentAnim?.repeat === -1) {
+      const fade = o.fade ?? 150;
+      this.time.delayedCall(o.hold ?? 400, () => this.tweens.add({ targets: spr, alpha: 0, duration: fade, onComplete: () => spr.destroy() }));
+    } else spr.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => spr.destroy());
+    return spr;
+  }
+
+  /** Raio do necromante: o segmento desenhado (8x8) repetido do cajado ao alvo, tremendo entre as 3 variações. */
+  private boltSprite(x1: number, y1: number, x2: number, y2: number): boolean {
+    if (!hasFx(this, 'fx-raio-segmento')) return false;
+    const len = Math.max(8, Math.round(Math.hypot(x2 - x1, y2 - y1)));
+    let v = Phaser.Math.Between(0, 2);
+    const bolt = this.add
+      .tileSprite(Math.round(x1), Math.round(y1), len, 8, 'fx-raio-segmento', v)
+      .setOrigin(0, 0.5)
+      .setRotation(Math.atan2(y2 - y1, x2 - x1))
+      .setDepth(DEPTH.fx);
+    this.time.delayedCall(60, () => {
+      v = (v + 1) % 3;
+      bolt.setFrame(v).setAlpha(0.7);
+    });
+    this.time.delayedCall(120, () => bolt.destroy());
+    return true;
+  }
+
+  /** Coluna de luz do Arcebispo: a arte (16x64) repetida na altura do campo inteiro, em loop, e some. */
+  private columnSprite(x: number, r: number): boolean {
+    if (!hasFx(this, 'fx-coluna-luz')) return false;
+    const col = this.add
+      .tileSprite(Math.round(x), 0, 16, FIELD.h, 'fx-coluna-luz', 0)
+      .setOrigin(0.5, 0)
+      .setScale(fxScale(r * 2, 16), 1)
+      .setDepth(DEPTH.fx);
+    let f = 0;
+    const tick = this.time.addEvent({
+      delay: 90,
+      loop: true,
+      callback: () => {
+        f = (f + 1) % 4;
+        col.setFrame(f);
+      },
+    });
+    this.tweens.add({
+      targets: col,
+      alpha: 0,
+      delay: 200,
+      duration: 250,
+      onComplete: () => {
+        tick.remove();
+        col.destroy();
+      },
+    });
+    return true;
   }
 
   private drawFx(dt: number) {
@@ -1624,7 +2036,7 @@ export class RunScene extends Phaser.Scene {
       setPxText(s.count, `${n}`);
       s.icon.x = sx;
       s.count.x = sx + 5;
-      s.count.setTint(n >= DOMINION_AT ? COL.y : n >= MASTERY_AT ? COL.G : COL.u);
+      s.count.setTint(schoolTier(n) === 3 ? COL.O : n >= DOMINION_AT ? COL.y : n >= MASTERY_AT ? COL.G : COL.u);
       sx += 10 + s.count.width;
     }
 
@@ -1634,7 +2046,7 @@ export class RunScene extends Phaser.Scene {
       const ratio = Math.max(0, boss.hp / boss.maxHp);
       this.hud.bossShownHp += (ratio - this.hud.bossShownHp) * Math.min(1, dt * 4);
       const bx = 20;
-      const by = 41;
+      const by = T + 41;
       const bw = 140;
       const g = this.hudGfx;
       g.fillStyle(COL.k).fillRoundedRect(bx - 2, by - 2, bw + 4, 9, 3);
@@ -1653,15 +2065,43 @@ export class RunScene extends Phaser.Scene {
     const bx = 15 + Math.round((Math.random() - 0.5) * 3 * this.hud.hpShake);
     const by = FIELD.h + 7;
     const bw = 160;
-    const bh = 10;
-    g.fillStyle(COL.k).fillRoundedRect(bx - 2, by - 2, bw + 4, bh + 4, 4);
-    g.fillStyle(COL.r).fillRoundedRect(bx, by, bw, bh, 3);
-    const fill = Math.max(0, Math.round((bw * w.necro.hp) / w.necro.maxHp));
-    if (fill >= 6) {
+    const bh = this.hpKit ? 8 : 10;
+    const ratio = Math.max(0, Math.min(1, w.necro.hp / w.necro.maxHp));
+    if (this.hpKit) {
+      // kit: moldura 9-slice, rastro de dano que desce devagar e preenchimento (pisca com a vida baixa)
+      const k = this.hpKit;
+      k.shown = ratio > k.shown ? ratio : k.shown + (ratio - k.shown) * Math.min(1, dt * 3);
+      k.frame.setPosition(bx - 2, by - 2);
+      k.ghost.setPosition(bx, by).setDisplaySize(Math.max(0, Math.round(bw * k.shown)), bh).setVisible(k.shown > ratio + 0.002);
+      const fw = Math.round(bw * ratio);
+      k.fill
+        .setTexture(ratio <= 0.3 ? 'ui-hp-fill-low' : 'ui-hp-fill')
+        .setPosition(bx, by)
+        .setDisplaySize(Math.max(1, fw), bh)
+        .setVisible(fw > 0);
+      if (time < this.hud.hpFlashUntil) k.fill.setTintFill(0xffffff);
+      else k.fill.clearTint();
+    } else g.fillStyle(COL.k).fillRoundedRect(bx - 2, by - 2, bw + 4, bh + 4, 4);
+    const fill = Math.max(0, Math.round(bw * ratio));
+    if (!this.hpKit && fill >= 6) {
+      g.fillStyle(COL.r).fillRoundedRect(bx, by, bw, bh, 3);
       g.fillStyle(time < this.hud.hpFlashUntil ? 0xffffff : 0xc8303e).fillRoundedRect(bx, by, fill, bh, 3);
       g.fillStyle(0xffffff, 0.22).fillRect(bx + 2, by + 1, fill - 4, 2);
       g.fillStyle(0x000000, 0.18).fillRect(bx + 2, by + bh - 3, fill - 4, 2);
-    } else if (fill > 0) g.fillStyle(0xc8303e).fillRect(bx, by + 1, fill, bh - 2);
+    } else if (!this.hpKit) {
+      g.fillStyle(COL.r).fillRoundedRect(bx, by, bw, bh, 3);
+      if (fill > 0) g.fillStyle(0xc8303e).fillRect(bx, by + 1, fill, bh - 2);
+    }
+    const shield = w.necro.shield ?? 0;
+    if (shield > 0.05) {
+      const sw = Math.max(1, Math.round((bw * shield) / w.necro.maxHp));
+      g.fillStyle(0xffe08a, 0.9).fillRect(bx, by, sw, 2);
+      g.fillStyle(0xffffff, 0.5).fillRect(bx, by, sw, 1);
+    }
+    // dádiva: filete dourado embaixo da vida, enche com os abates
+    const gp = w.giftProgress();
+    g.fillStyle(COL.k, 0.8).fillRect(bx, by + bh + 3, bw, 2);
+    g.fillStyle(gp >= 1 && time % 400 < 200 ? 0xffffff : COL.U, 1).fillRect(bx, by + bh + 3, Math.round(bw * gp), 2);
     setPxText(this.hpText, `${showNum(Math.max(0, w.necro.hp))}/${showNum(w.necro.maxHp)}`);
     this.hpText.setTint(w.necro.hp <= w.necro.maxHp * 0.3 && time % 400 < 200 ? COL.O : 0xffffff);
 
@@ -1669,7 +2109,7 @@ export class RunScene extends Phaser.Scene {
     if (this.combo > 0 && time - this.comboAt > 1600) {
       if (this.combo >= 40 && this.combo > this.comboBest) {
         this.comboBest = this.combo;
-        floatText(this, 90, 58, `recorde de combo: ${this.combo}`, COL.y);
+        floatText(this, 50, 50, `recorde de combo: ${this.combo}`, COL.y);
       }
       this.combo = 0;
     }
@@ -1677,8 +2117,7 @@ export class RunScene extends Phaser.Scene {
       const c = this.comboText.setVisible(true);
       if (c.text !== `${this.combo} ABATES`) {
         setPxText(c, `${this.combo} ABATES`);
-        c.setScale(Math.min(2.6, 1.3 + this.combo / 80) + 0.4);
-      } else c.setScale(Math.max(Math.min(2.6, 1.3 + this.combo / 80), c.scale - dt * 4));
+      }
       c.setTint(this.combo >= 100 ? (time % 200 < 100 ? COL.R : COL.O) : this.combo >= 50 ? COL.O : this.combo >= 25 ? COL.y : COL.w);
       c.setAlpha(Math.min(1, 1.6 - (time - this.comboAt) / 1000));
     } else this.comboText.setVisible(false);
@@ -1698,6 +2137,10 @@ export class RunScene extends Phaser.Scene {
     const pop = time - this.ritualReadyAt < 300 ? 1.6 - ((time - this.ritualReadyAt) / 300) * 0.6 : 1;
     this.ritualBtn.setScale(ready ? pop + Math.sin(time * 0.01) * 0.08 : 1);
 
+    const guard = w.stance === 'guard';
+    this.stanceBtn.icon.setTexture(guard ? 'icon-guard' : 'icon-attack');
+    this.stanceBtn.img.setTexture(guard ? 'act-round-ready' : 'act-round').setAlpha(this.ended ? 0.6 : 1);
+
     for (const b of this.buttons) {
       const ok = b.can() && !this.ended;
       const pressed = time < b.downUntil;
@@ -1710,7 +2153,7 @@ export class RunScene extends Phaser.Scene {
   }
 
   private banner(text: string, color: number, y = 120, sub?: string) {
-    const t = pxText(this, FIELD.w + 60, y, text, color).setOrigin(0.5).setScale(2).setDepth(DEPTH.hud);
+    const t = pxText(this, FIELD.w + 60, y, text, color, false, true).setOrigin(0.5).setDepth(DEPTH.hud);
     this.tweens.add({ targets: t, x: FIELD.w / 2, duration: 300, ease: 'Back.easeOut' });
     this.tweens.add({ targets: t, x: -60, delay: 1100, duration: 250, ease: 'Back.easeIn', onComplete: () => t.destroy() });
     if (sub) {
@@ -1734,10 +2177,10 @@ export class RunScene extends Phaser.Scene {
     const w = this.world;
     // Contrabando (árvore): desconto e um item a mais
     const offer = Array.from({ length: 3 + w.mods.merchantExtra }, () => rollItem(Math.random, 0.2 + this.world.regionIndex * 0.15));
-    const shade = this.add.rectangle(0, 0, 180, 320, 0x0b0806, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
+    const shade = this.add.rectangle(0, screenTop(this.scene.key), 180, VIEW_H, 0x0b0806, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
     this.tweens.add({ targets: shade, fillAlpha: 0.86, duration: 250 });
     const hood = this.add.sprite(90, 70, 'char-reaper0').setOrigin(0.5, 1).setScale(1).setDepth(DEPTH.modal + 1).setTint(0x9a8a70);
-    const t1 = pxText(this, 90, 78, 'MERCADOR ENCAPUZADO', COL.y).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1);
+    const t1 = pxText(this, 90, 78, 'MERCADOR ENCAPUZADO', COL.y, false, true).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1);
     const t2 = pxText(this, 90, 88, 'almas da run por itens que ficam com você', COL.v).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1);
     const soulsLine = pxText(this, 90, 100, '', COL.G).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1);
     this.modal.push(shade, hood, t1, t2, soulsLine);
@@ -1771,7 +2214,7 @@ export class RunScene extends Phaser.Scene {
         w.loot.push(id);
         refresh();
         setPxText(this.bag.count, `${w.loot.length}`);
-        this.bag.icon.setTexture(`item-${id}`).setVisible(true);
+        this.bag.icon.setVisible(true);
         audio.play('buy');
         buzz('medium');
         this.shaker.add(0.2);
@@ -1804,12 +2247,15 @@ export class RunScene extends Phaser.Scene {
     this.modalKind = 'event';
     this.drag = null;
     const route = ev.id === 'route';
+    if (ev.id === 'gift') {
+      this.showGift(ev.choices);
+      return;
+    }
     const def = EVENT_BY_ID[ev.id];
-    const shade = this.add.rectangle(0, 0, 180, 320, 0x0b0806, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
+    const shade = this.add.rectangle(0, screenTop(this.scene.key), 180, VIEW_H, 0x0b0806, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
     this.tweens.add({ targets: shade, fillAlpha: 0.86, duration: 250 });
-    const title = pxText(this, 90, 60, route ? 'ENCRUZILHADA' : def.title.toUpperCase(), route ? COL.y : COL.G)
+    const title = pxText(this, 90, 60, route ? 'ENCRUZILHADA' : def.title.toUpperCase(), route ? COL.y : COL.G, false, true)
       .setOrigin(0.5)
-      .setScale(2)
       .setDepth(DEPTH.modal + 1)
       .setAlpha(0);
     const text = pxText(this, 90, 76, wrap(route ? 'escolha o caminho até a próxima região' : def.text, 40), COL.v)
@@ -1831,10 +2277,50 @@ export class RunScene extends Phaser.Scene {
       const color = route ? COL.y : i === 0 ? COL.G : COL.u;
       c.add([
         this.add.image(0, 0, 'item-card').setOrigin(0),
-        pxText(this, 8, 6, label, color),
+        pxText(this, 8, 6, label, color, false, true),
         pxText(this, 8, 17, wrap(desc, 38), COL.u),
         pxText(this, 165, 34, `${i + 1}`, COL.B).setOrigin(1, 0),
       ]);
+      c.setInteractive(new Phaser.Geom.Rectangle(0, 0, 170, 44), Phaser.Geom.Rectangle.Contains);
+      c.on('pointerdown', () => this.pickEvent(i));
+      this.tweens.add({ targets: c, y, alpha: 1, delay: 120 + i * 100, duration: 350, ease: 'Back.easeOut' });
+      this.modal.push(c);
+    });
+  }
+
+  /** Dádiva: 1 de 3, vale até o fim da run. As de escola mostram o ícone e o ponto que somam. */
+  private showGift(choices: string[]) {
+    const w = this.world;
+    const shade = this.add.rectangle(0, screenTop(this.scene.key), 180, VIEW_H, 0x0b0806, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
+    this.tweens.add({ targets: shade, fillAlpha: 0.86, duration: 250 });
+    const title = pxText(this, 90, 52, 'DÁDIVA', COL.U, false, true).setOrigin(0.5).setDepth(DEPTH.modal + 1).setAlpha(0);
+    const text = pxText(this, 90, 68, 'escolha uma. vale até o fim da run', COL.v).setOrigin(0.5, 0).setDepth(DEPTH.modal + 1).setAlpha(0);
+    this.tweens.add({ targets: [title, text], alpha: 1, duration: 300 });
+    this.modal.push(shade, title, text);
+    audio.play('synergy');
+    const counts = w.schoolCounts();
+    choices.forEach((id, i) => {
+      const g = GIFT_BY_ID[id];
+      const y = 88 + i * 54;
+      const c = this.add.container(5, y + 160).setDepth(DEPTH.modal + 1).setAlpha(0);
+      const sc = g.school ? SCHOOLS[g.school] : null;
+      const color = sc ? hexOf(sc.color) : COL.u;
+      const have = w.gifts.filter((t) => t === id).length;
+      const parts: Phaser.GameObjects.GameObject[] = [this.add.image(0, 0, 'item-card').setOrigin(0)];
+      const nameX = sc ? 18 : 8;
+      if (sc) parts.push(this.add.image(11, 9, `school-${g.school}`));
+      parts.push(pxText(this, nameX, 6, g.name, color, false, true));
+      parts.push(pxText(this, 8, 17, wrap(g.desc, 38), COL.u));
+      if (sc && g.school) {
+        const n = counts[g.school];
+        const next = n + 1;
+        const up = schoolTier(next) > schoolTier(n);
+        const tag = up ? `${sc.name.toLowerCase()} ${next}: ${TIER_NAME[schoolTier(next)]}!` : `${sc.name.toLowerCase()} +1 (${next})`;
+        parts.push(pxText(this, 8, 33, tag, up ? COL.y : color));
+      }
+      if (g.max > 1) parts.push(pxText(this, 165, 6, `${have}/${g.max}`, COL.B).setOrigin(1, 0));
+      parts.push(pxText(this, 165, 34, `${i + 1}`, COL.B).setOrigin(1, 0));
+      c.add(parts);
       c.setInteractive(new Phaser.Geom.Rectangle(0, 0, 170, 44), Phaser.Geom.Rectangle.Contains);
       c.on('pointerdown', () => this.pickEvent(i));
       this.tweens.add({ targets: c, y, alpha: 1, delay: 120 + i * 100, duration: 350, ease: 'Back.easeOut' });
@@ -1871,8 +2357,8 @@ export class RunScene extends Phaser.Scene {
     if (this.modalKind) return;
     this.modalKind = 'pause';
     audio.play('click');
-    const shade = this.add.rectangle(0, 0, 180, 320, 0x0b0806, 0.88).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
-    const t = pxText(this, 90, 40, 'PAUSA', COL.G).setOrigin(0.5).setScale(2).setDepth(DEPTH.modal + 1);
+    const shade = this.add.rectangle(0, screenTop(this.scene.key), 180, VIEW_H, 0x0b0806, 0.88).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
+    const t = pxText(this, 90, 40, 'PAUSA', COL.G, false, true).setOrigin(0.5).setDepth(DEPTH.modal + 1);
     this.modal.push(shade, t);
     const counts = this.world.schoolCounts();
     let y = 64;
@@ -1880,10 +2366,18 @@ export class RunScene extends Phaser.Scene {
       if (!counts[s]) continue;
       const info = SCHOOLS[s];
       const n = counts[s];
-      const lvl = n >= DOMINION_AT ? info.dominionName.toLowerCase() : n >= MASTERY_AT ? 'maestria' : `${n}/${MASTERY_AT}`;
+      const t = schoolTier(n);
+      const lvl = t === 3 ? info.apotheosisName.toLowerCase() : t === 2 ? info.dominionName.toLowerCase() : t === 1 ? 'maestria' : `${n}/${MASTERY_AT}`;
       this.modal.push(this.add.image(20, y + 3, `school-${s}`).setDepth(DEPTH.modal + 1));
       this.modal.push(pxText(this, 28, y, `${info.name.toUpperCase()}: ${lvl}`, hexOf(info.color)).setDepth(DEPTH.modal + 1));
       y += 12;
+    }
+    const gifts = this.world.gifts;
+    if (gifts.length) {
+      const names = gifts.map((id) => GIFT_BY_ID[id]?.name.toLowerCase()).join(', ');
+      const t = pxText(this, 90, y + 2, wrap(`dádivas: ${names}`, 40), COL.U).setOrigin(0.5, 0).setCenterAlign().setDepth(DEPTH.modal + 1);
+      this.modal.push(t);
+      y += t.height + 6;
     }
     if (this.world.route) {
       this.modal.push(
@@ -1895,7 +2389,7 @@ export class RunScene extends Phaser.Scene {
     }
     if (y === 64) {
       this.modal.push(
-        pxText(this, 90, y + 6, wrap('nenhuma escola ativa. equipe 2 itens da mesma escola para a maestria', 40), COL.B)
+        pxText(this, 90, y + 6, wrap('nenhuma escola ativa. equipe itens de uma escola: 1 dá o básico, 2 a maestria', 40), COL.B)
           .setOrigin(0.5, 0)
           .setCenterAlign()
           .setDepth(DEPTH.modal + 1),
@@ -1961,7 +2455,7 @@ export class RunScene extends Phaser.Scene {
     });
     saveMeta();
 
-    const shade = this.add.rectangle(0, 0, 180, 320, 0x0b0806, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
+    const shade = this.add.rectangle(0, screenTop(this.scene.key), 180, VIEW_H, 0x0b0806, 0).setOrigin(0).setDepth(DEPTH.modal).setInteractive();
     this.tweens.add({ targets: shade, fillAlpha: 0.88, duration: 500 });
     this.modal.push(shade);
     const lines: [string, number, number][] = [
@@ -1980,7 +2474,7 @@ export class RunScene extends Phaser.Scene {
     for (const a of sum.achievements.slice(0, 3)) lines.push([`conquista: ${a.name.toLowerCase()} +${a.reward}`, COL.G, 1]);
     if (sum.achievements.length > 3) lines.push([`+${sum.achievements.length - 3} conquistas`, COL.G, 1]);
     if (sum.newSchool) lines.push(['nova escola liberada!', COL.y, 1]);
-    if (sum.heresyUnlocked) lines.push([`heresia ${sum.heresyUnlocked} liberada!`, COL.R, 1]);
+    if (sum.heresyUnlocked) lines.push([`nível ${levelRoman(sum.heresyUnlocked)} da descida liberado!`, COL.R, 1]);
     if (sum.record) lines.push(['NOVO RECORDE!', COL.y, 1]);
     if (sum.dailyBest) lines.push(['melhor marca do dia!', COL.y, 1]);
     let y = 62;

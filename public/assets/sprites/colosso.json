@@ -1,0 +1,136 @@
+{
+  "frames": [
+    {
+      "filename": "0",
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 28
+      },
+      "duration": 166
+    },
+    {
+      "filename": "1",
+      "frame": {
+        "x": 24,
+        "y": 0,
+        "w": 24,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 28
+      },
+      "duration": 166
+    },
+    {
+      "filename": "2",
+      "frame": {
+        "x": 0,
+        "y": 28,
+        "w": 24,
+        "h": 28
+      },
+      "rotated": false,
+      "trimmed": false,
+      "spriteSourceSize": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 28
+      },
+      "sourceSize": {
+        "w": 24,
+        "h": 28
+      },
+      "duration": 200
+    }
+  ],
+  "meta": {
+    "app": "agent-sprite-forge export_engine.py",
+    "version": "0.6.0",
+    "image": "colosso.png",
+    "format": "RGBA8888",
+    "size": {
+      "w": 48,
+      "h": 56
+    },
+    "scale": "1",
+    "frameTags": [
+      {
+        "name": "walk",
+        "from": 0,
+        "to": 1,
+        "direction": "forward",
+        "color": "#000000ff"
+      },
+      {
+        "name": "attack",
+        "from": 2,
+        "to": 2,
+        "direction": "forward",
+        "color": "#000000ff",
+        "repeat": "1"
+      }
+    ],
+    "layers": [
+      {
+        "name": "sprite",
+        "opacity": 255,
+        "blendMode": "normal"
+      }
+    ],
+    "slices": [
+      {
+        "name": "anchor",
+        "color": "#0000ffff",
+        "data": "{\"anchor_px\":[12.0,28.0]}",
+        "keys": [
+          {
+            "frame": 0,
+            "bounds": {
+              "x": 0,
+              "y": 0,
+              "w": 24,
+              "h": 28
+            },
+            "pivot": {
+              "x": 12,
+              "y": 28
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "animations": {
+    "walk": [
+      "0",
+      "1"
+    ],
+    "attack": [
+      "2"
+    ]
+  }
+}

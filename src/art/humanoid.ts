@@ -6,7 +6,7 @@
  */
 
 export type Head = 'hair' | 'bald' | 'cap' | 'helmet' | 'greathelm' | 'hood' | 'mitre' | 'brim';
-export type Body = 'tunic' | 'armor' | 'robe';
+export type Body = 'tunic' | 'armor' | 'robe' | 'reach';
 export type Weapon =
   | 'torch'
   | 'pitchfork'
@@ -37,133 +37,146 @@ const W = 16;
 const H = 22;
 type Layer = Record<number, string>;
 
-// 16x22: cabeça nas linhas 0-8 (olhos na 5), tronco 9-16, pernas 17-21
+// 16x22, virado para a direita em 3/4 (docs/ARTE.md): cabeça grande nas linhas 0-8 com o rosto à direita
+// (olhos nas colunas 9 e 11), tronco 9-16 com o braço da frente segurando a arma (mão em 12-13, linha 13),
+// pernas 17-21. O "k" marca a borda: o gerador a troca pelo tom escuro do material (sel-out), nunca preto.
 const HEADS: Record<Head, Layer> = {
   hair: {
-    1: '.....kkkkkk.....',
-    2: '....kHHHHHHk....',
+    1: '.....kkkkk......',
+    2: '....kHHHHHkk....',
     3: '...kHHHHHHHHk...',
-    4: '...kHhffffhHk...',
-    5: '...kHeffffeHk...',
-    6: '...kffffffffk...',
-    7: '....kffFFffk....',
-    8: '.....kFFFFk.....',
+    4: '...kHHHhfffffk..',
+    5: '...kHHhffefefk..',
+    6: '...kHhfffffffk..',
+    7: '....kffffffFk...',
+    8: '.....kkFFFkk....',
   },
   bald: {
-    1: '.....kkkkkk.....',
+    1: '.....kkkkk......',
     2: '....kffffffk....',
     3: '...kffffffffk...',
-    4: '...kffffffffk...',
-    5: '...kfeffffefk...',
-    6: '...kffffffffk...',
-    7: '....kffFFffk....',
-    8: '.....kFFFFk.....',
+    4: '...kffffffffFk..',
+    5: '...kfffffefeFk..',
+    6: '...kFffffffffk..',
+    7: '....kffffffFk...',
+    8: '.....kkFFFkk....',
   },
   cap: {
-    0: '......kkkk......',
-    1: '.....kHHHHk.....',
-    2: '....kHHHHHHk....',
-    3: '...khhhhhhhhk...',
-    4: '...kffffffffk...',
-    5: '...kfeffffefk...',
-    6: '...kffffffffk...',
-    7: '....kffFFffk....',
-    8: '.....kFFFFk.....',
+    0: '.....kkkkk......',
+    1: '....kHHHHHk.....',
+    2: '...kHHHHHHHk....',
+    3: '...khhhhhhhhhk..',
+    4: '...kHffffffffk..',
+    5: '...kHHhffefefk..',
+    6: '...kHhfffffffk..',
+    7: '....kffffffFk...',
+    8: '.....kkFFFkk....',
   },
   helmet: {
-    0: '......kkkk......',
-    1: '.....kHHHHk.....',
-    2: '....kHHHHHHk....',
+    0: '.....kkkkk......',
+    1: '....kHHHHHk.....',
+    2: '...kHHHHHHHk....',
     3: '...kHHHHHHHHk...',
-    4: '...khhhhhhhhk...',
-    5: '...kfeffffefk...',
-    6: '...kffffffffk...',
-    7: '....kffFFffk....',
-    8: '.....kFFFFk.....',
+    4: '...khhhhhhhhhk..',
+    5: '...kHHhffefefk..',
+    6: '...kHhfffffffk..',
+    7: '....kffffffFk...',
+    8: '.....kkFFFkk....',
   },
   greathelm: {
-    1: '....kkkkkkkk....',
-    2: '...kHHHHHHHHk...',
+    1: '....kkkkkkk.....',
+    2: '...kHHHHHHHk....',
     3: '...kHHHHHHHHk...',
-    4: '...kkkkkkkkkk...',
-    5: '...kHekkkkeHk...',
-    6: '...kHHHhhHHHk...',
-    7: '...kHhhyyhhHk...',
-    8: '....kkkkkkkk....',
+    4: '...kHHHHHHHHHk..',
+    5: '...kHHhkekekkk..',
+    6: '...kHHHHHHHHHk..',
+    7: '....kHhhyhhhk...',
+    8: '.....kkkkkkk....',
   },
   hood: {
-    1: '.....kkkkkk.....',
+    1: '.....kkkkk......',
     2: '....kHHHHHHk....',
-    3: '...kHHhhhhHHk...',
-    4: '...kHhffffhHk...',
-    5: '...kHfeffefHk...',
-    6: '...kHffffffHk...',
-    7: '...kHhFFFFhHk...',
-    8: '...khkkkkkkhk...',
+    3: '...kHHHHHHHHk...',
+    4: '...kHHhffffffk..',
+    5: '...kHhfffefefk..',
+    6: '...kHhfffffffk..',
+    7: '...kHHhfffffFk..',
+    8: '...kHHHkkkkkk...',
   },
   mitre: {
-    0: '......kHHk......',
-    1: '.....kHyyHk.....',
-    2: '....kHHyyHHk....',
-    3: '...kkHHHHHHkk...',
-    4: '...kffffffffk...',
-    5: '...kfeffffefk...',
-    6: '...kffffffffk...',
-    7: '....kffFFffk....',
-    8: '.....kFFFFk.....',
+    0: '......kHk.......',
+    1: '.....kHyHk......',
+    2: '....kHHyHHk.....',
+    3: '...kHHHyHHHk....',
+    4: '...khhhhhhhhhk..',
+    5: '...kfffffefeFk..',
+    6: '...kFffffffffk..',
+    7: '....kffffffFk...',
+    8: '.....kkFFFkk....',
   },
   brim: {
-    1: '.....kkkkkk.....',
-    2: '....kHHHHHHk....',
-    3: '....kHhhhhHk....',
-    4: '.kkkhhhhhhhhkkk.',
-    5: '.kHHHHHHHHHHHHk.',
-    6: '...kfeffffefk...',
-    7: '....kffFFffk....',
-    8: '.....kFFFFk.....',
+    1: '......kkkk......',
+    2: '.....kHHHHk.....',
+    3: '.....khhhhk.....',
+    4: '.kHHHHHHHHHHHHk.',
+    5: '...kffffefefk...',
+    6: '...kfffffffFk...',
+    7: '....kffffFk.....',
+    8: '.....kkFFk......',
   },
 };
 
 const BODIES: Record<Body, Layer> = {
   tunic: {
     9: '.....kAAAAk.....',
-    10: '...kkAAAAAAkk...',
-    11: '..kAAAAAAAAAAk..',
-    12: '..kAkAAAAAAkAk..',
-    13: '..kAkAAAAAAkAk..',
-    14: '..kfkaAAAAakfk..',
+    10: '....kAAAAAAk....',
+    11: '...kAAAAAAAAk...',
+    12: '...kAAAAAAAAAk..',
+    13: '...kaAAAAAAkffk.',
+    14: '....kaaaaaakkk..',
     15: '....kaaaaaak....',
-    16: '....kaakkaak....',
+    16: '....kLLkkLLk....',
   },
   armor: {
     9: '.....kAAAAk.....',
-    10: '...kkAaAAaAkk...',
-    11: '..kAAAAaaAAAAk..',
-    12: '..kAkAAAAAAkAk..',
-    13: '..kAkaAAAAakAk..',
-    14: '..kfkAAAAAAkfk..',
+    10: '....kAAaaAAk....',
+    11: '...kAAaAAaAAk...',
+    12: '...kAAAaaAAAAk..',
+    13: '...kaAAAAAAkffk.',
+    14: '....kAAAAAAkkk..',
     15: '....kaAkkAak....',
-    16: '....kaakkaak....',
+    16: '....kLLkkLLk....',
   },
   robe: {
     9: '.....kAAAAk.....',
-    10: '...kkAAAAAAkk...',
-    11: '..kAAAAaAAAAAk..',
-    12: '..kAkAAaAAAkAk..',
-    13: '..kAkAAaAAAkAk..',
-    14: '..kfkAAaAAAkfk..',
-    15: '...kAAAaAAAAk...',
-    16: '...kAAAaAAAAk...',
+    10: '....kAAAAAAk....',
+    11: '...kAAAAaAAAk...',
+    12: '...kAAAAaAAAAk..',
+    13: '...kAAAAaAAkffk.',
+    14: '...kAAAAaAAkkk..',
+    15: '...kAAAAaAAAk...',
+    16: '...kAAAAaAAAk...',
+  },
+  // mortos que andam de braços esticados (zumbi, carniçal)
+  reach: {
+    9: '.....kAAAAk.....',
+    10: '....kAAAAAAk....',
+    11: '...kAAAAAAAkkkk.',
+    12: '...kAAAAAAAffffk',
+    13: '...kaAAAAAAkkkk.',
+    14: '....kaaaaaak....',
+    15: '....kaaaaaak....',
+    16: '....kLLkkLLk....',
   },
 };
 
 const LEGS: [Layer, Layer] = [
-  { 17: '....kLLkkLLk....', 18: '....kLLkkLLk....', 19: '...kLLk..kLLk...', 20: '...kLLk..kLLk...', 21: '...kkkk..kkkk...' },
-  { 17: '.....kLLLLk.....', 18: '.....kLLLLk.....', 19: '.....kLkkLk.....', 20: '.....kLkkLk.....', 21: '.....kkkkkk.....' },
+  { 17: '....kLLkkLLk....', 18: '...kLLk..kLLk...', 19: '...kLLk..kLLk...', 20: '..kLLLk..kLLLk..', 21: '..kkkkk..kkkkk..' },
+  { 17: '.....kLLLLk.....', 18: '.....kLLLLk.....', 19: '.....kLLkLk.....', 20: '....kLLLkLLLk...', 21: '....kkkkkkkkk...' },
 ];
 const ROBE_HEM: [Layer, Layer] = [
-  { 17: '...kAAAaAAAAk...', 18: '..kAAAAaAAAAAk..', 19: '..kAAAAaAAAAAk..', 20: '..kaaaaaaaaaak..', 21: '..kkkkkkkkkkkk..' },
-  { 17: '...kAAAaAAAAk...', 18: '...kAAAaAAAAk...', 19: '..kAAAAaAAAAk...', 20: '..kaaaaaaaaak...', 21: '..kkkkkkkkkkk...' },
+  { 17: '..kAAAAaAAAAk...', 18: '..kAAAAaAAAAk...', 19: '..kAAAAaAAAAAk..', 20: '..kaaaaaaaaaak..', 21: '..kkkkkkkkkkkk..' },
+  { 17: '...kAAAaAAAAk...', 18: '...kAAAaAAAAk...', 19: '...kAAAaAAAAk...', 20: '...kaaaaaaaak...', 21: '...kkkkkkkkkk...' },
 ];
 
 const col = (n: number) => '.'.repeat(n);
@@ -174,27 +187,41 @@ const handle = (from: number, to: number, c = 13, ch = 'N'): Layer => {
   return l;
 };
 
-// armas na mão direita (coluna 13, mão na linha 14)
+// armas na mão da frente (coluna 13, mão na linha 13). Grandes: é o que identifica a classe.
 const WEAPONS: Record<Weapon, Layer> = {
   none: {},
-  torch: { 6: at(13, 'O'), 7: at(12, 'oOo'), 8: at(13, 'o'), ...handle(9, 14) },
-  pitchfork: { 1: at(12, 'm.m'), 2: at(12, 'm.m'), 3: at(12, 'mmm'), ...handle(4, 20) },
-  sword: { 5: at(13, 'w'), 6: at(13, 'm'), 7: at(13, 'm'), 8: at(13, 'm'), 9: at(13, 'm'), 10: at(13, 'm'), 11: at(13, 'm'), 12: at(12, 'yMy'), 13: at(13, 'N') },
-  spear: { 0: at(13, 'w'), 1: at(13, 'm'), ...handle(2, 21) },
-  bow: { 7: at(13, 'Nk'), 16: at(13, 'Nk'), ...handle(8, 15, 14) },
-  crossbow: { 13: at(10, 'MMMMm'), 14: at(12, 'NN') },
-  staffcross: { 1: at(13, 'y'), 2: at(12, 'yyy'), 3: at(13, 'y'), ...handle(4, 21) },
-  bell: { 14: at(13, 'y'), 15: at(12, 'yyy'), 16: at(12, 'yyy'), 17: at(12, 'kOk') },
-  axe: { 5: at(11, 'kmN'), 6: at(11, 'mmN'), 7: at(11, 'mmN'), 8: at(11, 'kmN'), ...handle(9, 15) },
-  flail: { 6: at(13, 'kM'), 7: at(13, 'MM'), 8: at(13, 'k'), 9: at(13, 'k'), ...handle(10, 14) },
-  lantern: { 14: at(13, 'k'), 15: at(12, 'kOk'), 16: at(12, 'kok'), 17: at(12, 'kkk') },
-  halberd: { 0: at(13, 'w'), 1: at(12, 'mmm'), 2: at(12, 'mmm'), 3: at(13, 'mm'), ...handle(4, 21) },
-  mace: { 8: at(13, 'M'), 9: at(12, 'MMM'), 10: at(12, 'MMM'), 11: at(13, 'M'), ...handle(12, 14) },
+  torch: { 3: at(13, 'O'), 4: at(12, 'oOo'), 5: at(12, 'oOo'), 6: at(12, 'ooo'), 7: at(12, 'NNN'), ...handle(8, 15) },
+  pitchfork: { 0: at(11, 'm.m.m'), 1: at(11, 'm.m.m'), 2: at(11, 'm.m.m'), 3: at(11, 'mmmmm'), ...handle(4, 20) },
+  sword: { 3: at(13, 'w'), 4: at(13, 'm'), 5: at(13, 'm'), 6: at(13, 'm'), 7: at(13, 'm'), 8: at(13, 'm'), 9: at(13, 'm'), 10: at(13, 'm'), 11: at(12, 'MMM'), 12: at(13, 'N') },
+  spear: { 0: at(13, 'w'), 1: at(12, 'mmm'), 2: at(13, 'm'), ...handle(3, 21) },
+  bow: { ...handle(6, 18, 13, 'w'), 5: at(13, 'NN'), 6: at(14, 'N'), ...handle(7, 17, 15), 18: at(14, 'N'), 19: at(13, 'NN') },
+  crossbow: { 11: at(14, 'm'), 12: at(8, 'NNNNNNMm'), 13: at(11, 'NNN'), 14: at(14, 'm') },
+  staffcross: { 0: at(13, 'y'), 1: at(12, 'yyy'), 2: at(13, 'y'), 3: at(13, 'y'), ...handle(4, 21) },
+  bell: { 14: at(13, 'N'), 15: at(12, 'yyy'), 16: at(11, 'yyyyy'), 17: at(11, 'yyyyy'), 18: at(12, 'kOk') },
+  axe: { 3: at(10, 'kmmN'), 4: at(10, 'mmmN'), 5: at(10, 'mmmN'), 6: at(10, 'kmmN'), ...handle(7, 16) },
+  flail: { 5: at(13, 'MM'), 6: at(13, 'MM'), 7: at(13, 'w'), 8: at(13, 'w'), 9: at(13, 'w'), ...handle(10, 15) },
+  lantern: { 14: at(13, 'N'), 15: at(12, 'MMM'), 16: at(12, 'MOM'), 17: at(12, 'MoM'), 18: at(12, 'MMM') },
+  halberd: { 0: at(13, 'w'), 1: at(11, 'mmmm'), 2: at(11, 'mmmm'), 3: at(12, 'mm'), ...handle(4, 21) },
+  mace: { 6: at(13, 'M'), 7: at(12, 'MMM'), 8: at(12, 'MMM'), 9: at(13, 'M'), ...handle(10, 15) },
 };
 
-const SHIELD: Layer = { 11: '.kkk', 12: 'kmymk', 13: 'kmmmk', 14: 'kmmmk', 15: '.kmk' };
-const BOOK: Layer = { 13: 'kkk', 14: 'kyk', 15: 'kkk' };
-const CROSS: Layer = { 11: at(7, 'y'), 12: at(6, 'yyy'), 13: at(7, 'y') };
+// quadro de ataque: pose própria (estocada, golpe), com o corpo inclinado 1 px para a frente.
+// Armas sem pose própria avançam 1 px e descem 1 px.
+const ATTACKS: Partial<Record<Weapon, Layer>> = {
+  pitchfork: { 11: at(13, 'mmm'), 12: at(13, 'm'), 13: at(4, 'NNNNNNNNNmmm'), 14: at(13, 'm'), 15: at(13, 'mmm') },
+  spear: { 12: at(14, 'm'), 13: at(2, 'NNNNNNNNNNNNmw'), 14: at(14, 'm') },
+  halberd: { 11: at(11, 'mmm'), 12: at(11, 'mmmm'), 13: at(1, 'NNNNNNNNNNNNmmw'), 14: at(12, 'mm') },
+  sword: { 11: at(11, 'M'), 12: at(9, 'NMmmmmw'), 13: at(11, 'M') },
+  torch: { 7: at(14, 'O'), 8: at(13, 'oOo'), 9: at(13, 'oOo'), 10: at(13, 'ooo'), 11: at(14, 'N'), 12: at(13, 'N') },
+  axe: { 12: at(8, 'NNNNNN'), 13: at(13, 'mmm'), 14: at(13, 'mmm'), 15: at(13, 'mmm'), 16: at(14, 'm') },
+  mace: { 10: at(14, 'M'), 11: at(13, 'MMM'), 12: at(13, 'MMM'), 13: at(12, 'NM') },
+  flail: { 9: at(14, 'MM'), 10: at(14, 'MM'), 11: at(14, 'w'), 12: at(13, 'w'), 13: at(12, 'NN') },
+  staffcross: { 0: at(14, 'y'), 1: at(13, 'yyy'), 2: at(14, 'y'), 3: at(14, 'y'), ...handle(4, 14, 14) },
+};
+
+const SHIELD: Layer = { 10: '.kkkk', 11: 'kmmmk', 12: 'kmymk', 13: 'kyyyk', 14: 'kmymk', 15: 'kmmmk', 16: '.kmk.' };
+const BOOK: Layer = { 12: at(11, 'kkkk'), 13: at(11, 'kyyk'), 14: at(11, 'kkkk') };
+const CROSS: Layer = { 10: at(7, 'y'), 11: at(6, 'yyy'), 12: at(7, 'y'), 13: at(7, 'y') };
 
 function blank(): string[][] {
   return Array.from({ length: H }, () => Array.from({ length: W }, () => '.'));
@@ -218,14 +245,17 @@ export function humanoidFrames(spec: HumanoidSpec): string[][] {
   for (let f = 0; f < 3; f++) {
     const g = blank();
     const legFrame = f === 1 ? 1 : 0;
-    stamp(g, HEADS[spec.head]);
-    stamp(g, BODIES[spec.body]);
+    const lean = f === 2 ? 1 : 0;
     stamp(g, spec.body === 'robe' ? ROBE_HEM[legFrame] : LEGS[legFrame]);
-    if (spec.cross) stamp(g, CROSS);
-    if (spec.shield) stamp(g, SHIELD, f === 2 ? 1 : 0);
-    if (spec.book) stamp(g, BOOK);
-    // ataque: arma avança e desce um pixel
-    stamp(g, WEAPONS[spec.weapon], f === 2 ? 1 : 0, f === 2 ? 1 : 0);
+    stamp(g, BODIES[spec.body], lean);
+    stamp(g, HEADS[spec.head], lean);
+    if (spec.cross) stamp(g, CROSS, lean);
+    if (spec.shield) stamp(g, SHIELD, lean);
+    if (spec.book) stamp(g, BOOK, lean);
+    // ataque: pose própria da arma (estocada, golpe); sem pose, a arma avança e desce 1 px
+    const attack = f === 2 ? ATTACKS[spec.weapon] : undefined;
+    if (attack) stamp(g, attack);
+    else stamp(g, WEAPONS[spec.weapon], lean, lean);
     frames.push(g.map((r) => r.join('')));
   }
   return frames;
@@ -242,13 +272,13 @@ const VAMP = { f: '#c7b8c0', F: '#8f7f88', e: '#ff4a5e' };
 export const HUMANOIDS: Record<string, HumanoidSpec> = {
   // ---- vivos: Vila
   peasant: { head: 'cap', body: 'tunic', weapon: 'pitchfork', colors: { ...SKIN, H: '#6e5a3a', h: '#4d3f29', A: '#634532', a: '#3d2a20', L: '#3d2a20' } },
-  torch: { head: 'hood', body: 'tunic', weapon: 'torch', colors: { ...SKIN, H: '#3b3346', h: '#28222f', A: '#4a3b2a', a: '#2e2419', L: '#2e2419' } },
+  torch: { head: 'hood', body: 'tunic', weapon: 'torch', colors: { ...SKIN, H: '#5a4e6a', h: '#3e3550', A: '#4a3b2a', a: '#2e2419', L: '#2e2419' } },
   militia: { head: 'helmet', body: 'tunic', weapon: 'spear', colors: { ...SKIN, H: '#7c8796', h: '#4a5260', A: '#5c6b3a', a: '#3a4425', L: '#3d2a20' } },
   hunter: { head: 'hood', body: 'tunic', weapon: 'bow', colors: { ...SKIN, H: '#3f5a33', h: '#2a3d22', A: '#4f6b3d', a: '#334527', L: '#3d2a20' } },
   // ---- Mosteiro
   monk: { head: 'bald', body: 'robe', weapon: 'none', colors: { ...SKIN, A: '#6b4a2e', a: '#4a321e' } },
   priest: { head: 'hood', body: 'robe', weapon: 'staffcross', cross: true, colors: { ...PALE, H: '#bdb7c9', h: '#8d879a', A: '#bdb7c9', a: '#7f7990' } },
-  nun: { head: 'hood', body: 'robe', weapon: 'lantern', colors: { ...PALE, H: '#1c1824', h: '#e3dccb', A: '#1c1824', a: '#2e2838' } },
+  nun: { head: 'hood', body: 'robe', weapon: 'lantern', colors: { ...PALE, H: '#e3dccb', h: '#a49c86', A: '#4a4260', a: '#332d44' } },
   ringer: { head: 'hair', body: 'robe', weapon: 'bell', colors: { ...SKIN, H: '#4a3326', A: '#5a4a6b', a: '#3e3249' } },
   flagellant: { head: 'bald', body: 'tunic', weapon: 'flail', colors: { ...PALE, A: '#d8cfc0', a: '#9e2236', L: '#5a0f1d' } },
   // ---- Fortaleza
@@ -259,14 +289,14 @@ export const HUMANOIDS: Record<string, HumanoidSpec> = {
   halberd: { head: 'helmet', body: 'armor', weapon: 'halberd', colors: { ...SKIN, H: '#8a94a6', h: '#4b5361', A: '#7a1c24', a: '#4d1117', L: '#4b5361' } },
   // ---- Catedral
   paladin: { head: 'greathelm', body: 'armor', weapon: 'mace', cross: true, colors: { ...SKIN, H: '#d9c27a', h: '#a08a45', A: '#e3dccb', a: '#a49c86', L: '#a08a45', e: '#f6cf6a' } },
-  inquisitor: { head: 'brim', body: 'robe', weapon: 'none', book: true, colors: { ...PALE, H: '#2a1d1d', h: '#7a1c24', A: '#2a1d1d', a: '#7a1c24' } },
-  witchhunter: { head: 'brim', body: 'tunic', weapon: 'crossbow', colors: { ...PALE, H: '#2e2a26', h: '#1a1714', A: '#3f362e', a: '#2a241f', L: '#2a241f' } },
+  inquisitor: { head: 'brim', body: 'robe', weapon: 'none', book: true, colors: { ...PALE, H: '#4a2a2a', h: '#9e2236', A: '#5a3030', a: '#9e2236' } },
+  witchhunter: { head: 'brim', body: 'tunic', weapon: 'crossbow', colors: { ...PALE, H: '#4a4038', h: '#2e2822', A: '#5a4c3e', a: '#3e342a', L: '#3e342a' } },
   templar: { head: 'greathelm', body: 'armor', weapon: 'sword', shield: true, cross: true, colors: { ...SKIN, H: '#c9ccd4', h: '#8d93a0', A: '#e3dccb', a: '#9e2236', L: '#8d93a0', e: '#07050b' } },
   bishop: { head: 'mitre', body: 'robe', weapon: 'staffcross', cross: true, colors: { ...PALE, H: '#e3dccb', h: '#c9a23a', A: '#8f1f3a', a: '#5e1426' } },
   hurler: { head: 'bald', body: 'tunic', weapon: 'none', shield: true, colors: { ...SKIN, A: '#7a5a3a', a: '#4d3826', L: '#3d2a20', m: '#a97a5e', y: '#634532' } },
   // ---- mortos humanoides
-  zombie: { head: 'hair', body: 'tunic', weapon: 'none', colors: { ...ZOMBIE, H: '#2e2a20', A: '#4a4a3a', a: '#2f2f24', L: '#2f2f24' } },
-  ghoul: { head: 'bald', body: 'tunic', weapon: 'none', colors: { ...GHOUL, A: '#6d6f64', a: '#4a4c43', L: '#4a4c43' } },
+  zombie: { head: 'hair', body: 'reach', weapon: 'none', colors: { ...ZOMBIE, H: '#2e2a20', A: '#4a4a3a', a: '#2f2f24', L: '#2f2f24' } },
+  ghoul: { head: 'bald', body: 'reach', weapon: 'none', colors: { ...GHOUL, A: '#6d6f64', a: '#4a4c43', L: '#4a4c43' } },
   thrall: { head: 'hood', body: 'robe', weapon: 'none', colors: { ...VAMP, H: '#5e1426', h: '#3a0c18', A: '#5e1426', a: '#3a0c18' } },
   lich: {
     head: 'hood',

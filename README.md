@@ -20,6 +20,7 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 | `npm run sim -- 40 2` | simulador de balanceamento: 40 runs automáticas com meta-progressão nível 2 |
 | `npm run sim -- 16 2 builds` | taxa de vitória por escola (cada run força uma escola) |
 | `npm run sim -- 14 2 chars` | taxa de vitória por personagem |
+| `sh scripts/simpar.sh 4` | simulador em paralelo (meta 0, 2 e 4, 16 runs cada): chefes vencidos e **dano por onda** em cada cerco (a curva de tensão) |
 | `npx tsx scripts/checkpoint-sim.ts 8 2` | compara runs começando em cada região (checkpoint) |
 | `npx tsx scripts/diag.ts 1 2` | uma run onda a onda: tempo, tamanho da horda, pico na tela, custo da simulação (`START=25` começa no abismo) |
 | `npm run lint` / `npm run format` | Biome |
@@ -31,9 +32,9 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 | Parâmetro | Efeito |
 |---|---|
 | `?run` | pula o menu |
-| `?auto` | o jogo se joga sozinho (inclusive escolhe cartas) |
+| `?auto` | o jogo se joga sozinho (inclusive escolhe dádivas, eventos e a postura) |
 | `?wave=13` | começa na onda 13 (`6` = primeiro chefe, `25` = abismo) |
-| `?meta=3` | finge meta-progressão nível 3 (escolas, campeões, construções; 4+ libera a heresia 3). Se a run terminar, o resultado é salvo |
+| `?meta=3` | finge meta-progressão nível 3 (escolas, campeões, construções; 4+ libera o nível IV da Descida). Se a run terminar, o resultado é salvo |
 | `?scene=Graveyard` | abre uma cena direto (`Graveyard`, `Bestiary`, `Records`, `Options`, `Characters`) |
 | `?fps` | contador de quadros |
 | `?char=reaper` | joga com um personagem (`necro`, `witch`, `digger`, `reaper`, `vampire`) |
@@ -49,7 +50,8 @@ Para testar no celular: com o celular no mesmo Wi-Fi, abra o endereço `Network:
 - **Fundir** (`2`/`W`): cada 3 esqueletos no círculo viram um Colosso de Ossos (até 4 por toque).
 - **Consumir** (`3`/`E`): sacrifica mortos para curar.
 - **Ritual** (`4`/`R`, botão no canto de baixo): habilidade especial do personagem, carregada por abates.
-- Nas ondas pares você escolhe **1 pacto** (carta). Três cartas da mesma escola liberam a **Maestria** e cinco, o **Domínio**.
+- **Postura** (`A`/`D`, botão ao lado do ritual): **Ataque** (os mortos procuram briga mais longe, +10% dano) ou **Defesa** (ficam em volta do altar, levam 25% menos dano e batem 10% mais fraco).
+- **Dádivas:** a cada tantos abates (barra dourada embaixo da vida), no fim da onda você escolhe 1 entre 3. Valem até o fim da run. As de escola somam 1 ponto naquela escola: com o equipamento, 1 ponto já dá o efeito **básico** da escola, 2 a **Maestria**, 4 o **Domínio** e 6 a **Apoteose** (tudo numa escola só, quebra uma regra do jogo), então a build também se forma no meio da partida.
 - `S` ou o botão `1X/2X`: velocidade do jogo. `Esc`/`P`: pausa.
 - Nas Opções, a **mira** pode ser **arrastar** (padrão: o movimento é relativo) ou **tocar direto** (o círculo vai para onde o dedo toca).
 
@@ -60,7 +62,7 @@ A primeira run tem um tutorial sem texto: uma mão mostra o gesto na hora em que
 - Mortos aliados têm uma borda verde-alma, para se destacar dos vivos na horda.
 - Cada região tem uma cor forte: Vila em terra quente, Mosteiro em pedra esverdeada, Fortaleza em aço azulado, Catedral em mármore roxo e abismo em vermelho.
 - Vida e dano aparecem multiplicados por 10 na tela (a simulação usa números pequenos).
-- O Domínio de uma escola muda o clima da partida (chuva de ossos, névoa de praga, almas subindo...).
+- O Domínio de uma escola muda o clima da partida (chuva de ossos, névoa de praga, almas subindo...). O necromante também muda com a escola mais alta: halo na maestria, anel nos pés no domínio e partículas na apoteose. No arsenal, tocar numa escola mostra o efeito de cada degrau.
 - Interface em tema quente: painéis marrom-escuros com moldura dourada e botão principal dourado.
 
 ### Horda
@@ -69,11 +71,14 @@ O jogo é um **mar de unidades**: os vivos chegam em bandos (de 40 a mais de 150
 
 ### Estrutura de uma run
 
-4 regiões com 5 ondas e 1 chefe cada (Vila, Mosteiro, Fortaleza, Catedral). Vencer o chefe de uma região libera o **checkpoint**: na tela de personagem dá para começar a próxima run nela, com 4 escolhas de pacto e 18 esqueletos por região pulada (e uma encruzilhada para escolher a rota). Depois vêm os **círculos do abismo**, infinitos, cada um com um modificador novo. O primeiro chefe do abismo é o **Serafim**, um chefe secreto. Chefes derrotados viram **campeões** que você pode levar para as próximas runs.
+4 regiões com 5 ondas e 1 chefe cada (Vila, Mosteiro, Fortaleza, Catedral). Vencer o chefe de uma região libera o **checkpoint** daquele nível: na **Descida** (tela inicial) dá para começar a próxima run nela, com 18 esqueletos por região pulada (e uma encruzilhada para escolher a rota). Depois vêm os **círculos do abismo**, infinitos, cada um com um modificador novo. O primeiro chefe do abismo é o **Serafim**, um chefe secreto. Chefes derrotados **3 vezes** (somando as runs) viram **campeões** que você pode levar para as próximas runs; mais abates sobem o rank (3, 6, 10, 15 e 21).
 
 - **Encruzilhada:** depois de cada chefe você escolhe a rota até a próxima região (ex.: Trilha dos Enforcados, +30% inimigos e +50% almas).
-- **Eventos:** depois das ondas 2 e 4 de cada região pode aparecer uma escolha com risco (Altar Profano, Poço das Almas, Pacto de Sangue...).
-- **Heresia:** vencer a Catedral libera níveis de dificuldade (até 10), escolhidos na tela de personagem. Cada nível soma uma regra nova e +10% de almas.
+- **Eventos:** depois das ondas 2 e 4 de cada região pode aparecer uma escolha com risco. São 20 (Altar Profano, Poço das Almas, Espelho Rachado, Pira Negra, Juramento Sombrio...).
+- **Ondas temáticas:** às vezes uma onda vem com um jeito próprio, anunciado no começo: Cavalgada, Turba, Procissão, Emboscada, Lua de Sangue e Invasão.
+- **Incursões:** desde a onda 2 da Vila, alguns bandos entram pela lateral e correm para o altar (aviso **INCURSÃO** e setinha vermelha em cima de quem corre). Os cães sempre fazem isso.
+- **Elites com afixo:** a partir da onda 4 cada elite vem com um afixo, mostrado pela cor do contorno: **rápido** (azul), **blindado** (cinza, leva menos dano), **mártir** (branco, explode em luz ao morrer) e **fanático** (vermelho, bate o dobro).
+- **Níveis da Descida:** os mesmos 4 cercos em 6 níveis (I a VI). Vencer a Catedral de um nível abre o próximo; cada nível tem o próprio checkpoint, soma regras novas contra você e dá +20% de almas. Escolhidos na tela **A Descida** (toque no cerco na tela inicial).
 - **Desafio diário:** a mesma seed e 2 modificadores do abismo para todo mundo no dia. A primeira tentativa do dia dá bônus de almas.
 - **Flancos e arremessadores:** a partir do Mosteiro, alguns bandos entram pelas laterais (uma seta vermelha avisa), e o **Arremessador** fica longe atirando vivos por cima do exército, direto no altar.
 - **Salvar e retomar:** a run é salva no fim de cada onda e ao minimizar o app. O menu mostra **CONTINUAR**.
@@ -107,9 +112,9 @@ Além de esqueletos, arqueiros, colossos, zumbis, carniçais, ratos, fantasmas e
 
 ### Meta-progressão
 
-Fora da partida, uma **barra de ícones** no topo leva a tudo: Início, Mercado, Arsenal, Árvore, Altar, Tesouro, Bestiário, Registros e Opções. O **Início** mostra o necromante no altar (setas trocam de personagem), onde começar, a heresia e o botão **INICIAR**.
+Fora da partida, uma **barra de ícones** no topo leva a tudo: Início, Mercado, Arsenal, Árvore, Altar, Tesouro, Bestiário, Registros e Opções. O **Início** mostra o necromante no altar (setas trocam de personagem), o nível e o cerco onde começar e o botão **INICIAR**.
 
-As almas de cada run (os números foram multiplicados por 10 no save v5, junto com os custos) vão para a **[Árvore da Necrópole](docs/ARVORE.md)**: 6 ramos com 48 nós em camadas, liberadas por níveis no ramo e por chefes vencidos, cada ramo terminando numa Coroa. Ela substituiu as 8 construções (a migração devolve as almas gastas). O **Mercado** tem 4 itens que mudam a cada run, o **Arsenal** equipa e forja espaços, o **Altar** encaixa gemas e o **Tesouro** é um salão com os lendários e conjuntos encontrados. Durante a run, depois da onda 3 de cada região, aparece o **Mercador Encapuzado**, que troca as almas da run por itens. Cada chefe derrotado pela primeira vez libera uma nova escola de pactos: Ossos e Carne no começo, depois Praga, Espírito e Sangue. O **Bestiário** registra os abates com medalhas de bronze, prata e ouro. Os **Registros** mostram estatísticas da vida toda, as últimas 20 runs (com o MVP do exército) e 20 **conquistas** que dão almas.
+As almas de cada run (os números foram multiplicados por 10 no save v5, junto com os custos) vão para a **[Árvore da Necrópole](docs/ARVORE.md)**: 6 ramos com 48 nós em camadas, liberadas por níveis no ramo e por chefes vencidos, cada ramo terminando numa Coroa. Ela substituiu as 8 construções (a migração devolve as almas gastas). O **Mercado** tem 4 itens que mudam a cada run, o **Arsenal** equipa e forja espaços, o **Altar** encaixa gemas e o **Tesouro** é um salão com os lendários e conjuntos encontrados. Durante a run, depois da onda 3 de cada região, aparece o **Mercador Encapuzado**, que troca as almas da run por itens. Cada chefe derrotado pela primeira vez libera uma nova escola: Ossos e Carne no começo, depois Praga, Espírito e Sangue. As telas abrem aos poucos, cada uma com uma frase de apresentação na primeira visita: árvore, bestiário, registros e desafio diário depois da 1ª run, arsenal com o 1º item, mercado depois da 2ª run, altar com a 1ª gema e tesouro com a 1ª relíquia ou conjunto. O **Bestiário** registra os abates com medalhas de bronze, prata e ouro. Os **Registros** mostram estatísticas da vida toda, as últimas 20 runs (com o MVP do exército) e 20 **conquistas** que dão almas.
 
 ## Estrutura
 
@@ -117,13 +122,15 @@ As almas de cada run (os números foram multiplicados por 10 no save v5, junto c
 src/
   sim/          lógica pura do jogo, sem Phaser (testável, determinística com seed)
     defs.ts       unidades, chefes e constantes de balanceamento
-    cards.ts      escolas, pactos e sinergias
+    cards.ts      escolas e sinergias
+    gifts.ts      dádivas (a build dentro da run)
+    unlocks.ts    telas da meta que abrem aos poucos
     regions.ts    regiões, ondas e modificadores do abismo
     meta.ts       cemitério, campeões, bestiário, save
     world.ts      a run: ondas, combate, status, habilidades, ritual, ações do jogador, salvar/retomar
     spatial.ts    grade espacial (vizinhos, áreas e separação sem O(n²))
-    events.ts     eventos entre ondas e rotas da encruzilhada
-    heresy.ts     níveis de heresia (dificuldade)
+    events.ts     eventos entre ondas, ondas temáticas e rotas da encruzilhada
+    heresy.ts     níveis da Descida (dificuldade)
     items.ts      itens, conjuntos e tesouro
     gems.ts       gemas, fusão e encaixes do altar
     progress.ts   fim de run: histórico, estatísticas, conquistas, desafio diário

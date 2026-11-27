@@ -13,6 +13,8 @@ export const BASE_SOCKETS = 3;
 /** quanto cada nível multiplica o efeito base */
 export const RANK_MUL = [0, 1, 2.5, 4.5, 7, 10];
 export const RANK_NAME = ['', 'I', 'II', 'III', 'IV', 'V'];
+/** nome de cada nível: a forma da gema muda com ele (bruta, lapidada, brilhante, octaedro, cabochão) */
+export const GEM_RANK_TITLE = ['', 'bruta', 'lapidada', 'brilhante', 'perfeita', 'real'];
 
 export interface GemDef {
   type: GemType;
